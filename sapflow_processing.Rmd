@@ -1,0 +1,45 @@
+---
+title: "Sapflow Processing"
+author: "Stephanie Pennington"
+date: "12/28/2021"
+output: html_document
+---
+
+```{r setup, include = FALSE}
+# Load packages
+library(readr)
+library(TREXr)
+library(dplyr)
+library(tidyr)
+
+# Locate directory path to logger data
+current_path <- "~/Dropbox/TEMPEST_PNNL_Data/Current_data/"
+archive_path <- "~/Dropbox/TEMPEST_PNNL_Data/Loggernet_Rawdata_Archive/"
+
+current_files <- list.files(path = current_path, pattern = "sapflow\\.dat$",
+                            full.names = TRUE)
+archive_files <- list.files(path = archive_path, pattern = "_sapflow_2",
+                            full.names = TRUE)
+
+# Function setup
+read_sapflow <- function(filename) {
+
+    sdat <- readLines(filename) #temp file goes here
+    sdat <- sdat[-3:-4] # remove lines 3 and 4 with unneeded information
+
+    # parse line one to extract logger name
+    pnnl_x <- gregexpr("PNNL_", sdat[1])[[1]][1]
+    logger_name <- substr(sdat[1], start = pnnl_x, stop = pnnl_x + 6)
+
+    read_csv(sdat, skip = 1) %>%
+        mutate(Logger = logger_name)
+}
+
+```
+
+```{r read-data, include=FALSE}
+
+lapply(archive_files, read_sapflow)
+
+```
+
