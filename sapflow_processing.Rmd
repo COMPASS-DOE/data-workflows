@@ -11,6 +11,10 @@ library(readr)
 library(TREXr)
 library(dplyr)
 library(tidyr)
+library(lubridate)
+
+# Read in sapflow inventory
+sf_inventory <- read_csv("../TEMPEST/Design/sapflow_inventory.csv", col_types = "cdcdddcc")
 
 # Locate directory path to logger data
 current_path <- "~/Dropbox/TEMPEST_PNNL_Data/Current_data/"
@@ -21,25 +25,87 @@ current_files <- list.files(path = current_path, pattern = "sapflow\\.dat$",
 archive_files <- list.files(path = archive_path, pattern = "_sapflow_2",
                             full.names = TRUE)
 
-# Function setup
-read_sapflow <- function(filename) {
-
-    sdat <- readLines(filename) #temp file goes here
-    sdat <- sdat[-3:-4] # remove lines 3 and 4 with unneeded information
-
-    # parse line one to extract logger name
-    pnnl_x <- gregexpr("PNNL_", sdat[1])[[1]][1]
-    logger_name <- substr(sdat[1], start = pnnl_x, stop = pnnl_x + 6)
-
-    read_csv(sdat, skip = 1) %>%
-        mutate(Logger = logger_name)
-}
-
 ```
 
 ```{r read-data, include=FALSE}
 
-lapply(archive_files, read_sapflow)
+current <- lapply(current_files, read_sapflow) 
+archive <- lapply(archive_files, read_sapflow)
+
+sf_primitive <- bind_rows(archive, current)
+
+format_sapflow(sf_primitive, sf_inventory)
+
+# remove obvious outliers
+sapflow[which(sapflow$Value<0.2), ]<- NA
+
+# Split data frame into separate data frames for each sensor
+sapflow %>% 
+    mutate(Timestamp = with_tz(Timestamp, tzone = "EST"),
+           Value = as.numeric(Value)) %>% 
+    rename(timestamp = Timestamp,
+           value = Value) %>% 
+    na.omit(value) %>% 
+    group_by(Tree_Code, year(timestamp)) %>% 
+    distinct(timestamp, .keep_all = TRUE) %>% 
+    group_split() -> sf_split
 
 ```
+
+```{r test-data, include = FALSE}
+# Let's create a test dataset to try the TREX package on
+
+t_data <- sapflow %>% 
+    filter(Tree_Code == "C3", Timestamp > "2020-05-01",
+             Timestamp < "2020-06-01") %>% select(Timestamp, Value) %>% 
+    mutate(Timestamp = with_tz(Timestamp, tz = "EST"),
+           Value = as.numeric(Value)) %>% 
+    rename(timestamp = Timestamp,
+           value = Value)
+
+
+# Check if the format is correct
+dat <- is.trex(t_data, time.format = "%Y-%m-%d %H:%M:%S", tz = "EST", df = TRUE)
+
+input <- tdm_dt.max(dat,
+                    methods = c("pd", "mw", "dr"),
+                    det.pd = TRUE,
+                    interpolate = FALSE,
+                    max.days = 5,
+                    df = FALSE)
+
+```
+
+```{r data-cleaning, include = FALSE}
+
+trex_list <- list()
+
+for(i in 1:length(sf_split)) {
+    
+    print(paste("Starting iteration:", i))
+    temp <- select(sf_split[[1]], timestamp, value)
+    
+    print(paste("...applying is.trex to", i))
+    x <- is.trex(temp, 
+                              time.format = "%Y-%m-%d %H:%M:%S", 
+                              tz = "EST", df = TRUE)
+
+    print(paste("...applying tdm_dt.max to", i))
+    tdm_dt.max(x, methods = "pd", max.days = 10, df = FALSE) -> t
+    
+    print(paste("...applying tdm_cal.sfd to", i))
+    output.data<- tdm_cal.sfd(t)
+    sfd_data <- output.data$sfd.dr$sfd
+    
+    print(paste("...saving", i, "to list"))
+    trex_list[[i]] <- sfd_data
+}
+
+sfd_list <- list()
+
+
+
+
+```
+
 
