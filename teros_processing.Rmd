@@ -18,10 +18,14 @@ teros_files <- list.files(path = "~/Dropbox/TEMPEST_PNNL_Data/Loggernet_Rawdata_
 
 teros_inventory <- read_csv("../TEMPEST/Data/TEROS12/teros12_data/Raw_Data/TEMPEST_TEROS_Network_Location&ID.csv")
 
+teros_metadata <- read_csv("teros_metadata.csv")
+
 write_teros <- function(x) {
 
-    filename <- paste0("TMP_teros_", x$Variable[1], "_", x$Year[1], "_L0A.csv")
-    cat("Writing...", filename)
+    filename <- paste0("TMP_teros_", x$Variable[1], "_", 
+                       gsub("-","", date(min((x$Timestamp)))), "-", 
+                       gsub("-","", date(max((x$Timestamp)))), "_L0A.csv")
+    cat("Writing...", filename, "\n")
     write_csv(x, filename)
 }
 
@@ -36,8 +40,11 @@ bind_rows(teros) -> teros_data_full
 teros_data_full %>%
     rename(Timestamp = TIMESTAMP, Record = RECORD,
            Variable = variable, Value = value) %>% 
+    left_join(teros_inventory, by = c("Data_Logger_ID", "Data_Table_ID")) %>% 
     mutate(Year = year(Timestamp)) %>% 
-    left_join(teros_inventory, by = c("Data_Logger_ID", "Data_Table_ID")) -> teros_join
+    select(Timestamp, Variable, Value, Year, Plot, Grid_Square, ID, Depth, Junction_Box_ID, Address, Logger_Station, `Date_Online(2020)`, Record, Data_Logger_ID, Data_Table_ID) -> teros_join
+
+ymd_hms(teros_join$Timestamp, tz = "EST") -> teros_join$Timestamp
 
 teros_join %>% 
     #need QA/QC here, talk to Anya
@@ -51,7 +58,7 @@ lapply(teros_list, write_teros)
 #need some sort of readme w level descriptions and instrument descriptions (units)
 # metadata file with description for each column name
 
-#if(!all(colnames(datafile) %in% metadata$Column_name) warning("...")
+if(!all(colnames(teros_join) %in% teros_metadata$Column_Name)) warning("Missing metadata in data folder")
 
 
 ```
