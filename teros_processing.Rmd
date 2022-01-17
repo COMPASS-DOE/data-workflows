@@ -1,0 +1,58 @@
+---
+title: "Teros Processing"
+author: "Stephanie Pennington"
+date: "1/14/2022"
+output: html_document
+---
+
+```{r setup}
+library(dplyr)
+library(readr)
+library(tidyr)
+library(lubridate)
+
+source("~/Documents/GitHub/COMPASS-DOE/TEMPEST/R_scripts/teros_fileread.R")
+#"../../TEMPEST/R_scripts/teros_fileread.R"
+
+teros_files <- list.files(path = "~/Dropbox/TEMPEST_PNNL_Data/Loggernet_Rawdata_Archive/", pattern = "_Terosdata_2", full.names = TRUE)
+
+teros_inventory <- read_csv("../TEMPEST/Data/TEROS12/teros12_data/Raw_Data/TEMPEST_TEROS_Network_Location&ID.csv")
+
+write_teros <- function(x) {
+
+    filename <- paste0("TMP_teros_", x$Variable[1], "_", x$Year[1], "_L0A.csv")
+    cat("Writing...", filename)
+    write_csv(x, filename)
+}
+
+```
+
+```{r}
+
+lapply(teros_files, fileread) -> teros
+
+bind_rows(teros) -> teros_data_full
+
+teros_data_full %>%
+    rename(Timestamp = TIMESTAMP, Record = RECORD,
+           Variable = variable, Value = value) %>% 
+    mutate(Year = year(Timestamp)) %>% 
+    left_join(teros_inventory, by = c("Data_Logger_ID", "Data_Table_ID")) -> teros_join
+
+teros_join %>% 
+    #need QA/QC here, talk to Anya
+    group_by(Variable, Year) %>%
+    group_split(.keep = TRUE) -> teros_list
+
+lapply(teros_list, write_teros)
+
+
+
+#need some sort of readme w level descriptions and instrument descriptions (units)
+# metadata file with description for each column name
+
+#if(!all(colnames(datafile) %in% metadata$Column_name) warning("...")
+
+
+```
+
