@@ -1,0 +1,16 @@
+Column_Name,Format,Unit,Description
+Timestamp,YYYY-MM-DD HH:MM:SS,EST,Time and date of measurement
+Variable,character,NA,Name of measurement
+Value,double,TSOIL: degree Celsius; VWC: m3/m3; EC: S/cm,Value recorded from sensor
+Year,YYYY ,NA,Timestamp year of data point
+Plot,character,NA,"Name of TEMPEST plot (e.g. Control, Freshwater, Seawater)"
+Grid_Square,character,NA,"The gridded coordinate location within each plot; each plot is divided into 80, 25m2 grid cells"
+ID,character,NA,Unique sensor ID
+Depth,double,cm,Depth below the soil surface
+Junction_Box_ID,character,NA,For technician use: Services four grid cells; feeds into data logger
+Address,character,NA,For technician use: ID within service area; single depth sensors denoted a-m and depth-profile sensors denoted A-J
+Logger_Station,character,NA,For technician use: Service area ID for each data logger
+Date_Online(2020),DD-Month,NA,For technician use: Date sensors were turned on
+Record,integer,NA,For technician use: Logging number in data logger
+Data_Logger_ID,integer,NA,For technician use: Unique data logger ID
+Data_Table_ID,integer,NA,For technician use: ID for with data logger organization
