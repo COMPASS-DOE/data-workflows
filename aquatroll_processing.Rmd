@@ -1,0 +1,85 @@
+---
+title: "AquaTroll Processing"
+author: "Stephanie Pennington"
+date: "1/17/2022"
+output: html_document
+---
+
+
+```{r setup}
+library(dplyr)
+library(readr)
+library(tidyr)
+library(lubridate)
+library(cowplot)
+library(parsedate)
+library(padr)
+library(RColorBrewer)
+
+
+source("aquatroll_functions.R")
+
+troll_inventory <- read_csv("aquatroll_inventory.csv")
+
+troll200_files <- list.files(path = "~/Dropbox/TEMPEST_PNNL_Data/Loggernet_Rawdata_Archive/", pattern = "WaterLevel200",
+                            full.names = TRUE)
+troll600_files <- list.files(path = "~/Dropbox/TEMPEST_PNNL_Data/Loggernet_Rawdata_Archive/", pattern = "WaterLevel600",
+                            full.names = TRUE)
+
+# set paths for reading in barometric data
+path_baro_archive <- "~/Dropbox/SERC Dock/SERC_DOCK_Rawdata_Loggernet"
+#path_baro_current <- "~/Dropbox/SERC Dock/SERC_DOCK_Rawdata_Loggernet/SERC_DOCK_current_data/MGEO_SERC_MetTable.dat"
+
+
+
+# Set up ORP correction to eH
+# Troll Ag/AgCl potentials are listed for the particular molarity used in the In-Situ Aqua Troll 600 here:
+# https://in-situ.com/us/blog/orp-field-measurements-reporting-redox-potential-eh-correctly/?___store=us_en&___from_store=global_en
+Temp.C=c(5,10,15,20)
+Potential.mV=c(219,211,207,202)
+orp_cal_curve <- lm(Potential.mV~Temp.C)
+dV.dT <- coef(orp_cal_curve)[2]
+V0 <- coef(orp_cal_curve)[1]
+
+```
+
+```{r barometric-data}
+
+### Read in / format barometric pressure data
+
+# Gather file names from archive and current folders
+filepaths_baro <- c(list.files(path = path_baro_archive,
+                               pattern = "*MetTable",full.names = T),
+                    path_baro_current)
+
+# read all barometric data after 5/30/19 into a dataframe
+baro_data <- lapply(filepaths_baro, read_met) %>%
+  bind_rows(.) %>% filter(datetime > "2019-05-30 14:45:00")
+
+```
+
+```{r troll-data}
+
+### Read in / format troll data
+
+lapply(troll200_files, read_200) -> troll200
+lapply(troll600_files, read_600) -> troll600
+
+bind_rows(troll200, troll600) -> troll_data
+
+troll_data %>%
+    # stuff in format_troll + add Year column
+    format_troll(., troll_inventory) %>% 
+    #qc_troll call
+    qc_troll(.) -> troll_data_full
+    # assign as troll_data_full
+
+    # split same as teros but here by Well_Name and Year
+troll_data_full %>% 
+    group_by(Well_Name, Year) %>% 
+    group_split(.keep = TRUE) -> troll_list
+
+lapply(troll_list, write_troll)
+
+```
+
