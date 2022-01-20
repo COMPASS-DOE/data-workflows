@@ -5,7 +5,6 @@ date: "1/17/2022"
 output: html_document
 ---
 
-
 ```{r setup}
 library(dplyr)
 library(readr)
@@ -30,8 +29,6 @@ troll600_files <- list.files(path = "~/Dropbox/TEMPEST_PNNL_Data/Loggernet_Rawda
 path_baro_archive <- "~/Dropbox/SERC Dock/SERC_DOCK_Rawdata_Loggernet"
 #path_baro_current <- "~/Dropbox/SERC Dock/SERC_DOCK_Rawdata_Loggernet/SERC_DOCK_current_data/MGEO_SERC_MetTable.dat"
 
-
-
 # Set up ORP correction to eH
 # Troll Ag/AgCl potentials are listed for the particular molarity used in the In-Situ Aqua Troll 600 here:
 # https://in-situ.com/us/blog/orp-field-measurements-reporting-redox-potential-eh-correctly/?___store=us_en&___from_store=global_en
@@ -48,13 +45,13 @@ V0 <- coef(orp_cal_curve)[1]
 ### Read in / format barometric pressure data
 
 # Gather file names from archive and current folders
-filepaths_baro <- c(list.files(path = path_baro_archive,
-                               pattern = "*MetTable",full.names = T),
-                    path_baro_current)
+filepaths_baro <- list.files(path = path_baro_archive,
+                               pattern = "*MetTable",full.names = T)
 
 # read all barometric data after 5/30/19 into a dataframe
 baro_data <- lapply(filepaths_baro, read_met) %>%
-  bind_rows(.) %>% filter(datetime > "2019-05-30 14:45:00")
+  bind_rows(.) %>% filter(Timestamp > "2019-05-30 14:45:00") %>% 
+    distinct()
 
 ```
 
@@ -71,7 +68,7 @@ troll_data %>%
     # stuff in format_troll + add Year column
     format_troll(., troll_inventory) %>% 
     #qc_troll call
-    qc_troll(.) -> troll_data_full
+    qc_troll(format) -> qc
     # assign as troll_data_full
 
     # split same as teros but here by Well_Name and Year

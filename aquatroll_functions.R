@@ -17,8 +17,8 @@ read_met <- function(filepaths) {
     df_names <- read_delim(filepaths, delim = ",", skip = 1, n_max = 0) %>% names()
 
     read_delim(filepaths, delim = ",", skip = 4, col_names = df_names) %>%
-        dplyr::mutate(datetime = round_date(force_tz(parsedate::parse_date(TIMESTAMP), tzone ="GMT"), "15 min")) %>%
-        dplyr::group_by(datetime) %>%
+        dplyr::mutate(Timestamp = round_date(force_tz(parsedate::parse_date(TIMESTAMP), tzone ="GMT"), "15 min")) %>%
+        dplyr::group_by(Timestamp) %>%
         dplyr::summarize(bp_mbar = mean(Barometric_Pressure_PB110B),
                          rain_int = mean(Rain_Intensity))
 }
@@ -62,10 +62,10 @@ read_600 <- function(filepaths) {
                       DO_mgl = as.numeric(RDO_concen600),
                       pH = as.numeric(pH600),
                       ORP = as.numeric(pH_ORP600),
-                      eH = ORP + V0 + dV.dT*temp_c,
+                      eH = ORP + V0 + dV.dT * Temp,
                       Density = as.numeric(Water_Density600),
                       Pressure_psi = as.numeric(Pressure600),
-                      Pressure_mbar = pressure_psi * 68.948,
+                      Pressure_mbar = Pressure_psi * 68.948,
                       Resistivity = as.numeric(Resistivity600),
                       Instrument = "TROLL600") %>%
         rename(Logger_ID = Statname) %>%
@@ -83,10 +83,10 @@ format_troll <- function(df, troll_inventory) {
         mutate(Dist_PressureSensor_belowground_m = Dist_PressureSensor_belowground_cm / 100,
                Elevation = Elevation / 100) %>%
         # merge barometric and wq data and calculate depth metrics
-        left_join(baro_data %>% select(datetime, bp_mbar, rain_int), by=c("Timestamp" == "datetime")) %>%
+        left_join(baro_data, by="Timestamp") %>%
         dplyr::mutate(Year = year(Timestamp),
                       Pressure_cor_mbar = Pressure_mbar - bp_mbar,
-                      Density_gcm3_cor = ifelse(Density_gcm3 > 0.95, Density_gcm3, 1),
+                      Density_gcm3_cor = ifelse(Density > 0.95, Density, 1),
                       Pressurehead.m = (Pressure_cor_mbar * 100) / (Density_gcm3_cor * 1000 * 9.80665),
                       WLfromsurface.m = Pressurehead.m - Dist_PressureSensor_belowground_m,
                       Head.m = WLfromsurface.m + Elevation)
@@ -98,18 +98,18 @@ qc_troll <- function(df) {
     # for both models
     df %>%
         mutate(
-            f_spc = sp_cond_uScm > 350000 | sp_cond_uScm < 0,
-            f_sal = salinity > 350 | salinity < 0,
-            f_wl = pressurehead.m < 0.1) -> df1
+            f_spc = Specific_Conductivity > 350000 | Specific_Conductivity < 0,
+            f_sal = Salinity > 350 | Salinity < 0,
+            f_wl = Pressurehead.m < 0.1) -> df1
 
     df1 %>%
-        filter(sensor == "TROLL600") %>%
+        filter(Instrument == "TROLL600") %>%
         mutate(
-            f_do.sat = do_sat > 200 | do_sat < 0,
-            f_do.mgl = salinity > 20 | salinity < 0,
+            f_do.sat = DO_sat > 200 | DO_sat < 0,
+            f_do.mgl = Salinity > 20 | Salinity < 0,
             f_ph = pH > 14 | pH < 0,
             f_eh = eH > 1400 | eH < -1400) %>%
-        bind_rows(filter(df1, sensor != "TROLL600")) %>%
+        bind_rows(filter(df1, Instrument != "TROLL600")) %>%
         mutate(Flag = f_spc |
                    f_sal | f_wl | f_do.sat | f_do.mgl | f_ph | f_eh)
 
