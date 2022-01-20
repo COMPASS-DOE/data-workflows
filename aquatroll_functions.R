@@ -16,12 +16,14 @@ write_troll <- function(x) {
 read_met <- function(filepaths) {
     df_names <- read_delim(filepaths, delim = ",", skip = 1, n_max = 0) %>% names()
 
-    read_delim(filepaths, delim = ",", skip = 4, col_names = df_names) %>%
-        dplyr::mutate(Timestamp = round_date(force_tz(parsedate::parse_date(TIMESTAMP), tzone ="GMT"), "15 min")) %>%
-        dplyr::group_by(Timestamp) %>%
-        dplyr::summarize(bp_mbar = mean(Barometric_Pressure_PB110B),
-                         rain_int = mean(Rain_Intensity))
+    read_delim(filepaths, delim = ",", skip = 4, col_names = df_names) #%>%
+
+        # dplyr::mutate(Timestamp = round_date(parsedate::parse_date(TIMESTAMP, default_tz = "GMT"), "15 min")) %>%
+        # dplyr::group_by(Timestamp) %>%
+        # dplyr::summarize(bp_mbar = mean(Barometric_Pressure_PB110B),
+        #                  rain_int = mean(Rain_Intensity))
 }
+
 #
 # #list all troll files (combine current and archive file paths into one list)
 # list_all_files <- function(pattern_to_find) {
@@ -79,6 +81,8 @@ format_troll <- function(df, troll_inventory) {
 
     df %>%
         left_join(troll_inventory, by = c("Logger_ID", "Instrument")) %>%
+        group_by(Probe_Name) %>%
+        distinct() %>%
         # convert deployment depth and elevation to meters
         mutate(Dist_PressureSensor_belowground_m = Dist_PressureSensor_belowground_cm / 100,
                Elevation = Elevation / 100) %>%

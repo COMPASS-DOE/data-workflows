@@ -45,13 +45,16 @@ V0 <- coef(orp_cal_curve)[1]
 ### Read in / format barometric pressure data
 
 # Gather file names from archive and current folders
-filepaths_baro <- list.files(path = path_baro_archive,
-                               pattern = "*MetTable",full.names = T)
+filepaths_baro <- list.files(path = path_baro_archive, pattern = "*MetTable",full.names = T)
 
 # read all barometric data after 5/30/19 into a dataframe
-baro_data <- lapply(filepaths_baro, read_met) %>%
-  bind_rows(.) %>% filter(Timestamp > "2019-05-30 14:45:00") %>% 
-    distinct()
+lapply(filepaths_baro, read_met) %>%
+    bind_rows() %>% 
+    distinct() %>% 
+    mutate(Timestamp = round_date(force_tz(parsedate::parse_date(TIMESTAMP), tzone ="GMT"), "15 min")) %>%
+    group_by(Timestamp) %>%
+    summarize(bp_mbar = mean(Barometric_Pressure_PB110B), rain_int = mean(Rain_Intensity)) %>% 
+    filter(Timestamp > "2019-05-30 14:45:00") -> baro_data
 
 ```
 
@@ -68,8 +71,10 @@ troll_data %>%
     # stuff in format_troll + add Year column
     format_troll(., troll_inventory) %>% 
     #qc_troll call
-    qc_troll(format) -> qc
-    # assign as troll_data_full
+    qc_troll() %>% 
+    select(Timestamp, Depth, Logger_ID, Well_Name, Probe_Name, Plot, Year, Temp, Specific_Conductivity, 
+           Salinity, Pressure_mbar, Resistivity, Instrument, DO_sat, DO_mgl, pH, ORP, eH, Density, WLfromsurface.m, 
+           Head.m, f_spc, f_sal, f_wl, f_do.sat, f_do.mgl, f_ph, f_eh, Flag) -> troll_data_full
 
     # split same as teros but here by Well_Name and Year
 troll_data_full %>% 
