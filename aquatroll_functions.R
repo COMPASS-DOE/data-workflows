@@ -75,12 +75,24 @@ read_600 <- function(filepaths) {
                       pH, ORP, eH, Density, Pressure_mbar, Resistivity, Instrument, Logger_ID)
 }
 
+
+join_troll <- function(df, troll_inventory) {
+
+    change_date <- "2021-03-10 00:00:00"
+
+    change_IDs <- c("PNNL_13", "PNNL_23", "PNNL_32")
+
+    df %>%
+        mutate(Install = if_else(Timestamp >= change_date & Logger_ID %in% change_IDs, 2, 1)) %>%
+        left_join(troll_inventory, by = c("Logger_ID", "Instrument", "Install"))
+
+}
+
 # Format troll data and calculate WL
 #Convert to water depth (h = P [mbar] * 100 [Pa/mbar])/(rho [g/cm3]*1000 [kg/m3//g/cm3]*g [m/s2]) where [Pa]=[kgm/s2m2]
 format_troll <- function(df, troll_inventory) {
 
     df %>%
-        left_join(troll_inventory, by = c("Logger_ID", "Instrument")) %>%
         group_by(Probe_Name) %>%
         distinct() %>%
         # convert deployment depth and elevation to meters
