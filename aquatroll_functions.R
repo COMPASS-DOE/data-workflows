@@ -90,13 +90,13 @@ join_troll <- function(df, troll_inventory) {
 
 # Format troll data and calculate WL
 #Convert to water depth (h = P [mbar] * 100 [Pa/mbar])/(rho [g/cm3]*1000 [kg/m3//g/cm3]*g [m/s2]) where [Pa]=[kgm/s2m2]
-format_troll <- function(df, troll_inventory) {
+format_troll <- function(df) {
 
     df %>%
         group_by(Probe_Name) %>%
         distinct() %>%
         # convert deployment depth and elevation to meters
-        mutate(Dist_PressureSensor_belowground_m = Dist_PressureSensor_belowground_cm / 100,
+        mutate(Dist_PressureSensor_belowground_m = Dist_pressure_sensor_belowground_calc / 100,
                Elevation = Elevation / 100) %>%
         # merge barometric and wq data and calculate depth metrics
         left_join(baro_data, by="Timestamp") %>%
