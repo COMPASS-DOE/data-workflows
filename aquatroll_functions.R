@@ -5,7 +5,8 @@
 #write troll data with standard naming
 write_troll <- function(x) {
 
-    filename <- paste0("TMP_troll_", x$Well_Name[1], "_",
+    filename <- paste0("TMP_", x$Instrument[1], "_",
+                       x$Well_Name[1], "_",
                        gsub("-","", date(min((x$Timestamp)))), "-",
                        gsub("-","", date(max((x$Timestamp)))), "_L0A.csv")
     cat("Writing...", filename, "\n")
@@ -47,7 +48,7 @@ read_200 <- function(filepaths) {
                       Resistivity = as.numeric(Resistivity),
                       Instrument = "TROLL200") %>%
         rename(Logger_ID = Statname) %>%
-        dplyr::select(Timestamp, Depth, Logger_ID, Temp, Specific_Conductivity, Salinity, Pressure_mbar, Resistivity, Instrument)
+        dplyr::select(Timestamp, Depth, Logger_ID, Temp, Specific_Conductivity, Salinity, Density, Pressure_mbar, Resistivity, Instrument)
 }
 
 # read in AquaTroll 600 data the manual way
@@ -81,9 +82,10 @@ join_troll <- function(df, troll_inventory) {
     change_date <- "2021-03-10 00:00:00"
 
     change_IDs <- c("PNNL_13", "PNNL_23", "PNNL_32")
+    change_instrument <- "TROLL600"
 
     df %>%
-        mutate(Install = if_else(Timestamp >= change_date & Logger_ID %in% change_IDs, 2, 1)) %>%
+        mutate(Install = if_else(Timestamp >= change_date & Logger_ID %in% change_IDs & Instrument == change_instrument, 2, 1)) %>%
         left_join(troll_inventory, by = c("Logger_ID", "Instrument", "Install"))
 
 }
@@ -110,24 +112,35 @@ format_troll <- function(df) {
 }
 
 # assign L1 QC flags to AquaTroll data (flag data outside sensor range limits)
-qc_troll <- function(df) {
+qc_troll <- function(df, troll_type) {
     # for both models
-    df %>%
-        mutate(
-            f_spc = Specific_Conductivity > 350000 | Specific_Conductivity < 0,
-            f_sal = Salinity > 350 | Salinity < 0,
-            f_wl = Pressurehead.m < 0.1) -> df1
 
-    df1 %>%
-        filter(Instrument == "TROLL600") %>%
-        mutate(
-            f_do.sat = DO_sat > 200 | DO_sat < 0,
-            f_do.mgl = Salinity > 20 | Salinity < 0,
-            f_ph = pH > 14 | pH < 0,
-            f_eh = eH > 1400 | eH < -1400) %>%
-        bind_rows(filter(df1, Instrument != "TROLL600")) %>%
-        mutate(Flag = f_spc |
-                   f_sal | f_wl | f_do.sat | f_do.mgl | f_ph | f_eh)
+    if(troll_type == "TROLL200") {
 
+        print("Running QA/QC on AquaTroll200 data")
+        df %>%
+            mutate(
+                f_spc = Specific_Conductivity > 350000 | Specific_Conductivity < 0,
+                f_sal = Salinity > 350 | Salinity < 0,
+                f_wl = Pressurehead.m < 0.1) %>%
+            mutate(Flag = f_spc | f_sal | f_wl) -> df1
+    }
+
+    if(troll_type == "TROLL600") {
+
+        print("Running QA/QC on AquaTroll600 data")
+        df %>%
+            mutate(
+                f_spc = Specific_Conductivity > 350000 | Specific_Conductivity < 0,
+                f_sal = Salinity > 350 | Salinity < 0,
+                f_wl = Pressurehead.m < 0.1,
+                f_do.sat = DO_sat > 200 | DO_sat < 0,
+                f_do.mgl = Salinity > 20 | Salinity < 0,
+                f_ph = pH > 14 | pH < 0,
+                f_eh = eH > 1400 | eH < -1400) %>%
+            mutate(Flag = f_spc | f_sal | f_wl | f_do.sat | f_do.mgl | f_ph | f_eh) -> df1
+    }
+
+    return(df1)
 }
 
