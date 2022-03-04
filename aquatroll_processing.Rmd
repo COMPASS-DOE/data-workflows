@@ -40,7 +40,7 @@ V0 <- coef(orp_cal_curve)[1]
 
 ```
 
-```{r barometric-data}
+```{r barometric-data, message=FALSE}
 
 ### Read in / format barometric pressure data
 
@@ -65,23 +65,40 @@ lapply(filepaths_baro, read_met) %>%
 lapply(troll200_files, read_200) -> troll200
 lapply(troll600_files, read_600) -> troll600
 
-bind_rows(troll200, troll600) -> troll_data
-
-troll_data %>%
+troll200 %>%
+    bind_rows() %>% 
+    join_troll(., troll_inventory) %>% 
     # stuff in format_troll + add Year column
-    format_troll(., troll_inventory) %>% 
+    format_troll() %>% 
     #qc_troll call
-    qc_troll() %>% 
-    select(Timestamp, Depth, Logger_ID, Well_Name, Probe_Name, Plot, Year, Temp, Specific_Conductivity, 
-           Salinity, Pressure_mbar, Resistivity, Instrument, DO_sat, DO_mgl, pH, ORP, eH, Density, WLfromsurface.m, 
-           Head.m, f_spc, f_sal, f_wl, f_do.sat, f_do.mgl, f_ph, f_eh, Flag) -> troll_data_full
+    qc_troll(., troll_type = "TROLL200") %>% 
+    select(Timestamp, Logger_ID, Well_Name, Probe_Name, Plot, Year, Temp, Specific_Conductivity, 
+           Salinity, Depth, Pressure_mbar, Pressurehead.m, Resistivity, Instrument, Density, WLfromsurface.m, 
+           Head.m, f_spc, f_sal, f_wl, Flag) -> troll200_data_full
+
+troll600 %>%
+    bind_rows() %>% 
+    join_troll(., troll_inventory) %>% 
+    # stuff in format_troll + add Year column
+    format_troll() %>% 
+    #qc_troll call
+    qc_troll(., troll_type = "TROLL600") %>% 
+    select(Timestamp, Logger_ID, Well_Name, Probe_Name, Plot, Year, Temp, Specific_Conductivity, 
+           Salinity, Depth, Pressure_mbar, Pressurehead.m, Resistivity, Instrument, DO_sat, DO_mgl, pH, ORP, eH, Density, WLfromsurface.m, 
+           Head.m, f_spc, f_sal, f_wl, f_do.sat, f_do.mgl, f_ph, f_eh, Flag) -> troll600_data_full
 
     # split same as teros but here by Well_Name and Year
-troll_data_full %>% 
+troll200_data_full %>% 
     group_by(Well_Name, Year) %>% 
-    group_split(.keep = TRUE) -> troll_list
+    group_split(.keep = TRUE) -> troll200_list
 
-lapply(troll_list, write_troll)
+    # split same as teros but here by Well_Name and Year
+troll600_data_full %>% 
+    group_by(Well_Name, Year) %>% 
+    group_split(.keep = TRUE) -> troll600_list
+
+lapply(troll200_list, write_troll)
+lapply(troll600_list, write_troll)
 
 ```
 
