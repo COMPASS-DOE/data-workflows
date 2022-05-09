@@ -1,0 +1,30 @@
+Column_Name,Format,Unit,Description
+datetime,YYYY-MM-DD HH:MM:SS,EST,Time and date of measurement
+depth_cm,double,cm,Uncorrected water depth (not corrected for barometric pressure or elevation)
+temp_c,double,degrees C,Water temperature
+sp_cond_uScm,double,uS/cm,Specific conductivity (ref: 25C)
+salinity,double,PSU,Salinity
+density_gcm3,double,g/cm3,Water density
+pressure_psi,double,PSI,Pressure (used to calculate depth)
+pressure_mbar,double,mbar,Pressure convered to mbar
+sensor,character,NA,"Identify if sensor is an Aquatroll 200 (""TROLL200"") or Aquatroll 600 (""TROLL600"")"
+bp_mbar,double,mbar,barometric pressure (not measured by Aquatroll)
+rain_int,double,???,rainfall intensity
+pressure_cor_mbar,double,mbar,Sensor pressure corrected for barometric pressure
+density_gcm3_cor,double,g/cm3,"If density is less than 0.95, force to 1"
+pressurehead.m,double,m,Pressur head (pressure corrected for density)
+Wlfromsurface.m,double,m,Water level relative to the surface of the well
+head.m,double,m,Hydraulic head
+site,character,NA,Unique site identifier (GW1 - GW8)
+f_spc,boolean,NA,flag for Sp. Conductivity
+f_sal,boolean,NA,flag for Salinity
+f_wl,boolean,NA,flag for Water level
+flag,boolean,NA,"Master flag: if any f_* = T, flag = T"
+do_sat,double,% saturation,Dissolved oxygen - percent saturation (TROLL600 only)
+do_mgl,double,mg/L,Dissolved oxygen - mg/L (TROLL600 only)
+pH,double,NA,pH (TROLL600 only)
+eH,double,mV,oxidation-reduction potential (TROLL600 only)
+f_do.sat,boolean,NA,flag for Dissolved oxygen - percent saturation 
+f_do.mgl,boolean,NA,flag for Dissolved oxygen - mg/L
+f_ph,boolean,NA,flag for pH
+f_eh,boolean,NA,flag for eH
