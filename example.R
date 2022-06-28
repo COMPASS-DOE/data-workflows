@@ -1,12 +1,10 @@
 
-
+library(TREXr)
 # load raw data
-raw   <- is.trex(example.data(type="doy"),
+raw   <- is.trex(example.data(type="timestamp"),
                  tz="GMT",
-                 time.format="%H:%M",
-                 solar.time=TRUE,
-                 long.deg=7.7459,
-                 ref.add=FALSE)
+                 time.format="%d-%m-%Y %H:%M",
+                 df = TRUE)
 
 # adjust time steps
 input <- dt.steps(input=raw,
@@ -15,7 +13,7 @@ input <- dt.steps(input=raw,
                   time.int=15,
                   max.gap=60,
                   decimals=10,
-                  df=FALSE)
+                  df=TRUE)
 
 # remove obvious outliers
 input[which(input<0.2)]<- NA
@@ -34,7 +32,7 @@ lines(input$max.mw, col = "blue")
 lines(input$max.dr, col = "orange")
 
 
-output.data<- tdm_cal.sfd(input,make.plot=TRUE,df=TRUE,wood="Coniferous")
+output.data<- tdm_cal.sfd(input,make.plot=TRUE,df=FALSE,wood="Coniferous")
 
 plot(output.data$sfd.pd$sfd[1:1000, ], ylim=c(0,10))
 # see estimated uncertainty

@@ -10,7 +10,7 @@ read_sapflow <- function(filename) {
     pnnl_x <- gregexpr("PNNL_", sdat[1])[[1]][1]
     logger_name <- substr(sdat[1], start = pnnl_x, stop = pnnl_x + 6)
 
-    read_csv(sdat, skip = 1) %>%
+    read_csv(I(sdat), skip = 1) %>%
         mutate(Logger = logger_name)
 }
 

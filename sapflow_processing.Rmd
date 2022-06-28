@@ -46,7 +46,7 @@ sapflow %>%
     rename(timestamp = Timestamp,
            value = Value) %>% 
     na.omit(value) %>% 
-    group_by(Tree_Code, year(timestamp)) %>% 
+    group_by(Tree_Code) %>% 
     distinct(timestamp, .keep_all = TRUE) %>% 
     group_split() -> sf_split
 
@@ -80,15 +80,15 @@ input <- tdm_dt.max(dat,
 
 trex_list <- list()
 
-for(i in 1:length(sf_split)) {
-    
+#for(i in 1:length(sf_split)) {
+    i <- 1
     print(paste("Starting iteration:", i))
-    temp <- select(sf_split[[1]], timestamp, value)
+    temp <- select(sf_split[[i]], timestamp, value)
     
     print(paste("...applying is.trex to", i))
     x <- is.trex(temp, 
                               time.format = "%Y-%m-%d %H:%M:%S", 
-                              tz = "EST", df = TRUE)
+                              tz = "EST", df = FALSE)
 
     print(paste("...applying tdm_dt.max to", i))
     tdm_dt.max(x, methods = "pd", max.days = 10, df = FALSE) -> t
@@ -99,7 +99,7 @@ for(i in 1:length(sf_split)) {
     
     print(paste("...saving", i, "to list"))
     trex_list[[i]] <- sfd_data
-}
+#}
 
 sfd_list <- list()
 

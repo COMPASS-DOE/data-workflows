@@ -135,7 +135,7 @@ qc_troll <- function(df, troll_type) {
                 f_sal = Salinity > 350 | Salinity < 0,
                 f_wl = Pressurehead.m < 0.1,
                 f_do.sat = DO_sat > 200 | DO_sat < 0,
-                f_do.mgl = Salinity > 20 | Salinity < 0,
+                f_do.mgl = Salinity > 20 | Salinity < 0, # needs to be DO_sat
                 f_ph = pH > 14 | pH < 0,
                 f_eh = eH > 1400 | eH < -1400) %>%
             mutate(Flag = f_spc | f_sal | f_wl | f_do.sat | f_do.mgl | f_ph | f_eh) -> df1
