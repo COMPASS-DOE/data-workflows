@@ -8,6 +8,9 @@
 #
 
 library(shiny)
+library(ggplot2)
+
+theme_set(theme_bw())
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
@@ -16,10 +19,15 @@ shinyServer(function(input, output) {
 
         # generate bins based on input$bins from ui.R
         x    <- faithful[, 2]
-        bins <- seq(min(x), max(x), length.out = input$bins + 1)
+        bins <- seq(min(x), max(x), length.out = 6)
 
+        # This lets you stop the code and see what's in the environment
+        #browser()
+        
         # draw the histogram with the specified number of bins
-        hist(x, breaks = bins, col = 'darkgray', border = 'white')
+        
+        ggplot(faithful, aes(eruptions)) + 
+          geom_histogram()
 
     })
 
