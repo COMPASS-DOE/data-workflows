@@ -8,26 +8,26 @@
 #
 
 library(shiny)
+library(shinydashboard)
 
 # Define UI for application that draws a histogram
-shinyUI(fluidPage(
-
-    # Application title
-    titlePanel("Old Faithful Geyser Data"),
-
-    # Sidebar with a slider input for number of bins
-    sidebarLayout(
-        sidebarPanel(
-            sliderInput("bins",
-                        "Number of bins:",
-                        min = 1,
-                        max = 50,
-                        value = 30)
-        ),
-
-        # Show a plot of the generated distribution
-        mainPanel(
-            plotOutput("distPlot")
-        )
-    )
-))
+ui <- dashboardPage(
+  
+  dashboardHeader(title = "COMPASS Synoptic"),
+  dashboardSidebar(
+    sidebarMenu(
+      menuItem("Dashboard", tabName = "dashboard", icon = icon("compass")),
+      menuItem("Sapflow", tabName = "sapflow", icon = icon("tree")),
+      menuItem("TEROS", tabName = "teros", icon = icon("temperature-high")),
+      menuItem("AquaTroll", tabName = "troll", icon = icon("water")),
+      menuItem("Battery", tabName = "battery", icon = icon("car-battery")),
+      menuItem("Alerts", tabName = "alerts", icon = icon("comment-dots"))
+      )
+    ),
+  dashboardBody(
+    tabItem(tabName = "sapflow", 
+            plotOutput("distPlot"))
+  ), 
+  skin = "purple"
+  
+  )
