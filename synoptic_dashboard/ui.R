@@ -26,7 +26,9 @@ ui <- dashboardPage(
     ),
   dashboardBody(
     tabItem(tabName = "sapflow", 
-            plotOutput("distPlot"))
+            plotOutput("distPlot")), 
+    tabItem(tabName = "aquatroll", 
+    dataTableOutput("troll_table"))
   ), 
   skin = "purple"
   

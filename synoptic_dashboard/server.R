@@ -7,28 +7,28 @@
 #    http://shiny.rstudio.com/
 #
 
+library(googledrive)
+library(janitor)
+library(purrr)
 library(shiny)
-library(ggplot2)
+library(tidyverse)
 
 theme_set(theme_bw())
 
-# Define server logic required to draw a histogram
+## Call global to read in all the functions
+source("global.R")
+
+# Define server logic
 shinyServer(function(input, output) {
-
-    output$distPlot <- renderPlot({
-
-        # generate bins based on input$bins from ui.R
-        x    <- faithful[, 2]
-        bins <- seq(min(x), max(x), length.out = 6)
-
-        # This lets you stop the code and see what's in the environment
-        #browser()
-        
-        # draw the histogram with the specified number of bins
-        
-        ggplot(faithful, aes(eruptions)) + 
-          geom_histogram()
-
-    })
-
+  
+  ## Create reactive aquatroll dataframe
+  reactive_df <- reactive({
+    
+    aquatroll <- process_the_troll()
+    
+    aquatroll
+  })
+  
+  output$troll_table <- renderDataTable(reactive_df() %>% 
+                                          tail(n = 10))
 })
