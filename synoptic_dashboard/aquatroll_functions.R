@@ -4,14 +4,19 @@
 read_the_troll <- function(data){
   
   # Download files to local (don't worry, we'll delete em later)
-  drive_download(data, overwrite = T)
+  drive_download(data, overwrite = T, path = "tempfile.dat")
   
   # Extract site and location information from filename
   site <- str_split(data, "_", simplify = T)[,2]
   location <- str_split(data, "_", simplify = T)[,3]
   
   # Read in files, clean up columnn names, and select
-  read_delim(file = data, skip = 1) %>% 
+  aq_primitive <- read_delim(file = "tempfile.dat", skip = 1) 
+  
+  cat(paste("Removing the tempfile.dat for:", data, "from local..."))
+  unlink("tempfile.dat") # delete tempfile from local
+  
+  aq_primitive %>% 
     slice(3:n()) %>% 
     clean_names() %>% 
     mutate(datetime = parsedate::parse_date(timestamp)) %>% 
@@ -64,5 +69,4 @@ process_the_troll <- function(){
            pressurehead_m = (pressure_mbar * 100) / (density_gcm3_cor * 1000 * 9.80665), 
            wl_below_surface_m = pressurehead_m - (ground_to_sensor_cm / 100))
   
-  file.remove(c(aquatroll_files$name))
 }
