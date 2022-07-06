@@ -1,0 +1,16 @@
+﻿install_date,logger_id,logger_name,instrument,serial_number,site,transect_location,well_top_to_ground_cm,ring_to_pressure_sensor_cm,bolt_to_cap_cm,Notes
+3/14/22,311,PTRC,AT600,848306,PTR,Wetland,84,170,10,
+3/15/22,312,PTRB,AT600,848529,PTR,Transition,97,342,9.5,
+3/15/22,313,PTRA,AT600,848345,PTR,Upland,89,586,9.5,no bolt_to_cap_cm given
+3/15/22,302,CRCB,AT600,848523,CRC,Transition,100.5,225.5,9.5,
+3/16/22,303,CRCA,AT600,848069,CRC,Upland,79.5,561,9.5,
+3/15/22,301,CRCC,AT600,848392,CRC,Wetland,140,167,9.5,
+3/17/22,,OWCB,AT600,848022,OWC,Transition,135,176,9.5,Marked as WTE on sheet
+3/17/22,,OWCA,AT600,847973,OWC,Wetland,139,163.5,9.5,Marked as OWCC on sheet
+3/17/22,322,OWCC,AT600,848067,OWC,Upland,112,161,9.5,Marked as transition on sheet
+4/11/22,402,MSMB,AT600,848425,MSM,Transition,82.5,150.5,9.5,
+4/11/22,401,MSMC,AT600,847940,MSM,Wetland,93,143,9.5,
+4/11/22,403,MSMA,AT600,848502,MSM,Upland,84.5,134.6,9.5,
+4/13/22,411,GWIC,AT600,847922,GWI,Wetland,111,141,9.5,
+4/13/22,412,GWIB,AT600,848277,GWI,Transition,92.7,135.5,10,
+4/13/22,413,GWIA,AT600,848346,GWI,Upland,88,177,9.5,"no bolt_to_cap_cm given, other numbers from field notebook"
