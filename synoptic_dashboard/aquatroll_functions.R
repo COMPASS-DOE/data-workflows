@@ -1,17 +1,24 @@
 
 
 ## This function reads in and cleans up each file
-read_the_troll <- function(data){
+read_the_troll <- function(data) {
   
+  cat(paste("Downloading file:", data))
   # Download files to local (don't worry, we'll delete em later)
-  drive_download(data, overwrite = T)
+  drive_download(data, overwrite = T, path = "tempfile.dat")
   
   # Extract site and location information from filename
   site <- str_split(data, "_", simplify = T)[,2]
   location <- str_split(data, "_", simplify = T)[,3]
   
   # Read in files, clean up columnn names, and select
-  read_delim(file = data, skip = 1) %>% 
+  aq_primitive <- read_delim(file = "tempfile.dat", skip = 1) 
+  
+  # Print in the console which file we are removing
+  cat(paste("Removing the tempfile.dat for:", data, "from local..."))
+  unlink("tempfile.dat") # delete tempfile from local
+  
+  aq_primitive %>% 
     slice(3:n()) %>% 
     clean_names() %>% 
     mutate(datetime = parsedate::parse_date(timestamp)) %>% 
@@ -27,22 +34,10 @@ read_the_troll <- function(data){
 }
 
 process_the_troll <- function(){
-  
-  # Load packages
-  library(googledrive)
-  library(janitor)
-  library(purrr)
-  library(tidyverse)
-  
-  # First, set the GDrive folder to find files
-  directory = "https://drive.google.com/drive/folders/1-1nAeF2hTlCNvg_TNbJC0t6QBanLuk6g"
-  
-  # Set up credentials
-  email_address <- "peter.regier@pnnl.gov"
-  options(gargle_oauth_email = email_address)
-  
+ 
   # Create a list of files
-  aquatroll_files <- drive_ls(directory) %>% 
+  cat("Accessing drive..")
+  aquatroll_files <- gdrive_files %>% 
     filter(grepl("WaterLevel", name))
   
   
@@ -64,5 +59,4 @@ process_the_troll <- function(){
            pressurehead_m = (pressure_mbar * 100) / (density_gcm3_cor * 1000 * 9.80665), 
            wl_below_surface_m = pressurehead_m - (ground_to_sensor_cm / 100))
   
-  file.remove(c(aquatroll_files$name))
 }
