@@ -1,8 +1,9 @@
 
 
 ## This function reads in and cleans up each file
-read_the_troll <- function(data){
+read_the_troll <- function(data) {
   
+  cat(paste("Downloading file:", data))
   # Download files to local (don't worry, we'll delete em later)
   drive_download(data, overwrite = T, path = "tempfile.dat")
   
@@ -33,22 +34,10 @@ read_the_troll <- function(data){
 }
 
 process_the_troll <- function(){
-  
-  # Load packages
-  library(googledrive)
-  library(janitor)
-  library(purrr)
-  library(tidyverse)
-  
-  # First, set the GDrive folder to find files
-  directory = "https://drive.google.com/drive/folders/1-1nAeF2hTlCNvg_TNbJC0t6QBanLuk6g"
-  
-  # Set up credentials
-  email_address <- "peter.regier@pnnl.gov"
-  options(gargle_oauth_email = email_address)
-  
+ 
   # Create a list of files
-  aquatroll_files <- drive_ls(directory) %>% 
+  cat("Accessing drive..")
+  aquatroll_files <- gdrive_files %>% 
     filter(grepl("WaterLevel", name))
   
   

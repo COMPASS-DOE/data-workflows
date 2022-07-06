@@ -7,8 +7,6 @@
 #    http://shiny.rstudio.com/
 #
 
-library(shiny)
-library(shinydashboard)
 
 # Define UI for application that draws a histogram
 ui <- dashboardPage(
@@ -26,7 +24,7 @@ ui <- dashboardPage(
     ),
   dashboardBody(
     tabItem(tabName = "sapflow", 
-            plotOutput("distPlot")), 
+            dataTableOutput("sf_table")), 
     tabItem(tabName = "aquatroll", 
     dataTableOutput("troll_table"))
   ), 
