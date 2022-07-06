@@ -13,6 +13,7 @@ read_the_troll <- function(data){
   # Read in files, clean up columnn names, and select
   aq_primitive <- read_delim(file = "tempfile.dat", skip = 1) 
   
+  # Print in the console which file we are removing
   cat(paste("Removing the tempfile.dat for:", data, "from local..."))
   unlink("tempfile.dat") # delete tempfile from local
   
