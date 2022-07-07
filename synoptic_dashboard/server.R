@@ -24,11 +24,26 @@ shinyServer(function(input, output) {
   ## Create reactive aquatroll dataframe
   reactive_df <- reactive({
     
-    aquatroll <- process_the_troll()
+    aquatroll <- read_csv("./test_data/aquatroll.csv")
+    #aquatroll <- process_the_troll()
     
+    #browser()
+    #x <<- aquatroll
     aquatroll
   })
   
   output$troll_table <- renderDataTable(reactive_df() %>% 
                                           tail(n = 10))
+  
+  output$troll_ts <- renderPlotly({
+    
+    b <- reactive_df() %>% filter(datetime > two_weeks_ago) %>% 
+      ggplot(aes(x = datetime, y = input$select, color = location)) + 
+      geom_line() + 
+      facet_wrap(~site, ncol = 1, scales = "free") + 
+      labs(x = "")
+    
+    ggplotly(b)
+    }
+  )
 })
