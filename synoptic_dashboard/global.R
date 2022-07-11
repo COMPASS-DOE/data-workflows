@@ -2,11 +2,12 @@
 
 library(googledrive)
 library(janitor)
+library(lubridate)
+library(plotly)
 library(purrr)
 library(shiny)
-library(tidyverse)
-library(shiny)
 library(shinydashboard)
+library(tidyverse)
 
 source("aquatroll_functions.R")
 
@@ -22,3 +23,8 @@ options(
 
 # drive_auth(path = ".secrets/client_secret.json")
 gdrive_files <- drive_ls(directory)
+
+# create the start-time based on two weeks ago (from today)
+two_weeks_ago <- with_tz(Sys.time(), tzone = "EST") - days(14)
+
+

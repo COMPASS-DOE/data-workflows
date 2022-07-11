@@ -23,10 +23,14 @@ ui <- dashboardPage(
       )
     ),
   dashboardBody(
-    tabItem(tabName = "sapflow", 
-            dataTableOutput("sf_table")), 
+    #tabItem(tabName = "sapflow", 
+     #       dataTableOutput("sf_table")), 
     tabItem(tabName = "aquatroll", 
-    dataTableOutput("troll_table"))
+            selectInput("select", label = h3("Select box"), 
+                        choices = list("temperature" = "temperature", "rdo_concen" = 2, "wl_below_surface_m" = 3), 
+                        selected = "temperature"),
+            plotlyOutput("troll_ts"),
+             dataTableOutput("troll_table"))
   ), 
   skin = "purple"
   

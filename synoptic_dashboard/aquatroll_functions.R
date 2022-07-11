@@ -54,9 +54,10 @@ process_the_troll <- function(){
     map(read_the_troll) %>% 
     bind_rows() %>%
     inner_join(well_dimensions, by = c("site", "location")) %>% 
-    #filter(!is.na(pressure_mbar)) %>% 
     mutate(density_gcm3_cor = ifelse(water_density > 0.95, water_density, 1), 
            pressurehead_m = (pressure_mbar * 100) / (density_gcm3_cor * 1000 * 9.80665), 
            wl_below_surface_m = pressurehead_m - (ground_to_sensor_cm / 100))
   
 }
+
+
