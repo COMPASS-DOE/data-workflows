@@ -38,7 +38,7 @@ shinyServer(function(input, output) {
   output$troll_ts <- renderPlotly({
     
     b <- reactive_df() %>% filter(datetime > two_weeks_ago) %>% 
-      ggplot(aes(x = datetime, y = input$select, color = location)) + 
+      ggplot(aes_string(x = "datetime", y = input$select, color = "location")) + 
       geom_line() + 
       facet_wrap(~site, ncol = 1, scales = "free") + 
       labs(x = "")

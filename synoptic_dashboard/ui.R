@@ -27,8 +27,10 @@ ui <- dashboardPage(
      #       dataTableOutput("sf_table")), 
     tabItem(tabName = "aquatroll", 
             selectInput("select", label = h3("Select box"), 
-                        choices = list("temperature" = "temperature", "rdo_concen" = 2, "wl_below_surface_m" = 3), 
-                        selected = "temperature"),
+                        choices = list("WL (m below surface)" = "wl_below_surface_m", 
+                                       "Temperature" = "temperature", 
+                                       "DO (mg/L)" = "rdo_concen"), 
+                        selected = "wl_below_surface_m"),
             plotlyOutput("troll_ts"),
              dataTableOutput("troll_table"))
   ), 
