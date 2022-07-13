@@ -17,22 +17,33 @@ ui <- dashboardPage(
       menuItem("Dashboard", tabName = "dashboard", icon = icon("compass")),
       menuItem("Sapflow", tabName = "sapflow", icon = icon("tree")),
       menuItem("TEROS", tabName = "teros", icon = icon("temperature-high")),
-      menuItem("AquaTroll", tabName = "troll", icon = icon("water")),
-      menuItem("Battery", tabName = "battery", icon = icon("car-battery")),
-      menuItem("Alerts", tabName = "alerts", icon = icon("comment-dots"))
+      menuItem("AquaTroll", tabName = "troll", icon = icon("water"))#,
+      #menuItem("Battery", tabName = "battery", icon = icon("car-battery")),
+      #menuItem("Alerts", tabName = "alerts", icon = icon("comment-dots"))
       )
     ),
   dashboardBody(
-    #tabItem(tabName = "sapflow", 
-     #       dataTableOutput("sf_table")), 
-    tabItem(tabName = "aquatroll", 
-            selectInput("select", label = h3("Select box"), 
-                        choices = list("WL (m below surface)" = "wl_below_surface_m", 
-                                       "Temperature" = "temperature", 
-                                       "DO (mg/L)" = "rdo_concen"), 
-                        selected = "wl_below_surface_m"),
-            plotlyOutput("troll_ts"),
-             dataTableOutput("troll_table"))
+    tabItems(
+
+      tabItem(tabName = "dashboard", 
+              h2("Hi!")),
+      
+      ## Loading MSM data for no good reason
+     # tabItem(tabName = "sapflow", 
+      #        dataTableOutput("sf_table")),
+      
+      tabItem(tabName = "teros", 
+              dataTableOutput("teros_table")),
+      
+      tabItem(tabName = "troll",
+              selectInput("select", label = h3("Select box"),
+                          choices = list("WL (m below surface)" = "wl_below_surface_m",
+                                         "Temperature" = "temperature",
+                                         "DO (mg/L)" = "rdo_concen"),
+                          selected = "wl_below_surface_m"),
+              plotlyOutput("troll_ts"),
+              dataTableOutput("troll_table"))
+    )
   ), 
   skin = "purple"
   
