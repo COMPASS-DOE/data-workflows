@@ -10,6 +10,8 @@ library(shinydashboard)
 library(tidyverse)
 
 source("aquatroll_functions.R")
+source("sapflow_functions.R")
+source("teros_functions.R")
 
 # First, set the GDrive folder to find files
 directory <- "https://drive.google.com/drive/folders/1-1nAeF2hTlCNvg_TNbJC0t6QBanLuk6g"
