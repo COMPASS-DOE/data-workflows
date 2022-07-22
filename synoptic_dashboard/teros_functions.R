@@ -1,29 +1,29 @@
 
 
-fileread <- function(data) {
-  
-  # # If we're running in a Shiny session, update progress bar
-  # if(!is.null(getDefaultReactiveDomain())) {
-  #   incProgress(1 / total_files)
-  # }
+fileread <- function(data, total_files) {
+
+  # If we're running in a Shiny session, update progress bar
+  if(!is.null(getDefaultReactiveDomain())) {
+    incProgress(1 / total_files)
+  }
 
   # Download files to local (don't worry, we'll delete em later)
   drive_download(data, overwrite = T, path = "tempfile.dat")
-  
+
   # Lines 1, 3, and 4 of the TEROS data files contain sensor metadata that we want to remove
   # Read the data files into a string vector, remove those lines, and then pass to read.csv()
   teros_primitive <- read_lines("tempfile.dat") #temp file goes here
   teros_primitive <- teros_primitive[-3:-4]
-  
+
   unlink("tempfile.dat")
 
   #textConnection(teros_primitive) %>%
-    read_csv(I(teros_primitive), 
+    read_csv(I(teros_primitive),
              skip = 1,
-             #check.names = FALSE, 
+             #check.names = FALSE,
              na = "NAN",
-             #na.strings = "NAN", 
-             #stringsAsFactors = FALSE, 
+             #na.strings = "NAN",
+             #stringsAsFactors = FALSE,
              col_types = "Tddcddddddddddddddddddd") %>%
     as_tibble() -> b #%>%
 
@@ -49,18 +49,18 @@ fileread <- function(data) {
 
 
 process_teros <- function() {
-  
+
   # Create a list of files
   cat("Accessing drive..")
-  teros_files <- gdrive_files %>% 
+  teros_files <- gdrive_files %>%
     filter(grepl("TerosTable", name))
-  
+
   #NEED TO ADD INVENTORY LATER
-  
-  teros_files$name %>% 
-    map(fileread) %>% 
+
+  teros_files$name %>%
+    map(fileread, nrow(teros_files)) %>%
     bind_rows()
-  
+
   # teros_primitive %>%
   #   left_join(teros_inventory, by = c("Logger" = "Data Logger ID",
   #                                     "Data_Table_ID" = "Terosdata table channel")) %>%
@@ -68,7 +68,7 @@ process_teros <- function() {
   #   rename("Active_Date" = "Date Online (2020)",
   #          "Grid_Square" = "Grid Square") ->
   #   teros
-  # 
+  #
   # nomatch <- anti_join(teros, teros_inventory, by = c("Logger" = "Data Logger ID",
   #                                                     "Data_Table_ID" = "Terosdata table channel"))
   # if(nrow(nomatch) > 0) {

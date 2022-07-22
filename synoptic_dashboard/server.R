@@ -24,12 +24,15 @@ shinyServer(function(input, output) {
   ## Create reactive aquatroll dataframe
   reactive_df <- reactive({
 
-    aquatroll <- read_csv("./test_data/aquatroll.csv")
-    #aquatroll <- process_the_troll()
-    #teros <- process_teros()
-    teros <- read_csv("./test_data/teros.csv")
-    #sapflow <- process_sapflow()
-    sapflow <- read_csv("./test_data/sapflow.csv")
+     sapflow <- withProgress(process_sapflow(), message = "Updating sapflow...")
+     teros <- withProgress(process_teros(), message = "Updating TEROS...")
+     aquatroll <- withProgress(process_the_troll(), message = "Updating AquaTroll...")
+    #aquatroll <- read_csv("./test_data/aquatroll.csv")
+    # aquatroll <- process_the_troll()
+    # teros <- process_teros()
+    #teros <- read_csv("./test_data/teros.csv")
+    # sapflow <- process_sapflow()
+    #sapflow <- read_csv("./test_data/sapflow.csv")
 
 
     #browser()
@@ -41,10 +44,10 @@ shinyServer(function(input, output) {
 
   output$sf_table <- renderDataTable(reactive_df()$sapflow %>%
                                           tail(n = 10))
-  
+
   output$troll_table <- renderDataTable(reactive_df()$aquatroll %>%
                                           tail(n = 10))
-  
+
   output$teros_table <- renderDataTable(reactive_df()$teros %>%
                                           tail(n = 10))
 
