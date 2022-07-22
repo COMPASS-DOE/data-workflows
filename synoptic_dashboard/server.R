@@ -24,14 +24,14 @@ shinyServer(function(input, output) {
   ## Create reactive aquatroll dataframe
   reactive_df <- reactive({
 
-     sapflow <- withProgress(process_sapflow(), message = "Updating sapflow...")
-     teros <- withProgress(process_teros(), message = "Updating TEROS...")
-     aquatroll <- withProgress(process_the_troll(), message = "Updating AquaTroll...")
+     sapflow <- withProgress(process_sapflow(), message = "Updating sapflow...") %>%
+         fitler(Timestamp > two_weeks_ago)
+     teros <- withProgress(process_teros(), message = "Updating TEROS...") %>%
+         filter(TIMESTAMP > two_weeks_ago)
+     aquatroll <- withProgress(process_the_troll(), message = "Updating AquaTroll...") %>%
+         filter(datetime > two_weeks_ago)
     #aquatroll <- read_csv("./test_data/aquatroll.csv")
-    # aquatroll <- process_the_troll()
-    # teros <- process_teros()
     #teros <- read_csv("./test_data/teros.csv")
-    # sapflow <- process_sapflow()
     #sapflow <- read_csv("./test_data/sapflow.csv")
 
 
@@ -53,7 +53,7 @@ shinyServer(function(input, output) {
 
   output$troll_ts <- renderPlotly({
 
-    b <- reactive_df()$aquatroll %>% filter(datetime > two_weeks_ago) %>%
+    b <- reactive_df()$aquatroll %>%
       ggplot(aes_string(x = "datetime", y = input$select, color = "location")) +
       geom_line() +
       facet_wrap(~site, ncol = 1, scales = "free") +
@@ -62,4 +62,15 @@ shinyServer(function(input, output) {
     ggplotly(b)
     }
   )
+
+  output$sapflow_ts <- renderPlotly({
+
+      s <- reactive_df$sapflow() %>%
+          ggplot(aes_string(x = "Timestamp", y = input$selectsf, color = "Location")) +
+          geom_line() +
+          facet_wrap(~Site, ncol = 1, scales = "free")
+
+      ggplotly(s)
+  })
+
 })
