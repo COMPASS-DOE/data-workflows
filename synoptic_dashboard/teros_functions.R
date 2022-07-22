@@ -25,26 +25,25 @@ fileread <- function(data, total_files) {
              #na.strings = "NAN",
              #stringsAsFactors = FALSE,
              col_types = "Tddcddddddddddddddddddd") %>%
-    as_tibble() -> b #%>%
-
+    as_tibble() %>%
     # Reshape the data frame to one observation per row
-    # gather(channel, value, -TIMESTAMP, -RECORD, -Statname) %>%
-    # filter(!is.na(value)) %>%
-    # # Pull data logger ID out of statname
-    # separate(Statname, into = c("Inst", "Logger"), sep = "_" ) %>%
-    # # Parse the data logger number, channel number, and variable number out of the
-    # # Statname and Channel columns
-    # mutate(Logger = as.integer(Logger, fixed = TRUE),
-    #        TIMESTAMP = ymd_hms(TIMESTAMP, tz = "EST")) %>%
-    # select(-Inst) %>%  # unneeded
-    # # Next, parse channel into the data logger channel and variable number
-    # separate(channel, into = c("Data_Table_ID", "variable"), sep = ",") %>%
-    # mutate(Data_Table_ID = as.integer(gsub("Teros(", "", Data_Table_ID, fixed = TRUE)),
-    #        variable = as.integer(gsub(")", "", variable, fixed = TRUE)),
-    #        # Give them sensible names
-    #        variable = case_when(variable == 1 ~ "VWC",
-    #                             variable == 2 ~ "TSOIL",
-    #                             variable == 3 ~ "EC"))
+    gather(channel, value, -TIMESTAMP, -RECORD, -Statname) %>%
+    filter(!is.na(value)) %>%
+    # Pull data logger ID out of statname
+    separate(Statname, into = c("Inst", "Logger"), sep = "_" ) %>%
+    # Parse the data logger number, channel number, and variable number out of the
+    # Statname and Channel columns
+    mutate(Logger = as.integer(Logger, fixed = TRUE),
+           TIMESTAMP = ymd_hms(TIMESTAMP, tz = "EST")) %>%
+    select(-Inst) %>%  # unneeded
+    # Next, parse channel into the data logger channel and variable number
+    separate(channel, into = c("Data_Table_ID", "variable"), sep = ",") %>%
+    mutate(Data_Table_ID = as.integer(gsub("Teros(", "", Data_Table_ID, fixed = TRUE)),
+           variable = as.integer(gsub(")", "", variable, fixed = TRUE)),
+           # Give them sensible names
+           variable = case_when(variable == 1 ~ "VWC",
+                                variable == 2 ~ "TSOIL",
+                                variable == 3 ~ "EC"))
 }
 
 
