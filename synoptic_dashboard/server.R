@@ -13,7 +13,6 @@ library(purrr)
 library(shiny)
 library(tidyverse)
 
-theme_set(theme_bw())
 
 ## Call global to read in all the functions
 source("global.R")
@@ -25,15 +24,14 @@ shinyServer(function(input, output) {
   reactive_df <- reactive({
 
      sapflow <- withProgress(process_sapflow(), message = "Updating sapflow...") %>%
-         fitler(Timestamp > two_weeks_ago)
+         filter(Timestamp > two_weeks_ago)
      teros <- withProgress(process_teros(), message = "Updating TEROS...") %>%
          filter(TIMESTAMP > two_weeks_ago)
      aquatroll <- withProgress(process_the_troll(), message = "Updating AquaTroll...") %>%
          filter(datetime > two_weeks_ago)
-    #aquatroll <- read_csv("./test_data/aquatroll.csv")
-    #teros <- read_csv("./test_data/teros.csv")
-    #sapflow <- read_csv("./test_data/sapflow.csv")
-
+    # aquatroll <- readRDS("./test_data/aquatroll.rds")
+    # teros <- readRDS("./test_data/teros.rds")
+    # sapflow <- readRDS("./test_data/sapflow.rds")
 
     #browser()
     #x <<- aquatroll
@@ -65,10 +63,14 @@ shinyServer(function(input, output) {
 
   output$sapflow_ts <- renderPlotly({
 
-      s <- reactive_df$sapflow() %>%
-          ggplot(aes_string(x = "Timestamp", y = input$selectsf, color = "Location")) +
+      s <- reactive_df()$sapflow %>%
+          filter(Site == input$selectsf) %>%
+          group_by(Site, Location, Port) %>%
+          drop_na(Value) %>%
+          ggplot(aes(x = Timestamp, y = Value, color = as.factor(Port)), group = Location) +
           geom_line() +
-          facet_wrap(~Site, ncol = 1, scales = "free")
+          facet_wrap(~Location) +
+          labs(color = "Port", ncol = 1)
 
       ggplotly(s)
   })

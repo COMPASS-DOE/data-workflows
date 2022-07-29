@@ -10,7 +10,7 @@
 
 # Define UI for application that draws a histogram
 ui <- dashboardPage(
-  
+
   dashboardHeader(title = "COMPASS Synoptic"),
   dashboardSidebar(
     sidebarMenu(
@@ -25,26 +25,34 @@ ui <- dashboardPage(
   dashboardBody(
     tabItems(
 
-      tabItem(tabName = "dashboard", 
+      tabItem(tabName = "dashboard",
               h2("Hi!")),
-      
+
       ## Loading MSM data for no good reason
-     # tabItem(tabName = "sapflow", 
-      #        dataTableOutput("sf_table")),
-      
-      tabItem(tabName = "teros", 
+     tabItem(tabName = "sapflow",
+            selectInput("selectsf", label = h3("Site:"),
+                         choices = list("Old Woman Creek" = "OWC",
+                                        "Portage River" = "PTR",
+                                        "Crane Creek" = "CRC",
+                                        "Moneystump Marsh" = "MSM",
+                                        "Goodwin Island" = "GWI"),
+                         selected = "GWI"),
+            #dataTableOutput("sf_table"),
+            plotlyOutput("sapflow_ts")),
+
+      tabItem(tabName = "teros",
               dataTableOutput("teros_table")),
-      
+
       tabItem(tabName = "troll",
               selectInput("select", label = h3("Select box"),
-                          choices = list("WL (m below surface)" = "wl_below_surface_m",
+                          choices = list("Water Level (m below surface)" = "wl_below_surface_m",
                                          "Temperature" = "temperature",
                                          "DO (mg/L)" = "rdo_concen"),
                           selected = "wl_below_surface_m"),
               plotlyOutput("troll_ts"),
               dataTableOutput("troll_table"))
     )
-  ), 
+  ),
   skin = "purple"
-  
+
   )
