@@ -20,15 +20,13 @@ fileread <- function(data) {
     read.csv(check.names = FALSE, na.strings = "NAN", stringsAsFactors = FALSE) %>%
     as_tibble() %>%
     # Reshape the data frame to one observation per row
-    gather(channel, value, -TIMESTAMP, -RECORD, -Statname) %>%
+    gather(channel, value, starts_with("Teros")) %>%
     filter(!is.na(value)) %>%
     # Pull data logger ID out of statname
-    separate(Statname, into = c("Inst", "Logger"), sep = "_" ) %>%
+    separate(Statname, into = c("Project", "Site", "Location"), sep = "_" ) %>%
     # Parse the data logger number, channel number, and variable number out of the
     # Statname and Channel columns
-    mutate(Logger = as.integer(Logger, fixed = TRUE),
-           TIMESTAMP = ymd_hms(TIMESTAMP, tz = "EST")) %>%
-    select(-Inst) %>%  # unneeded
+    mutate(TIMESTAMP = ymd_hms(TIMESTAMP, tz = "EST")) %>%
     # Next, parse channel into the data logger channel and variable number
     separate(channel, into = c("Data_Table_ID", "variable"), sep = ",") %>%
     mutate(Data_Table_ID = as.integer(gsub("Teros(", "", Data_Table_ID, fixed = TRUE)),

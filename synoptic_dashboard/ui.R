@@ -7,7 +7,6 @@
 #    http://shiny.rstudio.com/
 #
 
-
 # Define UI for application that draws a histogram
 ui <- dashboardPage(
   
@@ -23,6 +22,7 @@ ui <- dashboardPage(
       )
     ),
   dashboardBody(
+<<<<<<< Updated upstream
     #tabItem(tabName = "sapflow", 
      #       dataTableOutput("sf_table")), 
     tabItem(tabName = "aquatroll", 
@@ -34,6 +34,46 @@ ui <- dashboardPage(
             plotlyOutput("troll_ts"),
              dataTableOutput("troll_table"))
   ), 
+=======
+    tabItems(
+
+      tabItem(tabName = "dashboard",
+              h2("Hi!")),
+
+      ## Loading MSM data for no good reason
+     tabItem(tabName = "sapflow",
+            selectInput("selectsf", label = h3("Site:"),
+                         choices = list("Old Woman Creek" = "OWC",
+                                        "Portage River" = "PTR",
+                                        "Crane Creek" = "CRC",
+                                        "Moneystump Marsh" = "MSM",
+                                        "Goodwin Island" = "GWI"),
+                         selected = "GWI"),
+            #dataTableOutput("sf_table"),
+            plotlyOutput("sapflow_ts")),
+
+     tabItem(tabName = "sapflow",
+             selectInput("selectteros", label = h3("Site:"),
+                         choices = list("Old Woman Creek" = "OWC",
+                                        "Portage River" = "PTR",
+                                        "Crane Creek" = "CRC",
+                                        "Moneystump Marsh" = "MSM",
+                                        "Goodwin Island" = "GWI"),
+                         selected = "GWI"),
+             #dataTableOutput("sf_table"),
+             plotlyOutput("teros_ts")),
+
+      tabItem(tabName = "troll",
+              selectInput("select", label = h3("Select box"),
+                          choices = list("Water Level (m below surface)" = "wl_below_surface_m",
+                                         "Temperature" = "temperature",
+                                         "DO (mg/L)" = "rdo_concen"),
+                          selected = "wl_below_surface_m"),
+              plotlyOutput("troll_ts"),
+              dataTableOutput("troll_table"))
+    )
+  ),
+>>>>>>> Stashed changes
   skin = "purple"
   
   )
