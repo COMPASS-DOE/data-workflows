@@ -40,6 +40,15 @@ shinyServer(function(input, output) {
          sapflow = sapflow)
   })
 
+  output$map <- renderLeaflet({
+      leaflet(site_locations) %>%
+          addTiles() %>%
+          addCircleMarkers(lng = ~Longitude, lat = ~Latitude,
+                           label = ~Site,
+                            popup = ~Location) %>%
+          setView(lng = -80.25, lat = 40.19, zoom = 6)
+  })
+
   output$sf_table <- renderDataTable(reactive_df()$sapflow %>%
                                           tail(n = 10))
 

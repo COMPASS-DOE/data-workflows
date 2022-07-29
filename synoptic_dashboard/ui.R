@@ -23,10 +23,22 @@ ui <- dashboardPage(
       )
     ),
   dashboardBody(
+      tags$head(
+          # Include our custom CSS
+          includeCSS("style.css")
+      ),
     tabItems(
-
       tabItem(tabName = "dashboard",
-              h2("Hi!")),
+              h3("Welcome to the COMPASS Synoptic Dashboard - BETA!"),
+              h5("Data currently takes a long time to process and for graphs to load, click on the
+                 navigation tabs to begin the data processing. We have added progress bars while you wait :)"),
+              leafletOutput("map", height = "calc(80vh - 100px)", width = "80%")#,
+
+              # absolutePanel(id = "controls", class = "panel panel-default", fixed = TRUE,
+              #               draggable = TRUE, top = 90, left = "auto", right = 30, bottom = "auto",
+              #               width = 330, height = "auto"
+              #)
+      ),
 
       ## Loading MSM data for no good reason
      tabItem(tabName = "sapflow",

@@ -8,10 +8,13 @@ library(purrr)
 library(shiny)
 library(shinydashboard)
 library(tidyverse)
+library(leaflet)
 
 source("aquatroll_functions.R")
 source("sapflow_functions.R")
 source("teros_functions.R")
+
+site_locations <- read_csv("site_locations.csv")
 
 theme_set(theme_minimal())
 
