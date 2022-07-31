@@ -8,10 +8,15 @@ library(purrr)
 library(shiny)
 library(shinydashboard)
 library(tidyverse)
+library(leaflet)
 
 source("aquatroll_functions.R")
 source("sapflow_functions.R")
 source("teros_functions.R")
+
+site_locations <- read_csv("site_locations.csv")
+
+theme_set(theme_minimal())
 
 # First, set the GDrive folder to find files
 directory <- "https://drive.google.com/drive/folders/1-1nAeF2hTlCNvg_TNbJC0t6QBanLuk6g"
