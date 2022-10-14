@@ -1,0 +1,155 @@
+loggernet_variable,cr1000_name,design_scale_type,design_link,var_norm_split,research_name,logger,type,units,definition,table
+TIMESTAMP,timestamp,site,logger,n,timestamp,genx,number,YYYY-MM-DD HH:MM:SS,loggernet timestamp,ardlog
+RECORD,record,site,logger,n,record,genx,number,NA,loggernet record number,ardlog
+BattV_Min,battv_min,site,logger,n,battv_min,genx,number,volts,default CR1000 battery voltage measurement,ardlog
+PTemp_C,ptemp_c,site,logger,n,ptemp_c,genx,number,degrees Celsius,default CR1000 wiring panel temperature measurement,ardlog
+Flag,flag,site,logger,n,flag,genx,number,NA,NA,ardlog
+co2(1),co21,plot,a0,y,co2,genx,number,parts per million,carbon dioxide concentration,ardlog
+co2(2),co22,plot,c1,y,co2,genx,number,parts per million,carbon dioxide concentration,ardlog
+co2(3),co23,plot,b2,y,co2,genx,number,parts per million,carbon dioxide concentration,ardlog
+co2(4),co24,plot,a3,y,co2,genx,number,parts per million,carbon dioxide concentration,ardlog
+co2(5),co25,plot,c4,y,co2,genx,number,parts per million,carbon dioxide concentration,ardlog
+co2(6),co26,plot,b4,y,co2,genx,number,parts per million,carbon dioxide concentration,ardlog
+co2(7),co27,plot,a5,y,co2,genx,number,parts per million,carbon dioxide concentration,ardlog
+co2(8),co28,plot,c6,y,co2,genx,number,parts per million,carbon dioxide concentration,ardlog
+co2(9),co29,plot,b6,y,co2,genx,number,parts per million,carbon dioxide concentration,ardlog
+co2(10),co210,plot,a7,y,co2,genx,number,parts per million,carbon dioxide concentration,ardlog
+co2(11),co211,plot,c8,y,co2,genx,number,parts per million,carbon dioxide concentration,ardlog
+co2(12),co212,plot,b9,y,co2,genx,number,parts per million,carbon dioxide concentration,ardlog
+co2ave1(1),co2ave11,plot,a0,y,co2ave1,genx,number,parts per million,1 minute average of carbon dioxide concentration,ardlog
+co2ave1(2),co2ave12,plot,c1,y,co2ave1,genx,number,parts per million,1 minute average of carbon dioxide concentration,ardlog
+co2ave1(3),co2ave13,plot,b2,y,co2ave1,genx,number,parts per million,1 minute average of carbon dioxide concentration,ardlog
+co2ave1(4),co2ave14,plot,a3,y,co2ave1,genx,number,parts per million,1 minute average of carbon dioxide concentration,ardlog
+co2ave1(5),co2ave15,plot,c4,y,co2ave1,genx,number,parts per million,1 minute average of carbon dioxide concentration,ardlog
+co2ave1(6),co2ave16,plot,b4,y,co2ave1,genx,number,parts per million,1 minute average of carbon dioxide concentration,ardlog
+co2ave1(7),co2ave17,plot,a5,y,co2ave1,genx,number,parts per million,1 minute average of carbon dioxide concentration,ardlog
+co2ave1(8),co2ave18,plot,c6,y,co2ave1,genx,number,parts per million,1 minute average of carbon dioxide concentration,ardlog
+co2ave1(9),co2ave19,plot,b6,y,co2ave1,genx,number,parts per million,1 minute average of carbon dioxide concentration,ardlog
+co2ave1(10),co2ave110,plot,a7,y,co2ave1,genx,number,parts per million,1 minute average of carbon dioxide concentration,ardlog
+co2ave1(11),co2ave111,plot,c8,y,co2ave1,genx,number,parts per million,1 minute average of carbon dioxide concentration,ardlog
+co2ave1(12),co2ave112,plot,b9,y,co2ave1,genx,number,parts per million,1 minute average of carbon dioxide concentration,ardlog
+BMETemp(1),bmetemp1,plot,a0,y,bmetemp,genx,number,degrees Celsius,air temperature,ardlog
+BMETemp(2),bmetemp2,plot,c1,y,bmetemp,genx,number,degrees Celsius,air temperature,ardlog
+BMETemp(3),bmetemp3,plot,b2,y,bmetemp,genx,number,degrees Celsius,air temperature,ardlog
+BMETemp(4),bmetemp4,plot,a3,y,bmetemp,genx,number,degrees Celsius,air temperature,ardlog
+BMETemp(5),bmetemp5,plot,c4,y,bmetemp,genx,number,degrees Celsius,air temperature,ardlog
+BMETemp(6),bmetemp6,plot,b4,y,bmetemp,genx,number,degrees Celsius,air temperature,ardlog
+BMETemp(7),bmetemp7,plot,a5,y,bmetemp,genx,number,degrees Celsius,air temperature,ardlog
+BMETemp(8),bmetemp8,plot,c6,y,bmetemp,genx,number,degrees Celsius,air temperature,ardlog
+BMETemp(9),bmetemp9,plot,b6,y,bmetemp,genx,number,degrees Celsius,air temperature,ardlog
+BMETemp(10),bmetemp10,plot,a7,y,bmetemp,genx,number,degrees Celsius,air temperature,ardlog
+BMETemp(11),bmetemp11,plot,c8,y,bmetemp,genx,number,degrees Celsius,air temperature,ardlog
+BMETemp(12),bmetemp12,plot,b9,y,bmetemp,genx,number,degrees Celsius,air temperature,ardlog
+BMERH(1),bmerh1,plot,a0,y,bmerh,genx,number,%,relative humidity,ardlog
+BMERH(2),bmerh2,plot,c1,y,bmerh,genx,number,%,relative humidity,ardlog
+BMERH(3),bmerh3,plot,b2,y,bmerh,genx,number,%,relative humidity,ardlog
+BMERH(4),bmerh4,plot,a3,y,bmerh,genx,number,%,relative humidity,ardlog
+BMERH(5),bmerh5,plot,c4,y,bmerh,genx,number,%,relative humidity,ardlog
+BMERH(6),bmerh6,plot,b4,y,bmerh,genx,number,%,relative humidity,ardlog
+BMERH(7),bmerh7,plot,a5,y,bmerh,genx,number,%,relative humidity,ardlog
+BMERH(8),bmerh8,plot,c6,y,bmerh,genx,number,%,relative humidity,ardlog
+BMERH(9),bmerh9,plot,b6,y,bmerh,genx,number,%,relative humidity,ardlog
+BMERH(10),bmerh10,plot,a7,y,bmerh,genx,number,%,relative humidity,ardlog
+BMERH(11),bmerh11,plot,c8,y,bmerh,genx,number,%,relative humidity,ardlog
+BMERH(12),bmerh12,plot,b9,y,bmerh,genx,number,%,relative humidity,ardlog
+BMEpressure(1),bmepressure1,plot,a0,y,bmepressure,genx,number,millibars,atmospheric pressure,ardlog
+BMEpressure(2),bmepressure2,plot,c1,y,bmepressure,genx,number,millibars,atmospheric pressure,ardlog
+BMEpressure(3),bmepressure3,plot,b2,y,bmepressure,genx,number,millibars,atmospheric pressure,ardlog
+BMEpressure(4),bmepressure4,plot,a3,y,bmepressure,genx,number,millibars,atmospheric pressure,ardlog
+BMEpressure(5),bmepressure5,plot,c4,y,bmepressure,genx,number,millibars,atmospheric pressure,ardlog
+BMEpressure(6),bmepressure6,plot,b4,y,bmepressure,genx,number,millibars,atmospheric pressure,ardlog
+BMEpressure(7),bmepressure7,plot,a5,y,bmepressure,genx,number,millibars,atmospheric pressure,ardlog
+BMEpressure(8),bmepressure8,plot,c6,y,bmepressure,genx,number,millibars,atmospheric pressure,ardlog
+BMEpressure(9),bmepressure9,plot,b6,y,bmepressure,genx,number,millibars,atmospheric pressure,ardlog
+BMEpressure(10),bmepressure10,plot,a7,y,bmepressure,genx,number,millibars,atmospheric pressure,ardlog
+BMEpressure(11),bmepressure11,plot,c8,y,bmepressure,genx,number,millibars,atmospheric pressure,ardlog
+BMEpressure(12),bmepressure12,plot,b9,y,bmepressure,genx,number,millibars,atmospheric pressure,ardlog
+BMEVOC(1),bmevoc1,plot,a0,y,bmevoc,genx,number,kiloohms,concentration of volatile organic compounds measured as resistance,ardlog
+BMEVOC(2),bmevoc2,plot,c1,y,bmevoc,genx,number,kiloohms,concentration of volatile organic compounds measured as resistance,ardlog
+BMEVOC(3),bmevoc3,plot,b2,y,bmevoc,genx,number,kiloohms,concentration of volatile organic compounds measured as resistance,ardlog
+BMEVOC(4),bmevoc4,plot,a3,y,bmevoc,genx,number,kiloohms,concentration of volatile organic compounds measured as resistance,ardlog
+BMEVOC(5),bmevoc5,plot,c4,y,bmevoc,genx,number,kiloohms,concentration of volatile organic compounds measured as resistance,ardlog
+BMEVOC(6),bmevoc6,plot,b4,y,bmevoc,genx,number,kiloohms,concentration of volatile organic compounds measured as resistance,ardlog
+BMEVOC(7),bmevoc7,plot,a5,y,bmevoc,genx,number,kiloohms,concentration of volatile organic compounds measured as resistance,ardlog
+BMEVOC(8),bmevoc8,plot,c6,y,bmevoc,genx,number,kiloohms,concentration of volatile organic compounds measured as resistance,ardlog
+BMEVOC(9),bmevoc9,plot,b6,y,bmevoc,genx,number,kiloohms,concentration of volatile organic compounds measured as resistance,ardlog
+BMEVOC(10),bmevoc10,plot,a7,y,bmevoc,genx,number,kiloohms,concentration of volatile organic compounds measured as resistance,ardlog
+BMEVOC(11),bmevoc11,plot,c8,y,bmevoc,genx,number,kiloohms,concentration of volatile organic compounds measured as resistance,ardlog
+BMEVOC(12),bmevoc12,plot,b9,y,bmevoc,genx,number,kiloohms,concentration of volatile organic compounds measured as resistance,ardlog
+Therm10C(1),therm10c1,plot,a0,y,therm10c,genx,number,degrees Celsius,soil temperature at 10 centimeter depth,ardlog
+Therm10C(2),therm10c2,plot,c1,y,therm10c,genx,number,degrees Celsius,soil temperature at 10 centimeter depth,ardlog
+Therm10C(3),therm10c3,plot,b2,y,therm10c,genx,number,degrees Celsius,soil temperature at 10 centimeter depth,ardlog
+Therm10C(4),therm10c4,plot,a3,y,therm10c,genx,number,degrees Celsius,soil temperature at 10 centimeter depth,ardlog
+Therm10C(5),therm10c5,plot,c4,y,therm10c,genx,number,degrees Celsius,soil temperature at 10 centimeter depth,ardlog
+Therm10C(6),therm10c6,plot,b4,y,therm10c,genx,number,degrees Celsius,soil temperature at 10 centimeter depth,ardlog
+Therm10C(7),therm10c7,plot,a5,y,therm10c,genx,number,degrees Celsius,soil temperature at 10 centimeter depth,ardlog
+Therm10C(8),therm10c8,plot,c6,y,therm10c,genx,number,degrees Celsius,soil temperature at 10 centimeter depth,ardlog
+Therm10C(9),therm10c9,plot,b6,y,therm10c,genx,number,degrees Celsius,soil temperature at 10 centimeter depth,ardlog
+Therm10C(10),therm10c10,plot,a7,y,therm10c,genx,number,degrees Celsius,soil temperature at 10 centimeter depth,ardlog
+Therm10C(11),therm10c11,plot,c8,y,therm10c,genx,number,degrees Celsius,soil temperature at 10 centimeter depth,ardlog
+Therm10C(12),therm10c12,plot,b9,y,therm10c,genx,number,degrees Celsius,soil temperature at 10 centimeter depth,ardlog
+Therm25C(1),therm25c1,plot,a0,y,therm25c,genx,number,degrees Celsius,soil temperature at 25 centimeter depth,ardlog
+Therm25C(2),therm25c2,plot,c1,y,therm25c,genx,number,degrees Celsius,soil temperature at 25 centimeter depth,ardlog
+Therm25C(3),therm25c3,plot,b2,y,therm25c,genx,number,degrees Celsius,soil temperature at 25 centimeter depth,ardlog
+Therm25C(4),therm25c4,plot,a3,y,therm25c,genx,number,degrees Celsius,soil temperature at 25 centimeter depth,ardlog
+Therm25C(5),therm25c5,plot,c4,y,therm25c,genx,number,degrees Celsius,soil temperature at 25 centimeter depth,ardlog
+Therm25C(6),therm25c6,plot,b4,y,therm25c,genx,number,degrees Celsius,soil temperature at 25 centimeter depth,ardlog
+Therm25C(7),therm25c7,plot,a5,y,therm25c,genx,number,degrees Celsius,soil temperature at 25 centimeter depth,ardlog
+Therm25C(8),therm25c8,plot,c6,y,therm25c,genx,number,degrees Celsius,soil temperature at 25 centimeter depth,ardlog
+Therm25C(9),therm25c9,plot,b6,y,therm25c,genx,number,degrees Celsius,soil temperature at 25 centimeter depth,ardlog
+Therm25C(10),therm25c10,plot,a7,y,therm25c,genx,number,degrees Celsius,soil temperature at 25 centimeter depth,ardlog
+Therm25C(11),therm25c11,plot,c8,y,therm25c,genx,number,degrees Celsius,soil temperature at 25 centimeter depth,ardlog
+Therm25C(12),therm25c12,plot,b9,y,therm25c,genx,number,degrees Celsius,soil temperature at 25 centimeter depth,ardlog
+Therm10pin(1),therm10pin1,plot,a0,y,therm10pin,genx,number,degrees Celsius,NA,ardlog
+Therm10pin(2),therm10pin2,plot,c1,y,therm10pin,genx,number,degrees Celsius,NA,ardlog
+Therm10pin(3),therm10pin3,plot,b2,y,therm10pin,genx,number,degrees Celsius,NA,ardlog
+Therm10pin(4),therm10pin4,plot,a3,y,therm10pin,genx,number,degrees Celsius,NA,ardlog
+Therm10pin(5),therm10pin5,plot,c4,y,therm10pin,genx,number,degrees Celsius,NA,ardlog
+Therm10pin(6),therm10pin6,plot,b4,y,therm10pin,genx,number,degrees Celsius,NA,ardlog
+Therm10pin(7),therm10pin7,plot,a5,y,therm10pin,genx,number,degrees Celsius,NA,ardlog
+Therm10pin(8),therm10pin8,plot,c6,y,therm10pin,genx,number,degrees Celsius,NA,ardlog
+Therm10pin(9),therm10pin9,plot,b6,y,therm10pin,genx,number,degrees Celsius,NA,ardlog
+Therm10pin(10),therm10pin10,plot,a7,y,therm10pin,genx,number,degrees Celsius,NA,ardlog
+Therm10pin(11),therm10pin11,plot,c8,y,therm10pin,genx,number,degrees Celsius,NA,ardlog
+Therm10pin(12),therm10pin12,plot,b9,y,therm10pin,genx,number,degrees Celsius,NA,ardlog
+Therm90ext(1),therm90ext1,plot,a0,y,therm90ext,genx,number,degrees Celsius,NA,ardlog
+Therm90ext(2),therm90ext2,plot,c1,y,therm90ext,genx,number,degrees Celsius,NA,ardlog
+Therm90ext(3),therm90ext3,plot,b2,y,therm90ext,genx,number,degrees Celsius,NA,ardlog
+Therm90ext(4),therm90ext4,plot,a3,y,therm90ext,genx,number,degrees Celsius,NA,ardlog
+Therm90ext(5),therm90ext5,plot,c4,y,therm90ext,genx,number,degrees Celsius,NA,ardlog
+Therm90ext(6),therm90ext6,plot,b4,y,therm90ext,genx,number,degrees Celsius,NA,ardlog
+Therm90ext(7),therm90ext7,plot,a5,y,therm90ext,genx,number,degrees Celsius,NA,ardlog
+Therm90ext(8),therm90ext8,plot,c6,y,therm90ext,genx,number,degrees Celsius,NA,ardlog
+Therm90ext(9),therm90ext9,plot,b6,y,therm90ext,genx,number,degrees Celsius,NA,ardlog
+Therm90ext(10),therm90ext10,plot,a7,y,therm90ext,genx,number,degrees Celsius,NA,ardlog
+Therm90ext(11),therm90ext11,plot,c8,y,therm90ext,genx,number,degrees Celsius,NA,ardlog
+Therm90ext(12),therm90ext12,plot,b9,y,therm90ext,genx,number,degrees Celsius,NA,ardlog
+Therm10amb,therm10amb,site,logger,n,therm10amb,genx,number,degrees Celsius,ambient average from Campbell,ardlog
+CS_Code,cs_code,site,logger,n,cs_code,genx,number,NA,code for Campbell Scientific control of system,ardlog
+BoxTemp(1),boxtemp1,site,logger,n,boxtemp1,genx,number,degrees Celsius,temperature in LGR box,ardlog
+BoxTemp(2),boxtemp2,site,logger,n,boxtemp2,genx,number,degrees Celsius,temperature in LGR box,ardlog
+Logger,logger,key,logger,key,logger,genx,character,NA,logger name,ardlog
+Program,program,site,logger,n,program,genx,character,NA,program version,ardlog
+Table,table,site,logger,n,table,genx,character,NA,loggernet table name,ardlog
+co2(13),co213,plot,13_amb,y,co2,genx,number,parts per million,carbon dioxide concentration,ardlog
+co2(14),co214,plot,14_amb,y,co2,genx,number,parts per million,carbon dioxide concentration,ardlog
+co2ave1(13),co2ave113,plot,13_amb,y,co2ave1,genx,number,parts per million,1 minute average of carbon dioxide concentration,ardlog
+co2ave1(14),co2ave114,plot,14_amb,y,co2ave1,genx,number,parts per million,1 minute average of carbon dioxide concentration,ardlog
+BMETemp(13),bmetemp13,plot,13_amb,y,bmetemp,genx,number,degrees Celsius,air temperature,ardlog
+BMETemp(14),bmetemp14,plot,14_amb,y,bmetemp,genx,number,degrees Celsius,air temperature,ardlog
+BMERH(13),bmerh13,plot,13_amb,y,bmerh,genx,number,%,relative humidity,ardlog
+BMERH(14),bmerh14,plot,14_amb,y,bmerh,genx,number,%,relative humidity,ardlog
+BMEpressure(13),bmepressure13,plot,13_amb,y,bmepressure,genx,number,millibars,atmospheric pressure,ardlog
+BMEpressure(14),bmepressure14,plot,14_amb,y,bmepressure,genx,number,millibars,atmospheric pressure,ardlog
+BMEVOC(13),bmevoc13,plot,13_amb,y,bmevoc,genx,number,kiloohms,concentration of volatile organic compounds measured as resistance,ardlog
+BMEVOC(14),bmevoc14,plot,14_amb,y,bmevoc,genx,number,kiloohms,concentration of volatile organic compounds measured as resistance,ardlog
+Therm10C(13),therm10c13,plot,13_amb,y,therm10c,genx,number,degrees Celsius,soil temperature at 10 centimeter depth,ardlog
+Therm10C(14),therm10c14,plot,14_amb,y,therm10c,genx,number,degrees Celsius,soil temperature at 10 centimeter depth,ardlog
+Therm25C(13),therm25c13,plot,13_amb,y,therm25c,genx,number,degrees Celsius,soil temperature at 25 centimeter depth,ardlog
+Therm25C(14),therm25c14,plot,14_amb,y,therm25c,genx,number,degrees Celsius,soil temperature at 25 centimeter depth,ardlog
+Therm10pin(13),therm10pin13,plot,13_amb,y,therm10pin,genx,number,degrees Celsius,NA,ardlog
+Therm10pin(14),therm10pin14,plot,14_amb,y,therm10pin,genx,number,degrees Celsius,NA,ardlog
+Therm90ext(13),therm90ext13,plot,13_amb,y,therm90ext,genx,number,degrees Celsius,NA,ardlog
+Therm90ext(14),therm90ext14,plot,14_amb,y,therm90ext,genx,number,degrees Celsius,NA,ardlog
+rowid,rowid,key,logger,key,rowid,genx,character,NA,"unique id  for each orginal data row contatenate (timestamp, block, tabletype)",ardlog
+time2,time2,key,logger,key,time2,genx,number,YYYY-MM-DD HH:MM:SS,posix time stamp (EST standard),ardlog

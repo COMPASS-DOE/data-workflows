@@ -1,0 +1,89 @@
+loggernet_variable,cr1000_name,design_scale_type,design_link,var_norm_split,research_name,logger,type,units,definition,table
+Batt_volt_Min,batt_volt_min,site,logger,n,batt_volt_min,co2_log,number,volts,default CR1000 battery voltage measurement,co2_log
+co2(1),co21,plot,610,y,co2,co2_log,number,parts per million,carbon dioxide concentration,co2_log
+co2(2),co22,plot,620,y,co2,co2_log,number,parts per million,carbon dioxide concentration,co2_log
+co2(3),co23,plot,630,y,co2,co2_log,number,parts per million,carbon dioxide concentration,co2_log
+co2(4),co24,plot,613,y,co2,co2_log,number,parts per million,carbon dioxide concentration,co2_log
+co2(5),co25,plot,623,y,co2,co2_log,number,parts per million,carbon dioxide concentration,co2_log
+co2(6),co26,plot,633,y,co2,co2_log,number,parts per million,carbon dioxide concentration,co2_log
+co2ave_2(1),co2ave_21,plot,610,y,co2ave_2,co2_log,number,parts per million,2 minute average of carbon dioxide concentration,co2_log
+co2ave_2(2),co2ave_22,plot,620,y,co2ave_2,co2_log,number,parts per million,2 minute average of carbon dioxide concentration,co2_log
+co2ave_2(3),co2ave_23,plot,630,y,co2ave_2,co2_log,number,parts per million,2 minute average of carbon dioxide concentration,co2_log
+co2ave_2(4),co2ave_24,plot,613,y,co2ave_2,co2_log,number,parts per million,2 minute average of carbon dioxide concentration,co2_log
+co2ave_2(5),co2ave_25,plot,623,y,co2ave_2,co2_log,number,parts per million,2 minute average of carbon dioxide concentration,co2_log
+co2ave_2(6),co2ave_26,plot,633,y,co2ave_2,co2_log,number,parts per million,2 minute average of carbon dioxide concentration,co2_log
+co2ave_5(1),co2ave_51,plot,610,y,co2ave_5,co2_log,number,parts per million,5 minute average of carbon dioxide concentration,co2_log
+co2ave_5(2),co2ave_52,plot,620,y,co2ave_5,co2_log,number,parts per million,5 minute average of carbon dioxide concentration,co2_log
+co2ave_5(3),co2ave_53,plot,630,y,co2ave_5,co2_log,number,parts per million,5 minute average of carbon dioxide concentration,co2_log
+co2ave_5(4),co2ave_54,plot,613,y,co2ave_5,co2_log,number,parts per million,5 minute average of carbon dioxide concentration,co2_log
+co2ave_5(5),co2ave_55,plot,623,y,co2ave_5,co2_log,number,parts per million,5 minute average of carbon dioxide concentration,co2_log
+co2ave_5(6),co2ave_56,plot,633,y,co2ave_5,co2_log,number,parts per million,5 minute average of carbon dioxide concentration,co2_log
+co2sd_5(1),co2sd_51,plot,610,y,co2sd_5,co2_log,number,parts per million,standard deviation of carbon dioxide concentration over 5 minutes,co2_log
+co2sd_5(2),co2sd_52,plot,620,y,co2sd_5,co2_log,number,parts per million,standard deviation of carbon dioxide concentration over 5 minutes,co2_log
+co2sd_5(3),co2sd_53,plot,630,y,co2sd_5,co2_log,number,parts per million,standard deviation of carbon dioxide concentration over 5 minutes,co2_log
+co2sd_5(4),co2sd_54,plot,613,y,co2sd_5,co2_log,number,parts per million,standard deviation of carbon dioxide concentration over 5 minutes,co2_log
+co2sd_5(5),co2sd_55,plot,623,y,co2sd_5,co2_log,number,parts per million,standard deviation of carbon dioxide concentration over 5 minutes,co2_log
+co2sd_5(6),co2sd_56,plot,633,y,co2sd_5,co2_log,number,parts per million,standard deviation of carbon dioxide concentration over 5 minutes,co2_log
+duty1(1),duty11,plot,610,y,duty1,co2_log,number,NA,NA,co2_log
+duty1(2),duty12,plot,620,y,duty1,co2_log,number,NA,NA,co2_log
+duty1(3),duty13,plot,630,y,duty1,co2_log,number,NA,NA,co2_log
+duty1(4),duty14,plot,613,y,duty1,co2_log,number,NA,NA,co2_log
+duty1(5),duty15,plot,623,y,duty1,co2_log,number,NA,NA,co2_log
+duty1(6),duty16,plot,633,y,duty1,co2_log,number,NA,NA,co2_log
+dutyave_5(1),dutyave_51,plot,610,y,dutyave_5,co2_log,number,NA,5 minute average of computed duty cycle proportion (0-1),co2_log
+dutyave_5(2),dutyave_52,plot,620,y,dutyave_5,co2_log,number,NA,5 minute average of computed duty cycle proportion (0-1),co2_log
+dutyave_5(3),dutyave_53,plot,630,y,dutyave_5,co2_log,number,NA,5 minute average of computed duty cycle proportion (0-1),co2_log
+dutyave_5(4),dutyave_54,plot,613,y,dutyave_5,co2_log,number,NA,5 minute average of computed duty cycle proportion (0-1),co2_log
+dutyave_5(5),dutyave_55,plot,623,y,dutyave_5,co2_log,number,NA,5 minute average of computed duty cycle proportion (0-1),co2_log
+dutyave_5(6),dutyave_56,plot,633,y,dutyave_5,co2_log,number,NA,5 minute average of computed duty cycle proportion (0-1),co2_log
+dutyCS(1),dutycs1,plot,610,y,dutycs,co2_log,number,NA,computed duty cycle proportion (0-1) control step,co2_log
+dutyCS(2),dutycs2,plot,620,y,dutycs,co2_log,number,NA,computed duty cycle proportion (0-1) control step,co2_log
+dutyCS(3),dutycs3,plot,630,y,dutycs,co2_log,number,NA,computed duty cycle proportion (0-1) control step,co2_log
+dutyCS(4),dutycs4,plot,613,y,dutycs,co2_log,number,NA,computed duty cycle proportion (0-1) control step,co2_log
+dutyCS(5),dutycs5,plot,623,y,dutycs,co2_log,number,NA,computed duty cycle proportion (0-1) control step,co2_log
+dutyCS(6),dutycs6,plot,633,y,dutycs,co2_log,number,NA,computed duty cycle proportion (0-1) control step,co2_log
+Flag,flag,site,logger,n,flag,co2_log,number,NA,NA,co2_log
+Logger,logger,key,logger,key,logger,co2_log,character,NA,logger name,co2_log
+pressure(1),pressure1,plot,610,y,pressure,co2_log,number,millibars,atmospheric pressure,co2_log
+pressure(2),pressure2,plot,620,y,pressure,co2_log,number,millibars,atmospheric pressure,co2_log
+pressure(3),pressure3,plot,630,y,pressure,co2_log,number,millibars,atmospheric pressure,co2_log
+pressure(4),pressure4,plot,613,y,pressure,co2_log,number,millibars,atmospheric pressure,co2_log
+pressure(5),pressure5,plot,623,y,pressure,co2_log,number,millibars,atmospheric pressure,co2_log
+pressure(6),pressure6,plot,633,y,pressure,co2_log,number,millibars,atmospheric pressure,co2_log
+Program,program,site,logger,n,program,co2_log,character,NA,program version,co2_log
+PTemp,ptemp,site,logger,n,ptemp,co2_log,number,degrees Celsius,default CR1000 wiring panel temperature measurement,co2_log
+readerrors(1),readerrors1,plot,610,y,readerrors,co2_log,character,NA,NA,co2_log
+readerrors(2),readerrors2,plot,620,y,readerrors,co2_log,character,NA,NA,co2_log
+readerrors(3),readerrors3,plot,630,y,readerrors,co2_log,character,NA,NA,co2_log
+readerrors(4),readerrors4,plot,613,y,readerrors,co2_log,character,NA,NA,co2_log
+readerrors(5),readerrors5,plot,623,y,readerrors,co2_log,character,NA,NA,co2_log
+readerrors(6),readerrors6,plot,633,y,readerrors,co2_log,character,NA,NA,co2_log
+RECORD,record,site,logger,n,record,co2_log,number,NA,loggernet record number,co2_log
+RH(1),rh1,plot,610,y,rh,co2_log,number,%,relative humidity,co2_log
+RH(2),rh2,plot,620,y,rh,co2_log,number,%,relative humidity,co2_log
+RH(3),rh3,plot,630,y,rh,co2_log,number,%,relative humidity,co2_log
+RH(4),rh4,plot,613,y,rh,co2_log,number,%,relative humidity,co2_log
+RH(5),rh5,plot,623,y,rh,co2_log,number,%,relative humidity,co2_log
+RH(6),rh6,plot,633,y,rh,co2_log,number,%,relative humidity,co2_log
+rowid,rowid,key,logger,key,rowid,co2_log,character,NA,"unique id  for each orginal data row contatenate (timestamp, block, tabletype)",co2_log
+Table,table,site,logger,n,table,co2_log,character,NA,loggernet table name,co2_log
+temp(1),temp1,plot,610,y,temp,co2_log,number,degrees Celsius,temperature,co2_log
+temp(2),temp2,plot,620,y,temp,co2_log,number,degrees Celsius,temperature,co2_log
+temp(3),temp3,plot,630,y,temp,co2_log,number,degrees Celsius,temperature,co2_log
+temp(4),temp4,plot,613,y,temp,co2_log,number,degrees Celsius,temperature,co2_log
+temp(5),temp5,plot,623,y,temp,co2_log,number,degrees Celsius,temperature,co2_log
+temp(6),temp6,plot,633,y,temp,co2_log,number,degrees Celsius,temperature,co2_log
+time2,time2,key,logger,key,time2,co2_log,number,YYYY-MM-DD HH:MM:SS,posix time stamp (EST standard),co2_log
+TIMESTAMP,timestamp,site,logger,n,timestamp,co2_log,number,YYYY-MM-DD HH:MM:SS,loggernet timestamp,co2_log
+VOC(1),voc1,plot,610,y,voc,co2_log,number,kiloohms,concentration of volatile organic compounds measured as resistance,co2_log
+VOC(2),voc2,plot,620,y,voc,co2_log,number,kiloohms,concentration of volatile organic compounds measured as resistance,co2_log
+VOC(3),voc3,plot,630,y,voc,co2_log,number,kiloohms,concentration of volatile organic compounds measured as resistance,co2_log
+VOC(4),voc4,plot,613,y,voc,co2_log,number,kiloohms,concentration of volatile organic compounds measured as resistance,co2_log
+VOC(5),voc5,plot,623,y,voc,co2_log,number,kiloohms,concentration of volatile organic compounds measured as resistance,co2_log
+VOC(6),voc6,plot,633,y,voc,co2_log,number,kiloohms,concentration of volatile organic compounds measured as resistance,co2_log
+writeerrors(1),writeerrors1,plot,610,y,writeerrors,co2_log,character,NA,NA,co2_log
+writeerrors(2),writeerrors2,plot,620,y,writeerrors,co2_log,character,NA,NA,co2_log
+writeerrors(3),writeerrors3,plot,630,y,writeerrors,co2_log,character,NA,NA,co2_log
+writeerrors(4),writeerrors4,plot,613,y,writeerrors,co2_log,character,NA,NA,co2_log
+writeerrors(5),writeerrors5,plot,623,y,writeerrors,co2_log,character,NA,NA,co2_log
+writeerrors(6),writeerrors6,plot,633,y,writeerrors,co2_log,character,NA,NA,co2_log
