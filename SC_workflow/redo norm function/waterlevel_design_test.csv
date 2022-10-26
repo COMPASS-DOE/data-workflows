@@ -1,0 +1,73 @@
+loggernet_variable,cr1000_name,design_scale_type,design_link,var_norm_split,research_name,logger,lat,long,elevation,offset_cm,type,units,definition,table
+Actual_Conductivity,actual_conductivity,site,c3log_waterlevel,n,actual_conductivity,c3log,NA,NA,,45,number,microsiemens per centimeter,actual conductivity,c3log_waterlevel
+Actual_Conductivity,actual_conductivity,site,c4log_waterlevel,n,actual_conductivity,c4log,NA,NA,,65,number,microsiemens per centimeter,actual conductivity,c4log_waterlevel
+Actual_Conductivity,actual_conductivity,site,gcrew_met_waterlevel,n,actual_conductivity,gcrew_met,NA,NA,,58,number,microsiemens per centimeter,actual conductivity,gcrew_met_gcrewwaterlevel200
+Actual_Conductivity,actual_conductivity,site,genx_waterlevel,n,actual_conductivity,genx,NA,NA,,-76,number,microsiemens per centimeter,actual conductivity,genx_waterlevel200
+Aquatroll_ID(2),aquatroll_id2,site,gcrew_met_waterlevel,n,aquatroll_id,gcrew_met,NA,NA,,58,character,NA,ID for Aquatroll sensor,gcrew_met_gcrewwaterlevel200
+Aquatroll_ID(2),aquatroll_id2,site,genx_waterlevel,n,aquatroll_id,genx,NA,NA,,-76,character,NA,ID for Aquatroll sensor,genx_waterlevel200
+Depth,depth,site,c3log_waterlevel,n,depth,c3log,NA,NA,,45,number,centimeters,depth of sensor,c3log_waterlevel
+Depth,depth,site,c4log_waterlevel,n,depth,c4log,NA,NA,,65,number,centimeters,depth of sensor,c4log_waterlevel
+Depth,depth,site,gcrew_met_waterlevel,n,depth,gcrew_met,NA,NA,,58,number,centimeters,depth of sensor,gcrew_met_gcrewwaterlevel200
+Depth,depth,site,genx_waterlevel,n,depth,genx,NA,NA,,-76,number,centimeters,depth of sensor,genx_waterlevel200
+Logger,logger,site,c3log_waterlevel,n,logger,c3log,NA,NA,,45,character,NA,logger name,c3log_waterlevel
+Logger,logger,site,c4log_waterlevel,n,logger,c4log,NA,NA,,65,character,NA,logger name,c4log_waterlevel
+Logger,logger,site,gcrew_met_waterlevel,n,logger,gcrew_met,NA,NA,,58,character,NA,logger name,gcrew_met_gcrewwaterlevel200
+Logger,logger,site,genx_waterlevel,n,logger,genx,NA,NA,,-76,character,NA,logger name,genx_waterlevel200
+Pressure,pressure,site,c3log_waterlevel,n,pressure,c3log,NA,NA,,45,number,pounds per square inch,atmospheric pressure,c3log_waterlevel
+Pressure,pressure,site,c4log_waterlevel,n,pressure,c4log,NA,NA,,65,number,pounds per square inch,atmospheric pressure,c4log_waterlevel
+Pressure,pressure,site,gcrew_met_waterlevel,n,pressure,gcrew_met,NA,NA,,58,number,pounds per square inch,atmospheric pressure,gcrew_met_gcrewwaterlevel200
+Pressure,pressure,site,genx_waterlevel,n,pressure,genx,NA,NA,,-76,number,pounds per square inch,atmospheric pressure,genx_waterlevel200
+Program,program,site,c3log_waterlevel,n,program,c3log,NA,NA,,45,character,NA,program version,c3log_waterlevel
+Program,program,site,c4log_waterlevel,n,program,c4log,NA,NA,,65,character,NA,program version,c4log_waterlevel
+Program,program,site,gcrew_met_waterlevel,n,program,gcrew_met,NA,NA,,58,character,NA,program version,gcrew_met_gcrewwaterlevel200
+Program,program,site,genx_waterlevel,n,program,genx,NA,NA,,-76,character,NA,program version,genx_waterlevel200
+RECORD,record,site,c3log_waterlevel,n,record,c3log,NA,NA,,45,number,NA,loggernet record number,c3log_waterlevel
+RECORD,record,site,c4log_waterlevel,n,record,c4log,NA,NA,,65,number,NA,loggernet record number,c4log_waterlevel
+RECORD,record,site,gcrew_met_waterlevel,n,record,gcrew_met,NA,NA,,58,number,NA,loggernet record number,gcrew_met_gcrewwaterlevel200
+RECORD,record,site,genx_waterlevel,n,record,genx,NA,NA,,-76,number,NA,loggernet record number,genx_waterlevel200
+Resistivity,resistivity,site,c3log_waterlevel,n,resistivity,c3log,NA,NA,,45,number,ohms centimeter,water resistivity,c3log_waterlevel
+Resistivity,resistivity,site,c4log_waterlevel,n,resistivity,c4log,NA,NA,,65,number,ohms centimeter,water resistivity,c4log_waterlevel
+Resistivity,resistivity,site,gcrew_met_waterlevel,n,resistivity,gcrew_met,NA,NA,,58,number,ohms centimeter,water resistivity,gcrew_met_gcrewwaterlevel200
+Resistivity,resistivity,site,genx_waterlevel,n,resistivity,genx,NA,NA,,-76,number,ohms centimeter,water resistivity,genx_waterlevel200
+rowid,rowid,key,c3log_waterlevel,key,rowid,c3log,NA,NA,,45,character,NA,"unique id  for each orginal data row contatenate (timestamp, block, tabletype)",c3log_waterlevel
+rowid,rowid,key,c4log_waterlevel,key,rowid,c4log,NA,NA,,65,character,NA,"unique id  for each orginal data row contatenate (timestamp, block, tabletype)",c4log_waterlevel
+rowid,rowid,key,gcrew_met_waterlevel,key,rowid,gcrew_met,NA,NA,,58,character,NA,"unique id  for each orginal data row contatenate (timestamp, block, tabletype)",gcrew_met_gcrewwaterlevel200
+rowid,rowid,key,genx_waterlevel,key,rowid,genx,NA,NA,,-76,character,NA,"unique id  for each orginal data row contatenate (timestamp, block, tabletype)",genx_waterlevel200
+STATNAME,logger,key,c3log_waterlevel,key,logger,c3log,NA,NA,,45,character,NA,logger name,c3log_waterlevel
+STATNAME,logger,key,c4log_waterlevel,key,logger,c4log,NA,NA,,65,character,NA,logger name,c4log_waterlevel
+Salinity,salinity,site,c3log_waterlevel,n,salinity,c3log,NA,NA,,45,number,practical salinity units,salinity,c3log_waterlevel
+Salinity,salinity,site,c4log_waterlevel,n,salinity,c4log,NA,NA,,65,number,practical salinity units,salinity,c4log_waterlevel
+Salinity,salinity,site,gcrew_met_waterlevel,n,salinity,gcrew_met,NA,NA,,58,number,practical salinity units,salinity,gcrew_met_gcrewwaterlevel200
+Salinity,salinity,site,genx_waterlevel,n,salinity,genx,NA,NA,,-76,number,practical salinity units,salinity,genx_waterlevel200
+Specific_Conductivity,specific_conductivity,site,c3log_waterlevel,n,specific_conductivity,c3log,NA,NA,,45,number,microsiemens per centimeter,specific conductivity,c3log_waterlevel
+Specific_Conductivity,specific_conductivity,site,c4log_waterlevel,n,specific_conductivity,c4log,NA,NA,,65,number,microsiemens per centimeter,specific conductivity,c4log_waterlevel
+Specific_Conductivity,specific_conductivity,site,gcrew_met_waterlevel,n,specific_conductivity,gcrew_met,NA,NA,,58,number,microsiemens per centimeter,specific conductivity,gcrew_met_gcrewwaterlevel200
+Specific_Conductivity,specific_conductivity,site,genx_waterlevel,n,specific_conductivity,genx,NA,NA,,-76,number,microsiemens per centimeter,specific conductivity,genx_waterlevel200
+Statname,logger,key,gcrew_met_waterlevel,key,logger,gcrew_met,NA,NA,,58,character,NA,logger name,gcrew_met_gcrewwaterlevel200
+Statname,logger,key,genx_waterlevel,key,logger,genx,NA,NA,,-76,character,NA,logger name,genx_waterlevel200
+TDS,tds,site,c3log_waterlevel,n,tds,c3log,NA,NA,,45,number,parts per thousand,total dissolved solids,c3log_waterlevel
+TDS,tds,site,c4log_waterlevel,n,tds,c4log,NA,NA,,65,number,parts per thousand,total dissolved solids,c4log_waterlevel
+TDS,tds,site,gcrew_met_waterlevel,n,tds,gcrew_met,NA,NA,,58,number,parts per thousand,total dissolved solids,gcrew_met_gcrewwaterlevel200
+TDS,tds,site,genx_waterlevel,n,tds,genx,NA,NA,,-76,number,parts per thousand,total dissolved solids,genx_waterlevel200
+TIMESTAMP,timestamp,site,c3log_waterlevel,n,timestamp,c3log,NA,NA,,45,number,YYYY-MM-DD HH:MM:SS,loggernet timestamp,c3log_waterlevel
+TIMESTAMP,timestamp,site,c4log_waterlevel,n,timestamp,c4log,NA,NA,,65,number,YYYY-MM-DD HH:MM:SS,loggernet timestamp,c4log_waterlevel
+TIMESTAMP,timestamp,site,gcrew_met_waterlevel,n,timestamp,gcrew_met,NA,NA,,58,number,YYYY-MM-DD HH:MM:SS,loggernet timestamp,gcrew_met_gcrewwaterlevel200
+TIMESTAMP,timestamp,site,genx_waterlevel,n,timestamp,genx,NA,NA,,-76,number,YYYY-MM-DD HH:MM:SS,loggernet timestamp,genx_waterlevel200
+Table,table,site,c3log_waterlevel,n,table,c3log,NA,NA,,45,character,NA,loggernet table name,c3log_waterlevel
+Table,table,site,c4log_waterlevel,n,table,c4log,NA,NA,,65,character,NA,loggernet table name,c4log_waterlevel
+Table,table,site,gcrew_met_waterlevel,n,table,gcrew_met,NA,NA,,58,character,NA,loggernet table name,gcrew_met_gcrewwaterlevel200
+Table,table,site,genx_waterlevel,n,table,genx,NA,NA,,-76,character,NA,loggernet table name,genx_waterlevel200
+Temp(1),temp1,site,genx_waterlevel,n,temp1,genx,NA,NA,,-76,number,degrees Celsius,NA,genx_waterlevel200
+Temp(2),temp2,site,genx_waterlevel,n,temp2,genx,NA,NA,,-76,number,degrees Celsius,NA,genx_waterlevel200
+Temperature,temperature,site,c3log_waterlevel,n,temperature,c3log,NA,NA,,45,number,degrees Celsius,temperature,c3log_waterlevel
+Temperature,temperature,site,c4log_waterlevel,n,temperature,c4log,NA,NA,,65,number,degrees Celsius,temperature,c4log_waterlevel
+Temperature,temperature,site,gcrew_met_waterlevel,n,temperature,gcrew_met,NA,NA,,58,number,degrees Celsius,temperature,gcrew_met_gcrewwaterlevel200
+Temperature,temperature,site,genx_waterlevel,n,temperature,genx,NA,NA,,-76,number,degrees Celsius,temperature,genx_waterlevel200
+time2,time2,key,c3log_waterlevel,key,time2,c3log,NA,NA,,45,number,YYYY-MM-DD HH:MM:SS,posix time stamp (EST standard),c3log_waterlevel
+time2,time2,key,c4log_waterlevel,key,time2,c4log,NA,NA,,65,number,YYYY-MM-DD HH:MM:SS,posix time stamp (EST standard),c4log_waterlevel
+time2,time2,key,gcrew_met_waterlevel,key,time2,gcrew_met,NA,NA,,58,number,YYYY-MM-DD HH:MM:SS,posix time stamp (EST standard),gcrew_met_gcrewwaterlevel200
+time2,time2,key,genx_waterlevel,key,time2,genx,NA,NA,,-76,number,YYYY-MM-DD HH:MM:SS,posix time stamp (EST standard),genx_waterlevel200
+Water_Density,water_density,site,c3log_waterlevel,n,water_density,c3log,NA,NA,,45,number,grams per cubic centimeter,water density,c3log_waterlevel
+Water_Density,water_density,site,c4log_waterlevel,n,water_density,c4log,NA,NA,,65,number,grams per cubic centimeter,water density,c4log_waterlevel
+Water_Density,water_density,site,gcrew_met_waterlevel,n,water_density,gcrew_met,NA,NA,,58,number,grams per cubic centimeter,water density,gcrew_met_gcrewwaterlevel200
+Water_Density,water_density,site,genx_waterlevel,n,water_density,genx,NA,NA,,-76,number,grams per cubic centimeter,water density,genx_waterlevel200
