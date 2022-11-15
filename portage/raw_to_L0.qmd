@@ -1,7 +1,11 @@
 ---
-title: "raw_to_L0"
-author: "BBL and SCP"
+title: "Workflow: raw_to_L0"
+author: "COMPASS workflows team"
 title-block-banner: true
+params:
+  outfile: "raw_to_L0.html"
+  raw: "Raw/"
+  L0: "L0/"
 date: now
 date-format: "YYYY-MM-DD HH:mm:ssZ"
 format: 
@@ -10,23 +14,51 @@ format:
 editor: visual
 ---
 
-## Quarto
-
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
-
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+## *Initializing*
 
 ```{r}
-1 + 1
+library(compasstools)
+library(readr)
+files_to_process <- list.files("Raw/", pattern = "*.dat$", full.names = TRUE)
 ```
 
-You can add options to executable code like this
+I see `r length(files_to_process)` files to process.
+
+Outfile is "`r params$outfile`".
+
+## *Processing*
 
 ```{r}
-#| echo: false
-2 * 2
+f <- function(fn, new_dir) {
+    message(Sys.time(), " Processing ", basename(fn))
+    dat <- try(compasstools::read_sapflow_file(fn))
+    new_fn <- gsub("\\.dat$", "_L0\\.csv", basename(fn))
+    note <- ""
+    if(is.data.frame(dat)) {
+        write.csv(dat, file.path(new_dir, new_fn), row.names = FALSE)
+    } else {
+        note <- "Error"
+    }
+    data.frame(File = basename(fn),
+               Logger = dat$Logger[1],
+               Table = dat$Table[1],
+               Rows = nrow(dat),
+               Columns = ncol(dat),
+               Note = note)
+}
+
+out <- lapply(files_to_process, f, new_dir = "./L0/")
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+## *Summary*
+
+```{r}
+out_df <- do.call("rbind", out)
+knitr::kable(out_df)
+```
+
+## *Reproducibility*
+
+```{r}
+sessionInfo()
+```
