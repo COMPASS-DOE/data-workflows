@@ -14,7 +14,7 @@ format:
 editor: visual
 ---
 
-## *Initializing*
+## Initializing
 
 ```{r}
 library(compasstools)
@@ -26,7 +26,7 @@ I see `r length(files_to_process)` files to process.
 
 Outfile is "`r params$outfile`".
 
-## *Processing*
+## Processing
 
 ```{r}
 f <- function(fn, new_dir) {
@@ -50,14 +50,14 @@ f <- function(fn, new_dir) {
 out <- lapply(files_to_process, f, new_dir = "./L0/")
 ```
 
-## *Summary*
+## Summary
 
 ```{r}
 out_df <- do.call("rbind", out)
 knitr::kable(out_df)
 ```
 
-## *Reproducibility*
+## Reproducibility
 
 ```{r}
 sessionInfo()
