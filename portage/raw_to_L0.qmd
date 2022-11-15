@@ -19,7 +19,7 @@ editor: visual
 ```{r}
 library(compasstools)
 library(readr)
-files_to_process <- list.files("Raw/", pattern = "*.dat$", full.names = TRUE)
+files_to_process <- list.files(params$raw, pattern = "*.dat$", full.names = TRUE)
 ```
 
 I see `r length(files_to_process)` files to process.
@@ -47,7 +47,7 @@ f <- function(fn, new_dir) {
                Note = note)
 }
 
-out <- lapply(files_to_process, f, new_dir = "./L0/")
+out <- lapply(files_to_process, f, new_dir = params$L0)
 ```
 
 ## Summary
