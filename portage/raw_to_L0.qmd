@@ -3,8 +3,9 @@ title: "Workflow: raw_to_L0"
 author: "COMPASS workflows team"
 title-block-banner: true
 params:
-  outfile: "raw_to_L0.html"
+  html_outfile: "raw_to_L0.html"
   raw: "Raw/"
+  raw_done: "Raw/done/"
   L0: "L0/"
 date: now
 date-format: "YYYY-MM-DD HH:mm:ssZ"
@@ -24,7 +25,7 @@ files_to_process <- list.files(params$raw, pattern = "*.dat$", full.names = TRUE
 
 I see `r length(files_to_process)` files to process.
 
-Outfile is "`r params$outfile`".
+HTML outfile is "`r params$html_outfile`".
 
 ## Processing
 
@@ -35,9 +36,16 @@ f <- function(fn, new_dir) {
     new_fn <- gsub("\\.dat$", "_L0\\.csv", basename(fn))
     note <- ""
     if(is.data.frame(dat)) {
-        write.csv(dat, file.path(new_dir, new_fn), row.names = FALSE)
+        err <- try(write.csv(dat, file.path(new_dir, new_fn), row.names = FALSE))
+        if(is.null(err)) {
+            # Move to 'done' folder
+            file.copy(fn, file.path(params$raw_done, basename(fn)), overwrite = FALSE)
+            unlink(fn)
+        } else {
+            note <- "Write error"
+        }
     } else {
-        note <- "Error"
+        note <- "Read error"
     }
     data.frame(File = basename(fn),
                Logger = dat$Logger[1],
