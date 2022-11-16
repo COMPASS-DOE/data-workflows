@@ -54,7 +54,6 @@ f <- function(fn, out_dir, design_table) {
     
     # Join with design table
     nrow_orig <- nrow(dat_long)
-    cat(colnames(design_table))
     dat_long <- left_join(dat_long, design_table,
                           by = c("Logger", "Table", "loggernet_variable"))
     
