@@ -39,7 +39,7 @@ f <- function(fn, new_dir) {
         err <- try(write.csv(dat, file.path(new_dir, new_fn), row.names = FALSE))
         if(is.null(err)) {
             # Move to 'done' folder
-            file.copy(fn, file.path(params$raw_done, basename(fn)), overwrite = FALSE)
+            #file.copy(fn, file.path(params$raw_done, basename(fn)), overwrite = FALSE) # TODO
             #unlink(fn)  # TODO
         } else {
             note <- "Write error"

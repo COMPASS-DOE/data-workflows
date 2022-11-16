@@ -24,7 +24,6 @@ library(dplyr)
 library(readr)
 
 dt <- read_csv(params$design_table)
-if(!is.data.frame(dt)) stop(class(dt))
 
 files_to_process <- list.files(params$L0, pattern = "*.csv$", full.names = TRUE)
 ```
@@ -58,10 +57,22 @@ f <- function(fn, out_dir, design_table) {
     cat(colnames(design_table))
     dat_long <- left_join(dat_long, design_table,
                           by = c("Logger", "Table", "loggernet_variable"))
-    smry <- data.frame(File = fn, 
+    
+    # Compute the top three loggernet variables with missing design links
+    dat_long %>% 
+        filter(is.na(design_link)) %>% 
+        group_by(loggernet_variable) %>% 
+        summarise(N = n()) %>% 
+        arrange(desc(N)) %>% 
+        slice_head(n = 3) %>% 
+        pull(loggernet_variable) ->
+        top3_na_vars
+    
+    smry <- data.frame(File = basename(fn), 
                        Pivoted_rows = nrow_orig,
                        Joined_rows = nrow(dat_long),
-                       design_link_NA = sum(is.na(dat_long$design_link)))
+                       dl_NA = sum(is.na(dat_long$design_link)),
+                       dl_NA_top3 = paste(top3_na_vars, collapse = ", "))
 
     dat_long <- filter(dat_long, !is.na(design_link))
     

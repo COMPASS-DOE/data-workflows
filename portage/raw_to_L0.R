@@ -7,9 +7,11 @@ RAW_DONE <- file.path(RAW, "done/")
 L0 <- "L0/"
 L1_NORMALIZE <- "L1_normalize/"
 
+now_string <- function() format(Sys.time(), "%Y%m%d%H%M%S")
+
 # Move files from raw to L0
 
-outfile <- paste0("raw_to_L0_", format(Sys.time(), "%Y%m%d%H%M%S"), ".html")
+outfile <- paste0("raw_to_L0_", now_string(), ".html")
 outfile_fq <- file.path("portage", L0, outfile)
 quarto::quarto_render("portage/raw_to_L0.qmd",
                       output_file = outfile_fq,
@@ -20,7 +22,7 @@ quarto::quarto_render("portage/raw_to_L0.qmd",
 
 # Normalize L0 files
 
-outfile <- paste0("L0_to_L1_norm_", format(Sys.time(), "%Y%m%d%H%M%S"), ".html")
+outfile <- paste0("L0_to_L1_norm_", now_string(), ".html")
 outfile_fq <- file.path("portage", L1_NORMALIZE, outfile)
 
 quarto::quarto_render("portage/L1_normalize.qmd",
