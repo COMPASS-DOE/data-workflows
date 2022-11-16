@@ -40,7 +40,7 @@ f <- function(fn, new_dir) {
         if(is.null(err)) {
             # Move to 'done' folder
             file.copy(fn, file.path(params$raw_done, basename(fn)), overwrite = FALSE)
-            unlink(fn)
+            #unlink(fn)  # TODO
         } else {
             note <- "Write error"
         }

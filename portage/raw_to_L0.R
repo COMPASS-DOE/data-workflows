@@ -3,15 +3,30 @@
 library(quarto)
 
 RAW <- "Raw/"
-L0 <- "L0/"
 RAW_DONE <- file.path(RAW, "done/")
+L0 <- "L0/"
+L1_NORMALIZE <- "L1_normalize/"
 
 # Move files from raw to L0
 outfile <- paste0("raw_to_L0_", format(Sys.time(), "%Y%m%d%H%M%S"), ".html")
-outfile_fq <- file.path("portage", "L0", outfile)
+outfile_fq <- file.path("portage", L0, outfile)
 quarto::quarto_render("portage/raw_to_L0.qmd",
                       output_file = outfile_fq,
                       execute_params = list(raw = RAW,
                                             raw_done = RAW_DONE,
                                             L0 = L0,
-                                            outfile = outfile))
+                                            html_outfile = outfile))
+
+# Normalize L0 files
+
+design_table <- readr::read_csv("portage/design_table.csv")
+
+outfile <- paste0("L0_to_L1_norm_", format(Sys.time(), "%Y%m%d%H%M%S"), ".html")
+outfile_fq <- file.path("portage", L1_NORMALIZE, outfile)
+
+quarto::quarto_render("portage/L1_normalize.qmd",
+                      html_output_file = outfile_fq,
+                      execute_params = list(L0 = L0,
+                                            L1_normalize = L1_NORMALIZE,
+                                            html_outfile = outfile,
+                                            design_table = design_table))
