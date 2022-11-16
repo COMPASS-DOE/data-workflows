@@ -22,9 +22,12 @@ editor: visual
 library(tidyr)
 library(dplyr)
 library(readr)
-
+library(compasstools)
+if(!exists("expand_df")) {
+    stop("Please update to latest version of compasstools!\n",
+         "devtools::install_github('COMPASS-DOE/compasstools')")
+}
 dt <- read_csv(params$design_table)
-source("expand.R") # TODO: put this in a package with tests
 dt_ex <- expand_df(dt)
 
 files_to_process <- list.files(params$L0, pattern = "*.csv$", full.names = TRUE)
