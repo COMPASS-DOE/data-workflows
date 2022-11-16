@@ -6,7 +6,7 @@ params:
   L0: "L0/"
   html_outfile: "L1_normalize.html"
   L1_normalize: "L1_normalize/"
-  design_table: NULL
+  design_table: "design_table_ex.csv"
 date: now
 date-format: "YYYY-MM-DD HH:mm:ssZ"
 format: 
@@ -23,9 +23,8 @@ library(tidyr)
 library(dplyr)
 library(readr)
 
-dt <- params$design_table
-if(is.null(params$design_table)) 
-    dt <- read_csv("design_table.csv")
+dt <- read_csv(params$design_table)
+if(!is.data.frame(dt)) stop(class(dt))
 
 files_to_process <- list.files(params$L0, pattern = "*.csv$", full.names = TRUE)
 ```
@@ -54,11 +53,11 @@ f <- function(fn, out_dir, design_table) {
     dat_long <- filter(dat_long, !is.na(value))
     message("\tFiltered data has ", nrow(dat_long), " rows")
     
-    message("\tJoining with design table")
+    # Join with design table
     nrow_orig <- nrow(dat_long)
+    cat(colnames(design_table))
     dat_long <- left_join(dat_long, design_table,
                           by = c("Logger", "Table", "loggernet_variable"))
-    print(head(dat_long[c("Logger","Table","loggernet_variable","design_link")]))
     smry <- data.frame(File = fn, 
                        Pivoted_rows = nrow_orig,
                        Joined_rows = nrow(dat_long),
