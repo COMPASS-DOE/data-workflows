@@ -12,8 +12,10 @@ LOGS <- "Logs/"
 
 now_string <- function() format(Sys.time(), "%Y%m%d.%H%M")
 
-# Move files from raw to L0 -----------------------------------
+# Construct L0 data -------------------------------------------
+# Raw data in CSV form with "Logger" and "Table" columns added
 
+message("Running raw_to_L0")
 outfile <- paste0("raw_to_L0_", now_string(), ".html")
 outfile <- file.path("portage", LOGS, outfile)
 quarto_render("portage/raw_to_L0.qmd",
@@ -23,21 +25,42 @@ quarto_render("portage/raw_to_L0.qmd",
                                     L0 = L0,
                                     html_outfile = outfile))
 
-# 'Normalize' L0 files ----------------------------------------
+# 'Normalize' L0 data -----------------------------------------
+# Reshaped to long form and matched with design_link info
+# This is an intermediate step, not exposed to data users
 
+message("Running L1_normalize.qmd")
 outfile <- paste0("L0_to_L1_norm_", now_string(), ".html")
-outfile_fq <- file.path("portage", LOGS, outfile)
+outfile <- file.path("portage", LOGS, outfile)
 
 quarto_render("portage/L1_normalize.qmd",
-              output_file = outfile_fq,
+              output_file = outfile,
               execute_params = list(L0 = L0,
                                     L1_normalize = L1_NORMALIZE,
                                     html_outfile = outfile,
                                     design_table = "design_table.csv"))
 
-# TODO: a MarineGEO-like Shiny app, allowing technicians to
+# Construct L1a data -------------------------------------------
+# Unit conversion and bounds checks performed
+# L1a data are long form but without any plot (experimental) info
+
+# This step will use a 'units_bounds.csv' file or something like that
+
+
+# Manual QA/QC step --------------------------------------------
+# A MarineGEO-like Shiny app, allowing technicians to
 # flag/annotate observations, would be applied to the output
 # from this step
 
-# Match L1a with plot data to construct L1b ------------------
+# Construct L1b data --------------------------------------------
+# L1b data are wide form, matched plot/experimental info, and ready for analysis
 
+# This is tricky because for the first time we need to match info across
+# files and dataloggers
+# Should data be put into (e.g.) month folders at the end of the previous step?
+# This would imply L1a sit in a holding pen (the month folders) until complete?
+
+message("Running L1b.qmd")
+
+
+message("All done.")
