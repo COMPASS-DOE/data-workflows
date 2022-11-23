@@ -12,7 +12,8 @@ LOGS <- "Logs/"
 
 now_string <- function() format(Sys.time(), "%Y%m%d.%H%M")
 
-# Construct L0 data -------------------------------------------
+
+# Construct L0 data ---------------------------------------------
 # Raw data in CSV form with "Logger" and "Table" columns added
 
 message("Running raw_to_L0")
@@ -25,7 +26,8 @@ quarto_render("portage/raw_to_L0.qmd",
                                     L0 = L0,
                                     html_outfile = outfile))
 
-# 'Normalize' L0 data -----------------------------------------
+
+# 'Normalize' L0 data -------------------------------------------
 # Reshaped to long form and matched with design_link info
 # This is an intermediate step, not exposed to data users
 
@@ -40,17 +42,25 @@ quarto_render("portage/L1_normalize.qmd",
                                     html_outfile = outfile,
                                     design_table = "design_table.csv"))
 
-# Construct L1a data -------------------------------------------
+
+# Construct L1a data --------------------------------------------
 # Unit conversion and bounds checks performed
 # L1a data are long form but without any plot (experimental) info
 
 # This step will use a 'units_bounds.csv' file or something like that
 
 
-# Manual QA/QC step --------------------------------------------
+# Manual QA/QC step ---------------------------------------------
 # A MarineGEO-like Shiny app, allowing technicians to
 # flag/annotate observations, would be applied to the output
 # from this step
+
+
+# Summary report data at L1a stage ------------------------------
+
+# Seems like it? So that we move files out of this stage by hand
+# (i.e. when month folder is complete)?
+
 
 # Construct L1b data --------------------------------------------
 # L1b data are wide form, matched plot/experimental info, and ready for analysis
