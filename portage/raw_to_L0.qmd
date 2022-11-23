@@ -19,6 +19,10 @@ editor: visual
 
 ```{r}
 library(compasstools)
+if(!exists("read_datalogger_file")) {
+    stop("Please update to latest version of compasstools!\n",
+         "devtools::install_github('COMPASS-DOE/compasstools')")
+}
 library(readr)
 files_to_process <- list.files(params$raw, pattern = "*.dat$", full.names = TRUE)
 ```
@@ -32,15 +36,16 @@ HTML outfile is "`r params$html_outfile`".
 ```{r}
 f <- function(fn, new_dir) {
     message(Sys.time(), " Processing ", basename(fn))
-    dat <- try(compasstools::read_sapflow_file(fn))
+    dat <- try(compasstools::read_datalogger_file(fn))
     new_fn <- gsub("\\.dat$", "_L0\\.csv", basename(fn))
     note <- ""
     if(is.data.frame(dat)) {
+        message("\tWriting ", new_fn)
         err <- try(write.csv(dat, file.path(new_dir, new_fn), row.names = FALSE))
         if(is.null(err)) {
             # Move to 'done' folder
             #file.copy(fn, file.path(params$raw_done, basename(fn)), overwrite = FALSE) # TODO
-            #unlink(fn)  # TODO
+            #file.remove(fn)  # TODO
         } else {
             note <- "Write error"
         }

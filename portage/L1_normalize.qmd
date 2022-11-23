@@ -74,15 +74,13 @@ f <- function(fn, out_dir, design_table) {
         pull(loggernet_variable) ->
         top3_na_vars
     
-    # TODO: this step should include unit conversion and flags
-    # applied for e.g. out of range
-
     smry <- data.frame(File = basename(fn), 
                        Pivoted_rows = nrow_orig,
                        Joined_rows = nrow(dat_long),
                        dl_NA = sum(is.na(dat_long$design_link)),
                        dl_NA_top3 = paste(top3_na_vars, collapse = ", "))
 
+    message("\tFiltering out missing design_link rows")
     dat_long <- filter(dat_long, !is.na(design_link))
     
     new_fn <- gsub("L0\\.csv$", "L1_norm\\.csv", basename(fn))
