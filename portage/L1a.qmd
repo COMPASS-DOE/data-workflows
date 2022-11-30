@@ -1,0 +1,70 @@
+---
+title: "L1a"
+author: "COMPASS workflows team"
+title-block-banner: true
+params:
+  L1_normalize: "L1_normalize/"
+  L1a: "L1a/"
+  html_outfile: "L1a.html"
+date: now
+date-format: "YYYY-MM-DD HH:mm:ssZ"
+format: 
+  html:
+    code-fold: true
+editor: visual
+---
+
+## Initializing
+
+```{r}
+#| output: false
+library(tidyr)
+library(dplyr)
+library(readr)
+
+source("helpers.R")
+
+files_to_process <- list.files(params$L1_normalize, pattern = "*.csv$", full.names = TRUE)
+```
+
+I see `r length(files_to_process)` files to process.
+
+HTML outfile is "`r params$html_outfile`".
+
+## Processing
+
+```{r}
+f <- function(fn, out_dir) {
+    message(Sys.time(), " Processing ", basename(fn))
+    dat <- read_csv(fn, 
+                    # don't want timestamp parsed to a datetime at this point
+                    col_types = list(TIMESTAMP = col_character()))
+
+    message("\tDoing unit conversion")
+    # Do unit conversion
+    
+    message("\tAdding OOB flags")
+    # Create out-of-bounds flags
+    
+    # TODO: we could remove the Logger and Table columns at this point, as the 
+    # information is being encoded into the filename
+    write_to_folders(dat, root_dir = out_dir, logger = dat$Logger[1], table = dat$Table[1])
+    
+    return(data.frame(File = fn, Rows = nrow(dat)))
+}
+
+out <- lapply(files_to_process, f, out_dir = params$L1a)
+```
+
+## Summary
+
+```{r}
+out_df <- do.call("rbind", out)
+knitr::kable(out_df)
+```
+
+## Reproducibility
+
+```{r}
+sessionInfo()
+```

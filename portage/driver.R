@@ -8,6 +8,7 @@ RAW <- "Raw/"
 RAW_DONE <- file.path(RAW, "done/")
 L0 <- "L0/"
 L1_NORMALIZE <- "L1_normalize/"
+L1A <- "L1a/"
 LOGS <- "Logs/"
 
 now_string <- function() format(Sys.time(), "%Y%m%d.%H%M")
@@ -51,6 +52,14 @@ quarto_render("portage/L1_normalize.qmd",
 # This step also sorts data into folders; see helpers.R
 
 message("Running L1a.qmd")
+outfile <- paste0("L1a_", now_string(), ".html")
+outfile <- file.path("portage", LOGS, outfile)
+
+quarto_render("portage/L1a.qmd",
+              output_file = outfile,
+              execute_params = list(L1_normalize = L1_NORMALIZE,
+                                    L1a = L1A,
+                                    html_outfile = outfile))
 
 
 # Manual QA/QC step ---------------------------------------------

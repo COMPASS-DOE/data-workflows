@@ -1,5 +1,7 @@
 # Helper functions
 
+# TODO: move into compasstools?
+
 library(lubridate)
 library(readr)
 
