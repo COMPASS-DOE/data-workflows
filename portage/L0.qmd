@@ -1,9 +1,9 @@
 ---
-title: "Workflow: raw_to_L0"
+title: "Workflow: L0"
 author: "COMPASS workflows team"
 title-block-banner: true
 params:
-  html_outfile: "raw_to_L0.html"
+  html_outfile: "L0.html"
   raw: "Raw/"
   raw_done: "Raw/done/"
   L0: "L0/"

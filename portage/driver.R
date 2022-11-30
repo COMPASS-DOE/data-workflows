@@ -16,10 +16,10 @@ now_string <- function() format(Sys.time(), "%Y%m%d.%H%M")
 # Construct L0 data ---------------------------------------------
 # Raw data in CSV form with "Logger" and "Table" columns added
 
-message("Running raw_to_L0")
-outfile <- paste0("raw_to_L0_", now_string(), ".html")
+message("Running L0")
+outfile <- paste0("L0_", now_string(), ".html")
 outfile <- file.path("portage", LOGS, outfile)
-quarto_render("portage/raw_to_L0.qmd",
+quarto_render("portage/L0.qmd",
               output_file = outfile,
               execute_params = list(raw = RAW,
                                     raw_done = RAW_DONE,
@@ -32,7 +32,7 @@ quarto_render("portage/raw_to_L0.qmd",
 # This is an intermediate step, not exposed to data users
 
 message("Running L1_normalize.qmd")
-outfile <- paste0("L0_to_L1_norm_", now_string(), ".html")
+outfile <- paste0("L1_normalize_", now_string(), ".html")
 outfile <- file.path("portage", LOGS, outfile)
 
 quarto_render("portage/L1_normalize.qmd",
@@ -48,6 +48,9 @@ quarto_render("portage/L1_normalize.qmd",
 # L1a data are long form but without any plot (experimental) info
 
 # This step will use a 'units_bounds.csv' file or something like that
+# This step also sorts data into folders; see helpers.R
+
+message("Running L1a.qmd")
 
 
 # Manual QA/QC step ---------------------------------------------
