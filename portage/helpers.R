@@ -52,9 +52,27 @@ write_to_folders <- function(x, root_dir, logger, table, prefix = "", quiet = FA
 }
 
 
+reset <- function() {
+    items <- list.files("portage/L0/", pattern = "*.csv", full.names = TRUE)
+    lapply(items, file.remove)
+
+    items <- list.files("portage/L1_normalize//", pattern = "*.csv", full.names = TRUE)
+    lapply(items, file.remove)
+
+    items <- list.files("portage/L1a/", recursive = TRUE, full.names = TRUE)
+    items <- items[items != "portage/L1a//README.md"]
+    lapply(items, file.remove)
+
+    items <- list.files("portage/L1b/", recursive = TRUE, full.names = TRUE)
+    items <- items[items != "portage/L1b//README.md"]
+    lapply(items, file.remove)
+
+    message("All done.")
+}
 
 # Print a directory tree and its files
-list_directories <- function(dir_list, outfile = "", prefix = "") {
+list_directories <- function(dir_list, outfile = "", prefix = "",
+                             pattern = NULL) {
 
     for(d in dir_list) {
         # Print the directory name
@@ -69,7 +87,7 @@ list_directories <- function(dir_list, outfile = "", prefix = "") {
         }
 
         # Print files in this directory; track but don't print subdirectories
-        files <- list.files(d, full.names = TRUE)
+        files <- list.files(d, full.names = TRUE, pattern = pattern)
         subdirs <- list()
         for(f in files) {
             if(dir.exists(f)) {

@@ -2,6 +2,8 @@
 
 library(quarto)
 
+source("portage/helpers.R")
+
 # Settings ----------------------------------------------------
 
 RAW <- "Raw/"
@@ -10,14 +12,25 @@ L0 <- "L0/"
 L1_NORMALIZE <- "L1_normalize/"
 L1A <- "L1a/"
 LOGS <- "Logs/"
+LOGFILE <- "portage/Logs/driver_log.txt"
+if(file.exists(LOGFILE)) file.remove(LOGFILE)
 
 now_string <- function() format(Sys.time(), "%Y%m%d.%H%M")
 
+new_section <- function(name, logfile = LOGFILE) {
+    cat("\n=========================================\n",
+        now_string(), name, "\n", file = logfile, append = TRUE)
+    list_directories(list("portage/Raw/", "portage/L0/",
+                          "portage/L1_normalize/", "portage/L1a/",
+                          "portage/L1b"), outfile = logfile)
+}
 
 # Construct L0 data ---------------------------------------------
 # Raw data in CSV form with "Logger" and "Table" columns added
 
 message("Running L0")
+new_section("Starting L0")
+
 outfile <- paste0("L0_", now_string(), ".html")
 outfile <- file.path("portage", LOGS, outfile)
 quarto_render("portage/L0.qmd",
@@ -33,6 +46,8 @@ quarto_render("portage/L0.qmd",
 # This is an intermediate step, not exposed to data users
 
 message("Running L1_normalize.qmd")
+new_section("Starting L1_normalize")
+
 outfile <- paste0("L1_normalize_", now_string(), ".html")
 outfile <- file.path("portage", LOGS, outfile)
 
@@ -52,6 +67,8 @@ quarto_render("portage/L1_normalize.qmd",
 # This step also sorts data into folders; see helpers.R
 
 message("Running L1a.qmd")
+new_section("Starting L1a")
+
 outfile <- paste0("L1a_", now_string(), ".html")
 outfile <- file.path("portage", LOGS, outfile)
 
@@ -83,6 +100,7 @@ quarto_render("portage/L1a.qmd",
 # This would imply L1a sit in a holding pen (the month folders) until complete?
 
 message("Running L1b.qmd")
+new_section("Starting L1b")
 
 
 message("All done.")

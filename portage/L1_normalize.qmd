@@ -89,7 +89,7 @@ f <- function(fn, out_dir, design_table) {
     message("\tWriting ", outfile)
     x <- try(write_csv(dat_long, outfile))
     if(is.data.frame(x)) {
-        #unlink(fn) # TODO
+        file.remove(fn)
     } else {
         warning("Write error!")
     }
