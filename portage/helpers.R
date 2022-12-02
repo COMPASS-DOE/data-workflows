@@ -50,3 +50,38 @@ write_to_folders <- function(x, root_dir, logger, table, prefix = "", quiet = FA
         }
     }
 }
+
+
+
+# Print a directory tree and its files
+list_directories <- function(dir_list, outfile = "", prefix = "") {
+
+    for(d in dir_list) {
+        # Print the directory name
+        cat(paste0(prefix, "|\n"), file = outfile, append = TRUE)
+        cat(paste0(prefix, "|- ", basename(d), "/"), "\n", file = outfile, append = TRUE)
+
+        # As we list items, print a vertical pipe except for the last
+        if(d == tail(dir_list, 1)) {
+            thisprefix <- ""
+        } else {
+            thisprefix <- "|"
+        }
+
+        # Print files in this directory; track but don't print subdirectories
+        files <- list.files(d, full.names = TRUE)
+        subdirs <- list()
+        for(f in files) {
+            if(dir.exists(f)) {
+                subdirs[[f]] <- f
+            } else {
+                cat(paste0(prefix, thisprefix, "\t|-"), basename(f), "\n",
+                    file = outfile, append = TRUE)
+            }
+        }
+
+        # Now recurse for any subdirectories
+        newprefix <- paste0(prefix, "|\t")
+        list_directories(subdirs, outfile, prefix = newprefix)
+    }
+}
