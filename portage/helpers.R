@@ -72,7 +72,7 @@ reset <- function() {
 
 # Print a directory tree and its files
 list_directories <- function(dir_list, outfile = "", prefix = "",
-                             pattern = NULL) {
+                             pattern = NULL, list_files = TRUE) {
 
     for(d in dir_list) {
         # Print the directory name
@@ -89,17 +89,23 @@ list_directories <- function(dir_list, outfile = "", prefix = "",
         # Print files in this directory; track but don't print subdirectories
         files <- list.files(d, full.names = TRUE, pattern = pattern)
         subdirs <- list()
+        filecount <- 0
         for(f in files) {
             if(dir.exists(f)) {
                 subdirs[[f]] <- f
             } else {
-                cat(paste0(prefix, thisprefix, "\t|-"), basename(f), "\n",
-                    file = outfile, append = TRUE)
+                filecount <- filecount + 1
+                if(list_files) cat(paste0(prefix, thisprefix, "\t|-"),
+                                   basename(f), "\n",
+                                   file = outfile, append = TRUE)
             }
         }
+        if(!list_files) cat(paste0(prefix, thisprefix, "\t|- (", filecount, " file",
+                                   ifelse(filecount == 1, "", "s"), ")\n"),
+                            file = outfile, append = TRUE)
 
         # Now recurse for any subdirectories
         newprefix <- paste0(prefix, "|\t")
-        list_directories(subdirs, outfile, prefix = newprefix)
+        list_directories(subdirs, outfile, prefix = newprefix, list_files = list_files)
     }
 }

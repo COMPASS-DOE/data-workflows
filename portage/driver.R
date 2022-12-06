@@ -6,16 +6,17 @@ source("portage/helpers.R")
 
 # Settings ----------------------------------------------------
 
+now_string <- function() format(Sys.time(), "%Y%m%d.%H%M")
+
 RAW <- "Raw/"
 RAW_DONE <- file.path(RAW, "done/")
 L0 <- "L0/"
 L1_NORMALIZE <- "L1_normalize/"
 L1A <- "L1a/"
 LOGS <- "Logs/"
-LOGFILE <- "portage/Logs/driver_log.txt"
+LOGFILE <-file.path("portage", LOGS, paste0("driver_log_", now_string(), ".txt"))
 if(file.exists(LOGFILE)) file.remove(LOGFILE)
 
-now_string <- function() format(Sys.time(), "%Y%m%d.%H%M")
 
 new_section <- function(name, logfile = LOGFILE) {
     cat("\n=========================================\n",
