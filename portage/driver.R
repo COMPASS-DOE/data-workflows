@@ -1,4 +1,7 @@
-# Example driver script
+# Driver script for data workflow
+#
+# This calls the quarto (*.qmd) files that handle data processing for
+# each step (raw data to L0, L0 to L1a, etc).
 
 library(quarto)
 
@@ -14,20 +17,23 @@ L0 <- "L0/"
 L1_NORMALIZE <- "L1_normalize/"
 L1A <- "L1a/"
 LOGS <- "Logs/"
+
+# Main logfile
 LOGFILE <-file.path("portage", LOGS, paste0("driver_log_", now_string(), ".txt"))
 if(file.exists(LOGFILE)) file.remove(LOGFILE)
 
-
+# Small helper function to make the various steps obvious in the log
 new_section <- function(name, logfile = LOGFILE) {
-    cat("\n=========================================\n",
+    cat("\n===================================================\n",
         now_string(), name, "\n", file = logfile, append = TRUE)
     list_directories(list("portage/Raw/", "portage/L0/",
                           "portage/L1_normalize/", "portage/L1a/",
                           "portage/L1b"), outfile = logfile)
 }
 
+
 # Construct L0 data ---------------------------------------------
-# Raw data in CSV form with "Logger" and "Table" columns added
+# L0 data are raw but in CSV form, and with "Logger" and "Table" columns added
 
 message("Running L0")
 new_section("Starting L0")
@@ -65,7 +71,7 @@ quarto_render("portage/L1_normalize.qmd",
 # L1a data are long form but without any plot (experimental) info
 
 # This step will use a 'units_bounds.csv' file or something like that
-# This step also sorts data into folders; see helpers.R
+# This step also sorts data into folders; see write_to_folders() in helpers.R
 
 message("Running L1a.qmd")
 new_section("Starting L1a")
