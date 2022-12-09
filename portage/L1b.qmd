@@ -52,9 +52,9 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     readf <- function(fn) {
         message("\tReading ", basename(fn))
         # these files should all have same columns and types:
-        # Logger, Table, TIMESTAMP, 
-        # loggernet_variable, design_link, research_name, OOB
-        read_csv(fn, col_types = "ccTcdccl")
+        # Logger, Table, TIMESTAMP, loggernet_variable, 
+        # design_link, research_name, OOB, and Units
+        read_csv(fn, col_types = "ccTcdcclc")
     }
     lapply(dirs_to_process[[dir_name]], readf) %>% 
         bind_rows() ->
@@ -62,10 +62,25 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     message("\tTotal data: ", nrow(dat), " rows, ", ncol(dat), " columns")
     
     # Do the plot table merge
+    dat %>% 
+        right_join(pt_ex, by = "design_link") ->
+    dat_mrg
     
     # Potential error check
+    # What rows don't have a plot_table match?
+    
+    # Separate OOBs
+    dat_mrg %>% 
+        select(TIMESTAMP, Site, Plot, Tree, research_name, OOB) %>% 
+        pivot_wider(names_from = "research_name", values_from = "OOB", names_prefix = "OOB_") ->
+        OOBs
     
     # Reshape
+    dat_mrg %>% 
+        mutate(research_name_units = paste(research_name, Units, sep = "_")) %>% 
+        select(TIMESTAMP, value, research_name_units, Site, Plot, Tree) %>% 
+        pivot_wider(names_from = "research_name_units", values_from = "value") %>% 
+        left_join(OOBs, by = c("TIMESTAMP", "Site", "Plot", "Tree"))
     
     # Write out to L1b/
 }
