@@ -49,6 +49,17 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     message("\tIt has ", length(dirs_to_process[[dir_name]]), " files")
 
     # Read in all files and bind data frames
+    readf <- function(fn) {
+        message("\tReading ", basename(fn))
+        # these files should all have same columns and types:
+        # Logger, Table, TIMESTAMP, 
+        # loggernet_variable, design_link, research_name, OOB
+        read_csv(fn, col_types = "ccTcdccl")
+    }
+    lapply(dirs_to_process[[dir_name]], readf) %>% 
+        bind_rows() ->
+        dat
+    message("\tTotal data: ", nrow(dat), " rows, ", ncol(dat), " columns")
     
     # Do the plot table merge
     
@@ -75,4 +86,3 @@ out <- lapply(names(dirs_to_process), f,
 ```{r}
 sessionInfo()
 ```
-
