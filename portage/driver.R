@@ -16,6 +16,7 @@ RAW_DONE <- file.path(RAW, "done/")
 L0 <- "L0/"
 L1_NORMALIZE <- "L1_normalize/"
 L1A <- "L1a/"
+L1B <- "L1b/"
 LOGS <- "Logs/"
 
 # Main logfile
@@ -109,5 +110,14 @@ quarto_render("portage/L1a.qmd",
 message("Running L1b.qmd")
 new_section("Starting L1b")
 
+outfile <- paste0("L1b_", now_string(), ".html")
+outfile <- file.path("portage", LOGS, outfile)
+
+quarto_render("portage/L1b.qmd",
+              output_file = outfile,
+              execute_params = list(L1a = L1A,
+                                    L1b = L1B,
+                                    plot_table = "plot_table.csv",
+                                    html_outfile = outfile))
 
 message("All done.")
