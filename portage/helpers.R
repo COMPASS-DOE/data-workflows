@@ -5,6 +5,25 @@
 library(lubridate)
 library(readr)
 
+# Scan sub-folders
+# Returns a named list of folder contents (each a vector of fully qualified filenames)
+# Does not recurse into sub-folders
+scan_folders <- function(root_dir, quiet = FALSE) {
+    entries <- list.files(root_dir, full.names = TRUE)
+
+    folder_list <- list()
+    for(e in entries) {
+        if(dir.exists(e)) { # it's a folder
+            files <- list.files(e, pattern = "\\.csv$", full.names = TRUE)
+            if(length(files)) {  # ...with csv files!
+                folder_list[[e]] <- files
+            }
+        }
+    }
+
+    return(folder_list)
+}
+
 # File data into sub-folders based on logger and date
 # The data should be a data frame with a 'TIMESTAMP' column
 # Sort into <yyyy>_<mm>_<logger> folders, splitting apart as needed
@@ -71,6 +90,9 @@ reset <- function() {
 }
 
 # Print a directory tree and its files
+# Usage:
+# list_directories(list("portage/Raw/", "portage/L0/", "portage/L1_normalize/",
+#                       "portage/L1a/", "portage/L1b"))
 list_directories <- function(dir_list, outfile = "", prefix = "",
                              pattern = NULL, list_files = TRUE) {
 
