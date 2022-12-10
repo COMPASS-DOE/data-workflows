@@ -25,7 +25,8 @@ if(!exists("read_datalogger_file")) {
          "devtools::install_github('COMPASS-DOE/compasstools')")
 }
 library(readr)
-files_to_process <- list.files(params$raw, pattern = "*.dat$", full.names = TRUE, recursive = TRUE)
+files_to_process <- list.files(params$raw, pattern = "*.dat$", 
+                               full.names = TRUE, recursive = TRUE)
 
 source("helpers.R")
 ```
@@ -43,34 +44,35 @@ Working directory is `r getwd()`.
 ## Processing
 
 ```{r}
-file_overwrites <- 0
-errors_occurred <- 0
+overwrites <- 0
+errors <- 0
 
 f <- function(fn, new_dir) {
-    message(Sys.time(), " Processing ", basename(fn))
+    basefn <- basename(fn)
+    message(Sys.time(), " Processing ", basefn)
     dat <- try(compasstools::read_datalogger_file(fn))
-    new_fn <- gsub("\\.dat$", "_L0\\.csv", basename(fn))
+    new_fn <- gsub("\\.dat$", "_L0\\.csv", basefn)
     note <- ""
     if(is.data.frame(dat)) {
         message("\tWriting ", new_fn)
         if(file.exists(file.path(new_dir, new_fn))) {
             note <- "Overwriting existing file!"
-            file_overwrites <<- file_overwrites + 1
+            overwrites <<- overwrites + 1
         }
         err <- try(write.csv(dat, file.path(new_dir, new_fn), row.names = FALSE))
         if(is.null(err)) {
             # Move to 'Raw_done' folder
-            #file.copy(fn, file.path(params$raw_done, basename(fn)), overwrite = FALSE) # TODO
+            #file.copy(fn, file.path(params$raw_done, basefn), overwrite = FALSE) # TODO
             #file.remove(fn)  # TODO
         } else {
             note <- "Write error"
-            errors_occurred <<- errors_occurred + 1
+            errors <<- errors + 1
         }
     } else {
         note <- "Read error"
-        errors_occurred <<- errors_occurred + 1
+        errors <<- errors + 1
     }
-    data.frame(File = basename(fn),
+    data.frame(File = basefn,
                Logger = dat$Logger[1],
                Table = dat$Table[1],
                Rows = nrow(dat),
@@ -86,13 +88,13 @@ out <- lapply(files_to_process, f, new_dir = params$L0)
 ```{r}
 #| echo: false
 #| output: asis
-if(file_overwrites) {
-    cat("### WARNING: ", file_overwrites, " file overwrite(s)\n")
+if(overwrites) {
+    cat("### WARNING: ", overwrites, " file overwrite(s)\n")
     log_warning(paste("File overwrite(s)", params$html_outfile), 
                 logfile = params$logfile)
 }
-if(errors_occurred) {
-    cat("### WARNING: ", errors_occurred, " file read/write error(s)\n")
+if(errors) {
+    cat("### WARNING: ", errors, " file read/write error(s)\n")
     log_warning(paste("File read/write error(s)", params$html_outfile), 
                 logfile = params$logfile)
 }

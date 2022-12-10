@@ -7,6 +7,7 @@ params:
   html_outfile: "L1_normalize.html"
   L1_normalize: "L1_normalize/"
   design_table: "design_table.csv"
+  logfile: ""
 date: now
 date-format: "YYYY-MM-DD HH:mm:ssZ"
 format: 
@@ -31,6 +32,8 @@ dt <- read_csv(params$design_table)
 dt_ex <- expand_df(dt)
 
 files_to_process <- list.files(params$L0, pattern = "*.csv$", full.names = TRUE)
+
+source("helpers.R")
 ```
 
 I see `r length(files_to_process)` files to process.
@@ -42,11 +45,26 @@ HTML outfile is "`r params$html_outfile`".
 ## Processing
 
 ```{r}
+overwrites <- 0
+errors <- 0
+
 f <- function(fn, out_dir, design_table) {
     message(Sys.time(), " Processing ", basename(fn))
-    dat <- read_csv(fn, 
+
+    smry <- data.frame(File = basename(fn), 
+                       Pivoted_rows = NA_integer_,
+                       Joined_rows = NA_integer_,
+                       dl_NA = NA_integer_,
+                       dl_NA_top3 = NA_character_,
+                       note = "")
+    dat <- try(read_csv(fn, 
                     # don't want timestamp parsed to a datetime at this point
-                    col_types = list(TIMESTAMP = col_character()))
+                    col_types = list(TIMESTAMP = col_character())))
+    if(!is.data.frame(dat)) {
+        smry$note <- "Read error" 
+        errors <<- errors + 1
+        return(smry)
+    }
     
     dat_long <- pivot_longer(dat, c(-Logger, -Table, -TIMESTAMP),
                              names_to = "loggernet_variable",
@@ -74,11 +92,10 @@ f <- function(fn, out_dir, design_table) {
         pull(loggernet_variable) ->
         top3_na_vars
     
-    smry <- data.frame(File = basename(fn), 
-                       Pivoted_rows = nrow_orig,
-                       Joined_rows = nrow(dat_long),
-                       dl_NA = sum(is.na(dat_long$design_link)),
-                       dl_NA_top3 = paste(top3_na_vars, collapse = ", "))
+    smry$Pivoted_rows <- nrow_orig
+    smry$Joined_rows <- nrow(dat_long)
+    smry$dl_NA <- sum(is.na(dat_long$design_link))
+    smry$dl_NA_top3 <- paste(top3_na_vars, collapse = ", ")
 
     message("\tFiltering out missing design_link rows")
     dat_long <- filter(dat_long, !is.na(design_link))
@@ -86,12 +103,17 @@ f <- function(fn, out_dir, design_table) {
     new_fn <- gsub("L0\\.csv$", "L1_norm\\.csv", basename(fn))
     
     outfile <- file.path(out_dir, new_fn)
+    if(file.exists(outfile)) {
+        overwrites <<- overwrites + 1
+        smry$note <- "Overwriting existing file!"
+    }
     message("\tWriting ", outfile)
     x <- try(write_csv(dat_long, outfile))
     if(is.data.frame(x)) {
         file.remove(fn)
     } else {
-        warning("Write error!")
+        smry$note <- "Write error"
+        errors <<- errors + 1
     }
     return(smry)
 }
@@ -104,6 +126,21 @@ out <- lapply(files_to_process, f,
 ## Summary
 
 ```{r}
+#| echo: false
+#| output: asis
+if(overwrites) {
+    cat("### WARNING: ", overwrites, " file overwrite(s)\n")
+    log_warning(paste("File overwrite(s)", params$html_outfile), 
+                logfile = params$logfile)
+}
+if(errors) {
+    cat("### WARNING: ", errors, " file read/write error(s)\n")
+    log_warning(paste("File read/write error(s)", params$html_outfile), 
+                logfile = params$logfile)
+}
+```
+
+```{r}
 out_df <- do.call("rbind", out)
 knitr::kable(out_df)
 ```
@@ -113,3 +150,4 @@ knitr::kable(out_df)
 ```{r}
 sessionInfo()
 ```
+
