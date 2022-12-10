@@ -12,7 +12,7 @@ source("portage/helpers.R")
 now_string <- function() format(Sys.time(), "%Y%m%d.%H%M")
 
 RAW <- "Raw/"
-RAW_DONE <- file.path(RAW, "done/")
+RAW_DONE <- "Raw_done/"
 L0 <- "L0/"
 L1_NORMALIZE <- "L1_normalize/"
 L1A <- "L1a/"

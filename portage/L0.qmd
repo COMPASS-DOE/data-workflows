@@ -5,7 +5,7 @@ title-block-banner: true
 params:
   html_outfile: "L0.html"
   raw: "Raw/"
-  raw_done: "Raw/done/"
+  raw_done: "Raw_done/"
   L0: "L0/"
 date: now
 date-format: "YYYY-MM-DD HH:mm:ssZ"
@@ -24,7 +24,7 @@ if(!exists("read_datalogger_file")) {
          "devtools::install_github('COMPASS-DOE/compasstools')")
 }
 library(readr)
-files_to_process <- list.files(params$raw, pattern = "*.dat$", full.names = TRUE)
+files_to_process <- list.files(params$raw, pattern = "*.dat$", full.names = TRUE, recursive = TRUE)
 ```
 
 I see `r length(files_to_process)` files to process.
@@ -43,7 +43,7 @@ f <- function(fn, new_dir) {
         message("\tWriting ", new_fn)
         err <- try(write.csv(dat, file.path(new_dir, new_fn), row.names = FALSE))
         if(is.null(err)) {
-            # Move to 'done' folder
+            # Move to 'Raw_done' folder
             #file.copy(fn, file.path(params$raw_done, basename(fn)), overwrite = FALSE) # TODO
             #file.remove(fn)  # TODO
         } else {

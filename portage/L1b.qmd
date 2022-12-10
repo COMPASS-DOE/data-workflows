@@ -54,7 +54,7 @@ f <- function(dir_name, dirs_to_process, out_dir) {
         # these files should all have same columns and types:
         # Logger, Table, TIMESTAMP, loggernet_variable, 
         # design_link, research_name, OOB, and Units
-        read_csv(fn, col_types = "ccTcdcclc")
+        read_csv(fn, col_types = "ccTcdccic")
     }
     lapply(dirs_to_process[[dir_name]], readf) %>% 
         bind_rows() ->
