@@ -5,7 +5,10 @@
 
 library(quarto)
 
-source("portage/helpers.R")
+# Need to run this script from within portage directory
+stopifnot(basename(getwd()) == "portage")
+
+source("helpers.R")
 
 # Settings ----------------------------------------------------
 
@@ -20,17 +23,8 @@ L1B <- "L1b/"
 LOGS <- "Logs/"
 
 # Main logfile
-LOGFILE <-file.path("portage", LOGS, paste0("driver_log_", now_string(), ".txt"))
+LOGFILE <- file.path(LOGS, paste0("driver_log_", now_string(), ".txt"))
 if(file.exists(LOGFILE)) file.remove(LOGFILE)
-
-# Small helper function to make the various steps obvious in the log
-new_section <- function(name, logfile = LOGFILE) {
-    cat("\n===================================================\n",
-        now_string(), name, "\n", file = logfile, append = TRUE)
-    list_directories(list("portage/Raw/", "portage/L0/",
-                          "portage/L1_normalize/", "portage/L1a/",
-                          "portage/L1b"), outfile = logfile)
-}
 
 
 # Construct L0 data ---------------------------------------------
@@ -40,13 +34,14 @@ message("Running L0")
 new_section("Starting L0")
 
 outfile <- paste0("L0_", now_string(), ".html")
-outfile <- file.path("portage", LOGS, outfile)
-quarto_render("portage/L0.qmd",
+outfile <- file.path(LOGS, outfile)
+quarto_render("L0.qmd",
               output_file = outfile,
               execute_params = list(raw = RAW,
                                     raw_done = RAW_DONE,
                                     L0 = L0,
-                                    html_outfile = outfile))
+                                    html_outfile = outfile,
+                                    logfile = LOGFILE))
 
 
 # 'Normalize' L0 data -------------------------------------------
@@ -57,9 +52,9 @@ message("Running L1_normalize.qmd")
 new_section("Starting L1_normalize")
 
 outfile <- paste0("L1_normalize_", now_string(), ".html")
-outfile <- file.path("portage", LOGS, outfile)
+outfile <- file.path(LOGS, outfile)
 
-quarto_render("portage/L1_normalize.qmd",
+quarto_render("L1_normalize.qmd",
               output_file = outfile,
               execute_params = list(L0 = L0,
                                     L1_normalize = L1_NORMALIZE,
@@ -78,9 +73,9 @@ message("Running L1a.qmd")
 new_section("Starting L1a")
 
 outfile <- paste0("L1a_", now_string(), ".html")
-outfile <- file.path("portage", LOGS, outfile)
+outfile <- file.path(LOGS, outfile)
 
-quarto_render("portage/L1a.qmd",
+quarto_render("L1a.qmd",
               output_file = outfile,
               execute_params = list(L1_normalize = L1_NORMALIZE,
                                     L1a = L1A,
@@ -111,9 +106,9 @@ message("Running L1b.qmd")
 new_section("Starting L1b")
 
 outfile <- paste0("L1b_", now_string(), ".html")
-outfile <- file.path("portage", LOGS, outfile)
+outfile <- file.path(LOGS, outfile)
 
-quarto_render("portage/L1b.qmd",
+quarto_render("L1b.qmd",
               output_file = outfile,
               execute_params = list(L1a = L1A,
                                     L1b = L1B,

@@ -6,6 +6,25 @@ library(lubridate)
 library(readr)
 
 
+# Small helper functions to make the various steps obvious in the log
+if(!exists("LOGFILE")) LOGFILE <- ""
+log_info <- function(msg, logfile = LOGFILE) {
+    cat(format(Sys.time()), msg, "\n", file = logfile, append = TRUE)
+}
+log_warning <- function(msg, logfile = LOGFILE) {
+    log_info(paste("WARNING:", msg), logfile = logfile)
+}
+new_section <- function(name, logfile = LOGFILE) {
+    log_info("")
+    log_info("===================================================")
+    log_info(name)
+    list_directories(list("portage/Raw/", "portage/L0/",
+                          "portage/L1_normalize/", "portage/L1a/",
+                          "portage/L1b"),
+                     list_files = FALSE, outfile = logfile)
+}
+
+
 # File data into sub-folders based on logger and date
 # The data should be a data frame with a 'TIMESTAMP' column
 # Sort into <yyyy>_<mm>_<logger> folders, splitting apart as needed

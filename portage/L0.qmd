@@ -7,6 +7,7 @@ params:
   raw: "Raw/"
   raw_done: "Raw_done/"
   L0: "L0/"
+  logfile: ""
 date: now
 date-format: "YYYY-MM-DD HH:mm:ssZ"
 format: 
@@ -25,13 +26,19 @@ if(!exists("read_datalogger_file")) {
 }
 library(readr)
 files_to_process <- list.files(params$raw, pattern = "*.dat$", full.names = TRUE, recursive = TRUE)
+
+source("helpers.R")
 ```
 
 I see `r length(files_to_process)` files to process.
 
 Writing to `r normalizePath(params$L0)`.
 
-HTML outfile is "`r params$html_outfile`".
+HTML outfile is `r params$html_outfile`.
+
+Logfile is `r params$logfile`.
+
+Working directory is `r getwd()`.
 
 ## Processing
 
@@ -79,8 +86,16 @@ out <- lapply(files_to_process, f, new_dir = params$L0)
 ```{r}
 #| echo: false
 #| output: asis
-if(file_overwrites) cat("### WARNING: ", file_overwrites, " file overwrite(s)")
-if(errors_occurred) cat("### WARNING: ", errors_occurred, " file read/write error(s)")
+if(file_overwrites) {
+    cat("### WARNING: ", file_overwrites, " file overwrite(s)\n")
+    log_warning(paste("File overwrite(s)", params$html_outfile), 
+                logfile = params$logfile)
+}
+if(errors_occurred) {
+    cat("### WARNING: ", errors_occurred, " file read/write error(s)\n")
+    log_warning(paste("File read/write error(s)", params$html_outfile), 
+                logfile = params$logfile)
+}
 ```
 
 ```{r}
