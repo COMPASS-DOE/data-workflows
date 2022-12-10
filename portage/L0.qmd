@@ -29,11 +29,16 @@ files_to_process <- list.files(params$raw, pattern = "*.dat$", full.names = TRUE
 
 I see `r length(files_to_process)` files to process.
 
+Writing to `r normalizePath(params$L0)`.
+
 HTML outfile is "`r params$html_outfile`".
 
 ## Processing
 
 ```{r}
+file_overwrites <- 0
+errors_occurred <- 0
+
 f <- function(fn, new_dir) {
     message(Sys.time(), " Processing ", basename(fn))
     dat <- try(compasstools::read_datalogger_file(fn))
@@ -41,6 +46,10 @@ f <- function(fn, new_dir) {
     note <- ""
     if(is.data.frame(dat)) {
         message("\tWriting ", new_fn)
+        if(file.exists(file.path(new_dir, new_fn))) {
+            note <- "Overwriting existing file!"
+            file_overwrites <<- file_overwrites + 1
+        }
         err <- try(write.csv(dat, file.path(new_dir, new_fn), row.names = FALSE))
         if(is.null(err)) {
             # Move to 'Raw_done' folder
@@ -48,9 +57,11 @@ f <- function(fn, new_dir) {
             #file.remove(fn)  # TODO
         } else {
             note <- "Write error"
+            errors_occurred <<- errors_occurred + 1
         }
     } else {
         note <- "Read error"
+        errors_occurred <<- errors_occurred + 1
     }
     data.frame(File = basename(fn),
                Logger = dat$Logger[1],
@@ -64,6 +75,13 @@ out <- lapply(files_to_process, f, new_dir = params$L0)
 ```
 
 ## Summary
+
+```{r}
+#| echo: false
+#| output: asis
+if(file_overwrites) cat("### WARNING: ", file_overwrites, " file overwrite(s)")
+if(errors_occurred) cat("### WARNING: ", errors_occurred, " file read/write error(s)")
+```
 
 ```{r}
 out_df <- do.call("rbind", out)
