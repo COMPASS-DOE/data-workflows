@@ -25,6 +25,8 @@ library(readr)
 source("helpers.R")
 
 files_to_process <- list.files(params$L1_normalize, pattern = "*.csv$", full.names = TRUE)
+
+source("helpers.R")
 ```
 
 I see `r length(files_to_process)` files to process.
@@ -34,16 +36,26 @@ HTML outfile is "`r params$html_outfile`".
 ## Processing
 
 ```{r}
+overwrites <- 0
+errors <- 0
+
 f <- function(fn, out_dir) {
     message(Sys.time(), " Processing ", basename(fn))
-    dat <- read_csv(fn, 
+    smry <- data.frame(File = fn, Rows = NA_integer_, OOB_rows = NA_integer_, note = "")
+    dat <- try(read_csv(fn, 
                     # don't want timestamp parsed to a datetime at this point
-                    col_types = list(TIMESTAMP = col_character()))
+                    col_types = list(TIMESTAMP = col_character())))
 
+    if(!is.data.frame(dat)) {
+        smry$note <- "Read error" 
+        errors <<- errors + 1
+        return(smry)
+    }
+  
     message("\tDoing unit conversion")
     # Do unit conversion
     
-    message("\tAdding OOB flags")
+    message("\tAdding units and OOB flags")
     # Create out-of-bounds flags
     dat$OOB <- 0 # temporary
     dat$Units <- "units" # temporary
@@ -53,13 +65,29 @@ f <- function(fn, out_dir) {
     write_to_folders(dat, root_dir = out_dir, logger = dat$Logger[1], table = dat$Table[1])
     file.remove(fn) # TODO: need to confirm no error occurred in write_to_folders
     
-    return(data.frame(File = fn, Rows = nrow(dat)))
+    smry$Rows <- nrow(dat)
+    return(smry)
 }
 
 out <- lapply(files_to_process, f, out_dir = params$L1a)
 ```
 
 ## Summary
+
+```{r}
+#| echo: false
+#| output: asis
+if(overwrites) {
+    cat("### WARNING: ", overwrites, " file overwrite(s)\n")
+    log_warning(paste("File overwrite(s)", params$html_outfile), 
+                logfile = params$logfile)
+}
+if(errors) {
+    cat("### WARNING: ", errors, " file read/write error(s)\n")
+    log_warning(paste("File read/write error(s)", params$html_outfile), 
+                logfile = params$logfile)
+}
+```
 
 ```{r}
 out_df <- do.call("rbind", out)
@@ -71,4 +99,3 @@ knitr::kable(out_df)
 ```{r}
 sessionInfo()
 ```
-

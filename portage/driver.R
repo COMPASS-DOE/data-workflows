@@ -6,7 +6,9 @@
 library(quarto)
 
 # Need to run this script from within portage directory
-stopifnot(basename(getwd()) == "portage")
+if(basename(getwd()) != "portage") {
+    stop("Working directory needs to be portage/")
+}
 
 source("helpers.R")
 
