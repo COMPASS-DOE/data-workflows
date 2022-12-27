@@ -72,19 +72,28 @@ write_to_folders <- function(x, root_dir, logger, table, prefix = "", quiet = FA
 }
 
 
-reset <- function(root = "portage/data") {
-    items <- list.files(file.path(root, "L0/"), pattern = "*.csv", full.names = TRUE)
+reset <- function(root = here::here("portage/data")) {
+    message("root is ", root)
+    items <- list.files(file.path(root, "L0/"), pattern = "*.csv",
+                        full.names = TRUE)
+    message("Removing ", length(items), " files in L0")
     lapply(items, file.remove)
 
-    items <- list.files(file.path(root, "L1_normalize/"), pattern = "*.csv", full.names = TRUE)
+    items <- list.files(file.path(root, "L1_normalize/"), pattern = "*.csv",
+                        full.names = TRUE)
+    message("Removing ", length(items), " files in L1_normalize")
     lapply(items, file.remove)
 
-    items <- list.files(file.path(root, "L1a/"), recursive = TRUE, full.names = TRUE)
+    items <- list.files(file.path(root, "L1a/"), recursive = TRUE,
+                        include.dirs = TRUE, full.names = TRUE)
     items <- items[items != file.path(root, "L1a//README.md")]
+    message("Removing ", length(items), " files in L1a")
     lapply(items, file.remove)
 
-    items <- list.files(file.path(root, "L1b/"), recursive = TRUE, full.names = TRUE)
+    items <- list.files(file.path(root, "L1b/"), recursive = TRUE,
+                        include.dirs = TRUE, full.names = TRUE)
     items <- items[items != file.path(root, "L1b//README.md")]
+    message("Removing ", length(items), " files in L1b")
     lapply(items, file.remove)
 
     message("All done.")
