@@ -14,13 +14,15 @@ log_info <- function(msg, logfile = LOGFILE) {
 log_warning <- function(msg, logfile = LOGFILE) {
     log_info(paste("WARNING:", msg), logfile = logfile)
 }
-new_section <- function(name, logfile = LOGFILE) {
+new_section <- function(name, logfile = LOGFILE, root = ROOT) {
     log_info("")
     log_info("===================================================")
     log_info(name)
-    list_directories(list("portage/Raw/", "portage/L0/",
-                          "portage/L1_normalize/", "portage/L1a/",
-                          "portage/L1b"),
+    list_directories(list(file.path(root, "Raw/"),
+                          file.path(root, "L0/"),
+                          file.path(root, "L1_normalize/"),
+                          file.path(root, "L1a/"),
+                          file.path(root, "L1b")),
                      list_files = FALSE, outfile = logfile)
 }
 
@@ -85,15 +87,25 @@ reset <- function(root = here::here("portage/data")) {
     lapply(items, file.remove)
 
     items <- list.files(file.path(root, "L1a/"), recursive = TRUE,
-                        include.dirs = TRUE, full.names = TRUE)
+                        include.dirs = FALSE, full.names = TRUE)
     items <- items[items != file.path(root, "L1a//README.md")]
     message("Removing ", length(items), " files in L1a")
     lapply(items, file.remove)
+    items <- list.files(file.path(root, "L1a/"), recursive = TRUE,
+                        include.dirs = TRUE, full.names = TRUE)
+    items <- items[items != file.path(root, "L1a//README.md")]
+    message("Removing ", length(items), " directories in L1a")
+    lapply(items, file.remove)
 
     items <- list.files(file.path(root, "L1b/"), recursive = TRUE,
-                        include.dirs = TRUE, full.names = TRUE)
+                        include.dirs = FALSE, full.names = TRUE)
     items <- items[items != file.path(root, "L1b//README.md")]
     message("Removing ", length(items), " files in L1b")
+    lapply(items, file.remove)
+    items <- list.files(file.path(root, "L1a/"), recursive = TRUE,
+                        include.dirs = TRUE, full.names = TRUE)
+    items <- items[items != file.path(root, "L1a//README.md")]
+    message("Removing ", length(items), " directories in L1a")
     lapply(items, file.remove)
 
     message("All done.")

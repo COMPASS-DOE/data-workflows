@@ -1,0 +1,7 @@
+"TOA5","Compass_PTR_UP_313","CR1000X","28734","CR1000X.Std.05.01","CPU:COMPASS_v3.CR1X","60334","SapflowA"
+"TIMESTAMP","RECORD","PB","Statname","BattV_Avg","DiffVoltA_Avg(1)","DiffVoltA_Avg(2)","DiffVoltA_Avg(3)","DiffVoltA_Avg(4)","DiffVoltA_Avg(5)","DiffVoltA_Avg(6)","DiffVoltA_Avg(7)","DiffVoltA_Avg(8)","DiffVoltA_Avg(9)","DiffVoltA_Avg(10)","DiffVoltA_Avg(11)","DiffVoltA_Avg(12)"
+"TS","RN","","","Volts","mV","mV","mV","mV","mV","mV","mV","mV","mV","mV","mV","mV"
+"","","Smp","Smp","Avg","Avg","Avg","Avg","Avg","Avg","Avg","Avg","Avg","Avg","Avg","Avg","Avg"
+"2022-11-09 00:00:00",16933,313,"COMPASS_PTR_UP",11.85,0.598,0.583,0.516,0.556,0.513,0.551,0.589,0.502,0.534,0.482,0.488,0.494
+"2022-11-09 00:15:00",16934,313,"COMPASS_PTR_UP",11.85,0.599,0.585,0.516,0.557,0.514,0.552,0.591,0.503,0.534,0.482,0.488,0.494
+"2022-11-09 00:30:00",16935,313,"COMPASS_PTR_UP",11.85,0.599,0.586,0.516,0.556,0.514,0.553,0.592,0.502,0.533,0.482,0.489,0.494

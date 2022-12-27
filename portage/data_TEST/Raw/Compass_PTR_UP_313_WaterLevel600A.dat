@@ -1,0 +1,7 @@
+"TOA5","Compass_PTR_UP_313","CR1000X","28734","CR1000X.Std.05.01","CPU:COMPASS_v3.CR1X","60334","WaterLevel600A"
+"TIMESTAMP","RECORD","PB","Statname","Aquatroll_IDA(1)","Barometric_Pressure600A","Temperature600A","Actual_Conductivity600A","Specific_Conductivity600A","Salinity600A","TDS600A","Water_Density600A","Resistivity600A","pH600A","pH_mV600A","pH_ORP600A","RDO_concen600A","RDO_perc_sat600A","RDO_part_Pressure600A","Pressure600A","Depth600A","Voltage_Ext600A","Battery_Int600A"
+"TS","RN","","","","mmHg","C","uS/cm","uS/cm","PSU","ppt","g/cm3","ohm-cm","pH","mV","ORP- mV","mg/L","%Sat","Torr","PSI","cm","V","%"
+"","","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp"
+"2022-11-09 00:15:00",16934,313,"COMPASS_PTR_UP","713IN-SITU AT600V229 8",760.24,12.36,3606.7,4754.7,2.55,3.09,1.001,277.26,6.89,-6.6,119.9,0.84,8.03,11.8,1.526,126.54,11.299,66
+"2022-11-09 00:30:00",16935,313,"COMPASS_PTR_UP","713IN-SITU AT600V229 8",760.37,12.36,3609.5,4758.5,2.55,3.09,1.001,277.04,6.89,-6.7,120.8,0.85,8.08,11.87,1.53,126.79,11.317,66
+"2022-11-09 00:45:00",16936,313,"COMPASS_PTR_UP","713IN-SITU AT600V229 8",760.22,12.36,3613.5,4764,2.56,3.1,1.001,276.74,6.89,-6.8,116.2,0.82,7.78,11.44,1.528,126.63,11.29,66
