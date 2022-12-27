@@ -57,11 +57,12 @@ f <- function(dir_name, dirs_to_process, out_dir) {
         # these files should all have same columns and types:
         # Logger, Table, TIMESTAMP, loggernet_variable, 
         # design_link, research_name, OOB, and Units
-        x <- try(read_csv(fn, col_types = "ccTcdccic"))
+        x <- try(read_csv(fn, col_types = "ccTcdcccic"))
         if(!is.data.frame(x)) {
             errors <<- errors + 1
             return(NULL)
         }
+        #file.remove(fn)
         x
     }
     lapply(dirs_to_process[[dir_name]], readf) %>% 
@@ -71,16 +72,26 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     
     # Do the plot table merge
     dat %>% 
-        right_join(pt_ex, by = c("Site", "design_link")) ->
-    dat_mrg
+        left_join(pt_ex, by = c("Site", "design_link")) ->
+        dat_mrg
     
-    # Potential error check
-    # What rows don't have a plot_table match?
+    # Error check
+    # There should be only one research_name for each timestamp/site/plot/tree
+    dat_mrg %>% 
+        group_by(TIMESTAMP, Site, Plot, Tree, research_name) %>% 
+        summarise(n = n(), .groups = "drop") %>% 
+        filter(n > 1) ->
+        dat_mrg_problems
+    # TODO: log and print any errors
+    # TODO: this can be done ahead of time? - read plot and design tables, merge, check
     
+        
     # Separate OOBs
     dat_mrg %>% 
         select(TIMESTAMP, Site, Plot, Tree, research_name, OOB) %>% 
-        pivot_wider(names_from = "research_name", values_from = "OOB", names_prefix = "OOB_") ->
+        pivot_wider(names_from = "research_name", 
+                    values_from = "OOB", 
+                    names_prefix = "OOB_") ->
         OOBs
     
     # Reshape
@@ -88,9 +99,13 @@ f <- function(dir_name, dirs_to_process, out_dir) {
         mutate(research_name_units = paste(research_name, Units, sep = "_")) %>% 
         select(TIMESTAMP, value, research_name_units, Site, Plot, Tree) %>% 
         pivot_wider(names_from = "research_name_units", values_from = "value") %>% 
-        left_join(OOBs, by = c("TIMESTAMP", "Site", "Plot", "Tree"))
+        left_join(OOBs, by = c("TIMESTAMP", "Site", "Plot", "Tree")) ->
+        dat_mrg_final
     
     # Write out to L1b/
+    write_to_folders(dat_mrg_final, root_dir = out_dir, data_level = "L1b",
+        site = dat_mrg_final$Site[1], logger = "", table = "")
+
 }
 
 out <- lapply(names(dirs_to_process), f, 

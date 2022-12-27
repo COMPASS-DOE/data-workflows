@@ -31,7 +31,7 @@ new_section <- function(name, logfile = LOGFILE, root = ROOT) {
 # The data should be a data frame with a 'TIMESTAMP' column
 # Sort into <yyyy>_<mm>_<logger> folders, splitting apart as needed
 # based on the timestamp
-write_to_folders <- function(x, root_dir, site, logger, table, prefix = "", quiet = FALSE) {
+write_to_folders <- function(x, root_dir, data_level, site, logger, table, quiet = FALSE) {
     years <- year(x$TIMESTAMP)
     months <- sprintf("%02i", month(x$TIMESTAMP)) # add leading zero if needed
 
@@ -53,10 +53,14 @@ write_to_folders <- function(x, root_dir, site, logger, table, prefix = "", quie
             stopifnot(nrow(dat) > 0) # this shouldn't happen
 
             # Construct filename and write the data
-            if(prefix != "") {
-                filename <- paste0(paste(prefix, logger, table, y, m, sep = "_"), ".csv")
-            } else {
+            if(data_level == "L1a") {
+                # L1a data: filename is <site>_<year>_<month>
                 filename <- paste0(paste(logger, table, y, m, sep = "_"), ".csv")
+            } else if(data_level == "L1b") {
+                # L1b data: filename is <site>_<year>_<month>
+                filename <- paste0(paste(site, y, m, sep = "_"), ".csv")
+            } else {
+                stop("Unkown data_level ", data_level)
             }
             if(!quiet) message("Writing ", nrow(dat), "/", nrow(x), " rows of data to ",
                                basename(folder), "/", filename)
