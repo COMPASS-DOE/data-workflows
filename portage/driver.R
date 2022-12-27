@@ -16,7 +16,7 @@ source("helpers.R")
 
 now_string <- function() format(Sys.time(), "%Y%m%d.%H%M")
 
-ROOT <- "./data"
+ROOT <- "./data_TEST"
 
 RAW <- file.path(ROOT, "Raw/")
 RAW_DONE <- file.path(ROOT, "Raw_done/")
@@ -55,6 +55,7 @@ file.copy("L0.html", outfile, overwrite = TRUE)
 message("Running L1_normalize.qmd")
 new_section("Starting L1_normalize")
 
+dt <- file.path(ROOT, "design_table.csv")
 outfile <- paste0("L1_normalize_", now_string(), ".html")
 outfile <- file.path(LOGS, outfile)
 
@@ -62,7 +63,7 @@ quarto_render("L1_normalize.qmd",
               execute_params = list(L0 = L0,
                                     L1_normalize = L1_NORMALIZE,
                                     html_outfile = outfile,
-                                    design_table = "design_table.csv"))
+                                    design_table = dt))
 file.copy("L1_normalize.html", outfile, overwrite = TRUE)
 
 
@@ -109,13 +110,14 @@ file.copy("L1a.html", outfile, overwrite = TRUE)
 message("Running L1b.qmd")
 new_section("Starting L1b")
 
+pt <- file.path(ROOT, "plot_table.csv")
 outfile <- paste0("L1b_", now_string(), ".html")
 outfile <- file.path(LOGS, outfile)
 
 quarto_render("L1b.qmd",
               execute_params = list(L1a = L1A,
                                     L1b = L1B,
-                                    plot_table = "plot_table.csv",
+                                    plot_table = pt,
                                     html_outfile = outfile))
 file.copy("L1b.html", outfile, overwrite = TRUE)
 

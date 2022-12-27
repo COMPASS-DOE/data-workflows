@@ -6,7 +6,7 @@ params:
   L0: "data/L0/"
   html_outfile: "L1_normalize.html"
   L1_normalize: "data/L1_normalize/"
-  design_table: "design_table.csv"
+  design_table: "data/design_table.csv"
   logfile: ""
 date: now
 date-format: "YYYY-MM-DD HH:mm:ssZ"

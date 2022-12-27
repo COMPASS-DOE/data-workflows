@@ -5,7 +5,7 @@ title-block-banner: true
 params:
   L1a: "data/L1a/"
   L1b: "data/L1b/"
-  plot_table: "plot_table.csv"
+  plot_table: "data/plot_table.csv"
   html_outfile: "L1b.html"
 date: now
 date-format: "YYYY-MM-DD HH:mm:ssZ"
