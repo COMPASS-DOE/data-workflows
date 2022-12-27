@@ -3,9 +3,9 @@ title: "L1_normalize"
 author: "COMPASS workflows team"
 title-block-banner: true
 params:
-  L0: "L0/"
+  L0: "data/L0/"
   html_outfile: "L1_normalize.html"
-  L1_normalize: "L1_normalize/"
+  L1_normalize: "data/L1_normalize/"
   design_table: "design_table.csv"
   logfile: ""
 date: now
@@ -150,4 +150,3 @@ knitr::kable(out_df)
 ```{r}
 sessionInfo()
 ```
-

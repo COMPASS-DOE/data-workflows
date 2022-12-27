@@ -72,19 +72,19 @@ write_to_folders <- function(x, root_dir, logger, table, prefix = "", quiet = FA
 }
 
 
-reset <- function() {
-    items <- list.files("portage/L0/", pattern = "*.csv", full.names = TRUE)
+reset <- function(root = "portage/data") {
+    items <- list.files(file.path(root, "L0/"), pattern = "*.csv", full.names = TRUE)
     lapply(items, file.remove)
 
-    items <- list.files("portage/L1_normalize//", pattern = "*.csv", full.names = TRUE)
+    items <- list.files(file.path(root, "L1_normalize/"), pattern = "*.csv", full.names = TRUE)
     lapply(items, file.remove)
 
-    items <- list.files("portage/L1a/", recursive = TRUE, full.names = TRUE)
-    items <- items[items != "portage/L1a//README.md"]
+    items <- list.files(file.path(root, "L1a/"), recursive = TRUE, full.names = TRUE)
+    items <- items[items != file.path(root, "L1a//README.md")]
     lapply(items, file.remove)
 
-    items <- list.files("portage/L1b/", recursive = TRUE, full.names = TRUE)
-    items <- items[items != "portage/L1b//README.md"]
+    items <- list.files(file.path(root, "L1b/"), recursive = TRUE, full.names = TRUE)
+    items <- items[items != file.path(root, "L1b//README.md")]
     lapply(items, file.remove)
 
     message("All done.")

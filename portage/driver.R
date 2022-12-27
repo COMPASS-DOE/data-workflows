@@ -16,13 +16,15 @@ source("helpers.R")
 
 now_string <- function() format(Sys.time(), "%Y%m%d.%H%M")
 
-RAW <- "Raw/"
-RAW_DONE <- "Raw_done/"
-L0 <- "L0/"
-L1_NORMALIZE <- "L1_normalize/"
-L1A <- "L1a/"
-L1B <- "L1b/"
-LOGS <- "Logs/"
+ROOT <- "./data"
+
+RAW <- file.path(ROOT, "Raw/")
+RAW_DONE <- file.path(ROOT, "Raw_done/")
+L0 <- file.path(ROOT, "L0/")
+L1_NORMALIZE <- file.path(ROOT, "L1_normalize/")
+L1A <- file.path(ROOT, "L1a/")
+L1B <- file.path(ROOT, "L1b/")
+LOGS <- file.path(ROOT, "Logs/")
 
 # Main logfile
 LOGFILE <- file.path(LOGS, paste0("driver_log_", now_string(), ".txt"))
@@ -37,14 +39,14 @@ new_section("Starting L0")
 
 outfile <- paste0("L0_", now_string(), ".html")
 outfile <- file.path(LOGS, outfile)
+
 quarto_render("L0.qmd",
-              output_file = outfile,
               execute_params = list(raw = RAW,
                                     raw_done = RAW_DONE,
                                     L0 = L0,
                                     html_outfile = outfile,
                                     logfile = LOGFILE))
-
+file.copy("L0.html", outfile, overwrite = TRUE)
 
 # 'Normalize' L0 data -------------------------------------------
 # Reshaped to long form and matched with design_link info
@@ -57,11 +59,11 @@ outfile <- paste0("L1_normalize_", now_string(), ".html")
 outfile <- file.path(LOGS, outfile)
 
 quarto_render("L1_normalize.qmd",
-              output_file = outfile,
               execute_params = list(L0 = L0,
                                     L1_normalize = L1_NORMALIZE,
                                     html_outfile = outfile,
                                     design_table = "design_table.csv"))
+file.copy("L1_normalize.html", outfile, overwrite = TRUE)
 
 
 # Construct L1a data --------------------------------------------
@@ -78,10 +80,10 @@ outfile <- paste0("L1a_", now_string(), ".html")
 outfile <- file.path(LOGS, outfile)
 
 quarto_render("L1a.qmd",
-              output_file = outfile,
               execute_params = list(L1_normalize = L1_NORMALIZE,
                                     L1a = L1A,
                                     html_outfile = outfile))
+file.copy("L1a.html", outfile, overwrite = TRUE)
 
 
 # Manual QA/QC step ---------------------------------------------
@@ -111,10 +113,10 @@ outfile <- paste0("L1b_", now_string(), ".html")
 outfile <- file.path(LOGS, outfile)
 
 quarto_render("L1b.qmd",
-              output_file = outfile,
               execute_params = list(L1a = L1A,
                                     L1b = L1B,
                                     plot_table = "plot_table.csv",
                                     html_outfile = outfile))
+file.copy("L1b.html", outfile, overwrite = TRUE)
 
 message("All done.")

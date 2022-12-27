@@ -3,8 +3,8 @@ title: "L1a"
 author: "COMPASS workflows team"
 title-block-banner: true
 params:
-  L1_normalize: "L1_normalize/"
-  L1a: "L1a/"
+  L1_normalize: "data/L1_normalize/"
+  L1a: "data/L1a/"
   html_outfile: "L1a.html"
 date: now
 date-format: "YYYY-MM-DD HH:mm:ssZ"

@@ -3,8 +3,8 @@ title: "L1b"
 author: "COMPASS workflows team"
 title-block-banner: true
 params:
-  L1a: "L1a/"
-  L1b: "L1b/"
+  L1a: "data/L1a/"
+  L1b: "data/L1b/"
   plot_table: "plot_table.csv"
   html_outfile: "L1b.html"
 date: now
