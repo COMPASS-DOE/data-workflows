@@ -71,7 +71,7 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     
     # Do the plot table merge
     dat %>% 
-        right_join(pt_ex, by = "design_link") ->
+        right_join(pt_ex, by = c("Site", "design_link")) ->
     dat_mrg
     
     # Potential error check

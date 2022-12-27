@@ -23,7 +23,7 @@ new_section <- function(name, logfile = LOGFILE, root = ROOT) {
                           file.path(root, "L1_normalize/"),
                           file.path(root, "L1a/"),
                           file.path(root, "L1b")),
-                     list_files = FALSE, outfile = logfile)
+                     list_files = TRUE, outfile = logfile)
 }
 
 
@@ -31,7 +31,7 @@ new_section <- function(name, logfile = LOGFILE, root = ROOT) {
 # The data should be a data frame with a 'TIMESTAMP' column
 # Sort into <yyyy>_<mm>_<logger> folders, splitting apart as needed
 # based on the timestamp
-write_to_folders <- function(x, root_dir, logger, table, prefix = "", quiet = FALSE) {
+write_to_folders <- function(x, root_dir, site, logger, table, prefix = "", quiet = FALSE) {
     years <- year(x$TIMESTAMP)
     months <- sprintf("%02i", month(x$TIMESTAMP)) # add leading zero if needed
 
@@ -39,18 +39,13 @@ write_to_folders <- function(x, root_dir, logger, table, prefix = "", quiet = FA
         for(m in unique(months)) {
 
             # Construct folder name and create it if necessary
-            folder <- file.path(root_dir, paste(y, m, logger, sep = "_"))
+            folder <- file.path(root_dir, paste(y, m, site, sep = "_"))
             if(!dir.exists(folder)) {
-                # Create folder and add a README file
+                # Create folder
                 if(!quiet) message("Creating ", basename(folder))
                 if(!dir.create(folder)) {
                     stop("dir.create returned an error")
                 }
-                cat(paste("#", basename(folder)),
-                    "",
-                    paste("This folder was automatically created", Sys.time()),
-                    sep = "\n",
-                    file = file.path(folder, "README.md"))
             }
 
             # Isolate the data to write
@@ -88,24 +83,30 @@ reset <- function(root = here::here("portage/data")) {
 
     items <- list.files(file.path(root, "L1a/"), recursive = TRUE,
                         include.dirs = FALSE, full.names = TRUE)
-    items <- items[items != file.path(root, "L1a//README.md")]
+    items <- items[basename(items) != "README.md"]
     message("Removing ", length(items), " files in L1a")
     lapply(items, file.remove)
     items <- list.files(file.path(root, "L1a/"), recursive = TRUE,
                         include.dirs = TRUE, full.names = TRUE)
-    items <- items[items != file.path(root, "L1a//README.md")]
+    items <- items[basename(items) != "README.md"]
     message("Removing ", length(items), " directories in L1a")
     lapply(items, file.remove)
 
     items <- list.files(file.path(root, "L1b/"), recursive = TRUE,
                         include.dirs = FALSE, full.names = TRUE)
-    items <- items[items != file.path(root, "L1b//README.md")]
+    items <- items[basename(items) != "README.md"]
     message("Removing ", length(items), " files in L1b")
     lapply(items, file.remove)
     items <- list.files(file.path(root, "L1a/"), recursive = TRUE,
                         include.dirs = TRUE, full.names = TRUE)
-    items <- items[items != file.path(root, "L1a//README.md")]
+    items <- items[basename(items) != "README.md"]
     message("Removing ", length(items), " directories in L1a")
+    lapply(items, file.remove)
+
+    items <- list.files(file.path(root, "Logs/"), pattern = "(txt|html)$",
+                        recursive = TRUE,
+                        include.dirs = FALSE, full.names = TRUE)
+    message("Removing ", length(items), " log files in Logs")
     lapply(items, file.remove)
 
     message("All done.")

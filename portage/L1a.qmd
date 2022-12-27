@@ -62,7 +62,8 @@ f <- function(fn, out_dir) {
     
     # TODO: we could remove the Logger and Table columns at this point, as the 
     # information is being encoded into the filename
-    write_to_folders(dat, root_dir = out_dir, logger = dat$Logger[1], table = dat$Table[1])
+    write_to_folders(dat, root_dir = out_dir, site = dat$Site[1], 
+                     logger = dat$Logger[1], table = dat$Table[1])
     file.remove(fn) # TODO: need to confirm no error occurred in write_to_folders
     
     smry$Rows <- nrow(dat)
