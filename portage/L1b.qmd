@@ -7,6 +7,8 @@ params:
   L1b: "data/L1b/"
   plot_table: "data/plot_table.csv"
   html_outfile: "L1b.html"
+  logfile: ""
+  date_round: "15 minutes"
 date: now
 date-format: "YYYY-MM-DD HH:mm:ssZ"
 format: 
@@ -22,6 +24,7 @@ editor: visual
 library(tidyr)
 library(dplyr)
 library(readr)
+library(lubridate)
 library(compasstools)
 if(!exists("scan_folders")) {
     stop("Please update to latest version of compasstools!\n",
@@ -46,11 +49,12 @@ HTML outfile is "`r params$html_outfile`".
 ```{r}
 overwrites <- 0
 errors <- 0
+dat_issues <- 0
 
 f <- function(dir_name, dirs_to_process, out_dir) {
     message(Sys.time(), " Processing ", basename(dir_name))
     message("\tIt has ", length(dirs_to_process[[dir_name]]), " files")
-
+    
     # Read in all files and bind data frames
     readf <- function(fn) {
         message("\tReading ", basename(fn))
@@ -70,42 +74,66 @@ f <- function(dir_name, dirs_to_process, out_dir) {
         dat
     message("\tTotal data: ", nrow(dat), " rows, ", ncol(dat), " columns")
     
+    # Round timestamps
+    # We do this to standardize, but also so that the pivot_wider below works cleanly
+    dat$TIMESTAMP <- round_date(dat$TIMESTAMP, params$date_round)
+    message("\tRounded timestamps to nearest ", params$date_round)
+    
     # Do the plot table merge
     dat %>% 
         left_join(pt_ex, by = c("Site", "design_link")) ->
         dat_mrg
+    
+    # Summary
+    dat_mrg %>% 
+        group_by(Site, Plot) %>% 
+        summarise(TS_min = min(TIMESTAMP), 
+                  TS_max = max(TIMESTAMP), 
+                  n = n(), .groups = "drop") %>% 
+        mutate(Dir = basename(dir_name), 
+               Files = length(dirs_to_process[[dir_name]]),
+               Note = "") %>%
+        select(Dir, Site, Plot, Files, n, TS_min, TS_max, Note) ->
+        smry
     
     # Error check
     # There should be only one research_name for each timestamp/site/plot/tree
     dat_mrg %>% 
         group_by(TIMESTAMP, Site, Plot, Tree, research_name) %>% 
         summarise(n = n(), .groups = "drop") %>% 
-        filter(n > 1) ->
+        filter(n > 1) %>% 
+        mutate(Dir = basename(dir_name)) ->
         dat_mrg_problems
-    # TODO: log and print any errors
-    # TODO: this can be done ahead of time? - read plot and design tables, merge, check
     
+    if(nrow(dat_mrg_problems)) {
+        dat_issues <<- dat_issues + 1
+        message("There are duplicate research_names associated with each site/plot/tree")
+        dat_mrg_problems$TIMESTAMP <- NULL
+        print(distinct(dat_mrg_problems))
+        smry$Note <- "Problems!"
+    } else {
+        # Separate OOB flags for reshaping
+        dat_mrg %>% 
+            select(TIMESTAMP, Site, Plot, Tree, research_name, OOB) %>% 
+            pivot_wider(names_from = "research_name", 
+                        values_from = "OOB", 
+                        names_prefix = "OOB_") ->
+            OOBs
         
-    # Separate OOBs
-    dat_mrg %>% 
-        select(TIMESTAMP, Site, Plot, Tree, research_name, OOB) %>% 
-        pivot_wider(names_from = "research_name", 
-                    values_from = "OOB", 
-                    names_prefix = "OOB_") ->
-        OOBs
+        # Reshape to wide form, with one experimental unit (here, tree) per row
+        dat_mrg %>% 
+            mutate(research_name_units = paste(research_name, Units, sep = "_")) %>% 
+            select(TIMESTAMP, value, research_name_units, Site, Plot, Tree) %>% 
+            pivot_wider(names_from = "research_name_units", values_from = "value") %>% 
+            left_join(OOBs, by = c("TIMESTAMP", "Site", "Plot", "Tree")) ->
+            dat_mrg_final
+        
+        # Write out to L1b/
+        write_to_folders(dat_mrg_final, root_dir = out_dir, data_level = "L1b",
+                         site = dat_mrg_final$Site[1], logger = "", table = "")
+    }
     
-    # Reshape
-    dat_mrg %>% 
-        mutate(research_name_units = paste(research_name, Units, sep = "_")) %>% 
-        select(TIMESTAMP, value, research_name_units, Site, Plot, Tree) %>% 
-        pivot_wider(names_from = "research_name_units", values_from = "value") %>% 
-        left_join(OOBs, by = c("TIMESTAMP", "Site", "Plot", "Tree")) ->
-        dat_mrg_final
-    
-    # Write out to L1b/
-    write_to_folders(dat_mrg_final, root_dir = out_dir, data_level = "L1b",
-        site = dat_mrg_final$Site[1], logger = "", table = "")
-
+    return(smry)
 }
 
 out <- lapply(names(dirs_to_process), f, 
@@ -127,26 +155,16 @@ if(errors) {
     log_warning(paste("File read/write error(s)", params$html_outfile), 
                 logfile = params$logfile)
 }
-```
-
-```{r}
-#| echo: false
-#| output: asis
-if(overwrites) {
-    cat("### WARNING: ", overwrites, " file overwrite(s)\n")
-    log_warning(paste("File overwrite(s)", params$html_outfile), 
-                logfile = params$logfile)
-}
-if(errors) {
-    cat("### WARNING: ", errors, " file read/write error(s)\n")
-    log_warning(paste("File read/write error(s)", params$html_outfile), 
+if(dat_issues) {
+    cat("### WARNING: ", dat_issues, " design/plot table structure problem(s)\n")
+    log_warning(paste("Design/plot table structure problem(s)", params$html_outfile), 
                 logfile = params$logfile)
 }
 ```
 
 ```{r}
-#out_df <- do.call("rbind", out)
-#knitr::kable(out_df)
+out_df <- do.call("rbind", out)
+knitr::kable(out_df)
 ```
 
 ## Reproducibility

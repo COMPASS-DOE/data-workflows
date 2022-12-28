@@ -46,7 +46,7 @@ quarto_render("L0.qmd",
                                     L0 = L0,
                                     html_outfile = outfile,
                                     logfile = LOGFILE))
-file.copy("L0.html", outfile, overwrite = TRUE)
+copy_output("L0.html", outfile)
 
 # 'Normalize' L0 data -------------------------------------------
 # Reshaped to long form and matched with design_link info
@@ -63,8 +63,9 @@ quarto_render("L1_normalize.qmd",
               execute_params = list(L0 = L0,
                                     L1_normalize = L1_NORMALIZE,
                                     html_outfile = outfile,
+                                    logfile = LOGFILE,
                                     design_table = dt))
-file.copy("L1_normalize.html", outfile, overwrite = TRUE)
+copy_output("L1_normalize.html", outfile)
 
 
 # Construct L1a data --------------------------------------------
@@ -72,7 +73,8 @@ file.copy("L1_normalize.html", outfile, overwrite = TRUE)
 # L1a data are long form but without any plot (experimental) info
 
 # This step will use a 'units_bounds.csv' file or something like that
-# This step also sorts data into folders; see write_to_folders() in helpers.R
+# This step also sorts data into folders based on site, year, and month;
+# see write_to_folders() in helpers.R
 
 message("Running L1a.qmd")
 new_section("Starting L1a")
@@ -83,8 +85,9 @@ outfile <- file.path(LOGS, outfile)
 quarto_render("L1a.qmd",
               execute_params = list(L1_normalize = L1_NORMALIZE,
                                     L1a = L1A,
-                                    html_outfile = outfile))
-file.copy("L1a.html", outfile, overwrite = TRUE)
+                                    html_outfile = outfile,
+                                    logfile = LOGFILE))
+copy_output("L1a.html", outfile)
 
 
 # Manual QA/QC step ---------------------------------------------
@@ -100,12 +103,8 @@ file.copy("L1a.html", outfile, overwrite = TRUE)
 
 
 # Construct L1b data --------------------------------------------
-# L1b data are wide form, matched plot/experimental info, and ready for analysis
-
-# This is tricky because for the first time we need to match info across
-# files and dataloggers
-# Should data be put into (e.g.) month folders at the end of the previous step?
-# This would imply L1a sit in a holding pen (the month folders) until complete?
+# L1b data are semi-wide form, organized around experimental units for
+# each timestamp. They have been matched with plot/experimental info, and ready for analysis
 
 message("Running L1b.qmd")
 new_section("Starting L1b")
@@ -118,7 +117,9 @@ quarto_render("L1b.qmd",
               execute_params = list(L1a = L1A,
                                     L1b = L1B,
                                     plot_table = pt,
-                                    html_outfile = outfile))
-file.copy("L1b.html", outfile, overwrite = TRUE)
+                                    html_outfile = outfile,
+                                    logfile = LOGFILE))
+copy_output("L1b.html", outfile)
+
 
 message("All done.")

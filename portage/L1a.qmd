@@ -6,6 +6,7 @@ params:
   L1_normalize: "data/L1_normalize/"
   L1a: "data/L1a/"
   html_outfile: "L1a.html"
+  logfile: ""
 date: now
 date-format: "YYYY-MM-DD HH:mm:ssZ"
 format: 

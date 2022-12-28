@@ -27,6 +27,16 @@ new_section <- function(name, logfile = LOGFILE, root = ROOT) {
 }
 
 
+# Copy quarto html output and log result
+copy_output <- function(from, to, overwrite = TRUE) {
+    if(file.copy(from, to, overwrite = overwrite)) {
+        log_info(paste("html output copied to", outfile))
+    } else {
+        log_warning("Error copying html output")
+    }
+}
+
+
 # File data into sub-folders based on logger and date
 # The data should be a data frame with a 'TIMESTAMP' column
 # Sort into <yyyy>_<mm>_<logger> folders, splitting apart as needed
