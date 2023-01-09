@@ -4,9 +4,9 @@ author: "COMPASS workflows team"
 title-block-banner: true
 params:
   html_outfile: "L0.html"
-  raw: "data/Raw/"
-  raw_done: "data/Raw_done/"
-  L0: "data/L0/"
+  raw: "data_TEST/Raw/"
+  raw_done: "data_TEST/Raw_done/"
+  L0: "data_TEST/L0/"
   logfile: ""
 date: now
 date-format: "YYYY-MM-DD HH:mm:ssZ"
