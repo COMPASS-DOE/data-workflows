@@ -3,10 +3,10 @@ title: "L1_normalize"
 author: "COMPASS workflows team"
 title-block-banner: true
 params:
-  L0: "data/L0/"
+  L0: "data_TEST/L0/"
   html_outfile: "L1_normalize.html"
-  L1_normalize: "data/L1_normalize/"
-  design_table: "data/design_table.csv"
+  L1_normalize: "data_TEST/L1_normalize/"
+  design_table: "data_TEST/design_table.csv"
   logfile: ""
 date: now
 date-format: "YYYY-MM-DD HH:mm:ssZ"
@@ -100,21 +100,10 @@ f <- function(fn, out_dir, design_table) {
     message("\tFiltering out missing design_link rows")
     dat_long <- filter(dat_long, !is.na(design_link))
     
-    new_fn <- gsub("L0\\.csv$", "L1_norm\\.csv", basename(fn))
-    
-    outfile <- file.path(out_dir, new_fn)
-    if(file.exists(outfile)) {
-        overwrites <<- overwrites + 1
-        smry$note <- "Overwriting existing file!"
-    }
-    message("\tWriting ", outfile)
-    x <- try(write_csv(dat_long, outfile))
-    if(is.data.frame(x)) {
-        file.remove(fn)
-    } else {
-        smry$note <- "Write error"
-        errors <<- errors + 1
-    }
+    write_to_folders(dat_long, root_dir = out_dir, data_level = "L1_normalize",
+                     site = dat_long$Site[1], 
+                     logger = dat_long$Logger[1], table = dat_long$Table[1])
+
     return(smry)
 }
 

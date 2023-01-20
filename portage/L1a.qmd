@@ -3,8 +3,8 @@ title: "L1a"
 author: "COMPASS workflows team"
 title-block-banner: true
 params:
-  L1_normalize: "data/L1_normalize/"
-  L1a: "data/L1a/"
+  L1_normalize: "data_TEST/L1_normalize/"
+  L1a: "data_TEST/L1a/"
   html_outfile: "L1a.html"
   logfile: ""
 date: now
@@ -15,6 +15,14 @@ format:
 editor: visual
 ---
 
+This script
+
+-   Reads in all the L1_normalize files by year/month/site
+
+-   Performs unit conversion and bounds checking (adding flags) for each \`research_name\` variable
+
+-   Computes new variables: x, y, z
+
 ## Initializing
 
 ```{r}
@@ -22,15 +30,18 @@ editor: visual
 library(tidyr)
 library(dplyr)
 library(readr)
+library(compasstools)
+if(!exists("scan_folders")) {
+    stop("Please update to latest version of compasstools!\n",
+         "devtools::install_github('COMPASS-DOE/compasstools')")
+}
 
 source("helpers.R")
 
-files_to_process <- list.files(params$L1_normalize, pattern = "*.csv$", full.names = TRUE)
-
-source("helpers.R")
+dirs_to_process <- scan_folders(params$L1_normalize)
 ```
 
-I see `r length(files_to_process)` files to process.
+I see `r length(dirs_to_process)` directories to process.
 
 HTML outfile is "`r params$html_outfile`".
 
@@ -40,19 +51,32 @@ HTML outfile is "`r params$html_outfile`".
 overwrites <- 0
 errors <- 0
 
-f <- function(fn, out_dir) {
-    message(Sys.time(), " Processing ", basename(fn))
-    smry <- data.frame(File = fn, Rows = NA_integer_, OOB_rows = NA_integer_, note = "")
-    dat <- try(read_csv(fn, 
-                    # don't want timestamp parsed to a datetime at this point
-                    col_types = list(TIMESTAMP = col_character())))
-
-    if(!is.data.frame(dat)) {
-        smry$note <- "Read error" 
-        errors <<- errors + 1
-        return(smry)
+f <- function(dir_name, dirs_to_process, out_dir) {
+    message(Sys.time(), " Processing ", basename(dir_name))
+    message("\tIt has ", length(dirs_to_process[[dir_name]]), " files")
+    
+    # Read in all files and bind data frames
+    readf <- function(fn) {
+        message("\tReading ", basename(fn))
+        # these files should all have same columns and types:
+        # Logger, Table, TIMESTAMP, loggernet_variable, 
+        # design_link, research_name, OOB, and Units
+        x <- try(read_csv(fn, col_types = "ccTcdcccic"))
+        if(!is.data.frame(x)) {
+            errors <<- errors + 1
+            return(NULL)
+        }
+        #file.remove(fn)
+        x
     }
-  
+    lapply(dirs_to_process[[dir_name]], readf) %>% 
+        bind_rows() ->
+        dat
+    
+    message("\tTotal data: ", nrow(dat), " rows, ", ncol(dat), " columns")
+    smry <- data.frame(Dir = dir_name, Files = length(dirs_to_process[[dir_name]]), 
+                       Rows = NA_integer_, OOB_rows = NA_integer_, note = "")
+    
     message("\tDoing unit conversion")
     # Do unit conversion
     
@@ -64,14 +88,14 @@ f <- function(fn, out_dir) {
     # TODO: we could remove the Logger and Table columns at this point, as the 
     # information is being encoded into the filename
     write_to_folders(dat, root_dir = out_dir, data_level = "L1a",
-                     site = dat$Site[1], logger = dat$Logger[1], table = dat$Table[1])
-    file.remove(fn) # TODO: need to confirm no error occurred in write_to_folders
+                     site = dat$Site[1], logger = dat$Logger[1], table = "")
     
     smry$Rows <- nrow(dat)
     return(smry)
 }
 
-out <- lapply(files_to_process, f, out_dir = params$L1a)
+out <- lapply(names(dirs_to_process), f, 
+              dirs_to_process = dirs_to_process, out_dir = params$L1a)
 ```
 
 ## Summary
