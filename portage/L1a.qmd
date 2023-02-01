@@ -5,6 +5,8 @@ title-block-banner: true
 params:
   L1_normalize: "data_TEST/L1_normalize/"
   L1a: "data_TEST/L1a/"
+  plot_table: "data_TEST/plot_table.csv"
+  timestamp_round: "15 minutes"
   html_outfile: "L1a.html"
   logfile: ""
 date: now
@@ -23,6 +25,8 @@ This script
 
 -   Computes new variables: x, y, z
 
+-   Join with plot table
+
 ## Initializing
 
 ```{r}
@@ -30,11 +34,14 @@ This script
 library(tidyr)
 library(dplyr)
 library(readr)
+library(lubridate)
 library(compasstools)
 if(!exists("scan_folders")) {
     stop("Please update to latest version of compasstools!\n",
          "devtools::install_github('COMPASS-DOE/compasstools')")
 }
+pt <- read_csv(params$plot_table, col_types = "cccc")
+pt_ex <- expand_df(pt)
 
 source("helpers.R")
 
@@ -43,6 +50,8 @@ dirs_to_process <- scan_folders(params$L1_normalize)
 
 I see `r length(dirs_to_process)` directories to process.
 
+Plot table is `r nrow(pt)` rows, `r nrow(pt_ex)` after expansion.
+
 HTML outfile is "`r params$html_outfile`".
 
 ## Processing
@@ -50,6 +59,8 @@ HTML outfile is "`r params$html_outfile`".
 ```{r}
 overwrites <- 0
 errors <- 0
+dat_issues <- 0
+file_read_smry <- data.frame()
 
 f <- function(dir_name, dirs_to_process, out_dir) {
     message(Sys.time(), " Processing ", basename(dir_name))
@@ -73,9 +84,11 @@ f <- function(dir_name, dirs_to_process, out_dir) {
         bind_rows() ->
         dat
     
+    # File-based summary
     message("\tTotal data: ", nrow(dat), " rows, ", ncol(dat), " columns")
     smry <- data.frame(Dir = dir_name, Files = length(dirs_to_process[[dir_name]]), 
-                       Rows = NA_integer_, OOB_rows = NA_integer_, note = "")
+                       Rows = nrow(dat), note = "")
+    file_read_smry <<- rbind(file_read_smry, smry)
     
     message("\tDoing unit conversion")
     # Do unit conversion
@@ -84,13 +97,57 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     # Create out-of-bounds flags
     dat$OOB <- 0 # temporary
     dat$Units <- "units" # temporary
+
+    # Round timestamps
+    dat$TIMESTAMP_R <- round_date(dat$TIMESTAMP, params$timestamp_round)
+    message("\tRounded timestamps to nearest ", params$timestamp_round)
     
-    # TODO: we could remove the Logger and Table columns at this point, as the 
-    # information is being encoded into the filename
-    write_to_folders(dat, root_dir = out_dir, data_level = "L1a",
+    message("\tComputing new variables")
+    # Compute new variables
+
+    # Do the plot table merge
+    message("\tJoining with plot table")
+    dat %>% 
+        left_join(pt_ex, by = c("Site", "design_link")) ->
+        dat_mrg
+
+    # Plot table-based summary
+    dat_mrg %>% 
+        group_by(Site, Plot) %>% 
+        summarise(TS_min = min(TIMESTAMP), 
+                  TS_max = max(TIMESTAMP), 
+                  Vars = length(unique(research_name)),
+                  .groups = "drop") %>% 
+        mutate(Dir = basename(dir_name), 
+               Note = "") %>%
+        select(Dir, Site, Plot, Vars, TS_min, TS_max, Note) ->
+        smry
+
+       # Error check
+    # There should be only one research_name for each timestamp/site/plot/tree
+    dat_mrg %>% 
+        group_by(TIMESTAMP, Site, Plot, Tree, research_name) %>% 
+        summarise(n = n(), .groups = "drop") %>% 
+        filter(n > 1) %>% 
+        mutate(Dir = basename(dir_name)) ->
+        dat_mrg_problems
+    
+    if(nrow(dat_mrg_problems)) {
+        dat_issues <<- dat_issues + 1
+        message("There are duplicate research_names associated with each site/plot/tree")
+        dat_mrg_problems$TIMESTAMP <- NULL
+        print(distinct(dat_mrg_problems))
+        smry$Note <- "Problems!"
+    }
+    
+    # Put columns in Site, Plot, Tree, TIMESTAMP_R, research_name, value,
+    # and then <others alphabetized> order
+    lefts <- c("Site", "Plot", "Tree", "TIMESTAMP_R", "research_name", "value")
+    dat_mrg <- dat_mrg[c(lefts, sort(setdiff(names(dat_mrg), lefts)))]
+    
+    write_to_folders(dat_mrg, root_dir = out_dir, data_level = "L1a",
                      site = dat$Site[1], logger = dat$Logger[1], table = "")
     
-    smry$Rows <- nrow(dat)
     return(smry)
 }
 
@@ -98,7 +155,7 @@ out <- lapply(names(dirs_to_process), f,
               dirs_to_process = dirs_to_process, out_dir = params$L1a)
 ```
 
-## Summary
+## File summary
 
 ```{r}
 #| echo: false
@@ -113,7 +170,18 @@ if(errors) {
     log_warning(paste("File read/write error(s)", params$html_outfile), 
                 logfile = params$logfile)
 }
+if(dat_issues) {
+    cat("### WARNING: ", dat_issues, " data structure issue(s)\n")
+    log_warning(paste("data structure issue(s)", params$html_outfile), 
+                logfile = params$logfile)
+}
 ```
+
+```{r}
+knitr::kable(file_read_smry)
+```
+
+## Plot summary:
 
 ```{r}
 out_df <- do.call("rbind", out)

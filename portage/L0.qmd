@@ -16,6 +16,16 @@ format:
 editor: visual
 ---
 
+This script
+
+-   Reads in the raw data files one by one
+
+-   Extracts `Logger` and `Table` information from the header and adds them as columns
+
+-   Writes as CSV files
+
+-   Moves the raw files to a Raw_done folder
+
 ## Initializing
 
 ```{r}

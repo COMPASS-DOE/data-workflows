@@ -72,6 +72,7 @@ write_to_folders <- function(x, root_dir, data_level, site, logger, table, quiet
                 } else {
                     stop("Unkown data_level ", data_level)
                 }
+
                 if(!quiet) message("Writing ", nrow(dat), "/", nrow(x), " rows of data to ",
                                    basename(folder), "/", filename)
 

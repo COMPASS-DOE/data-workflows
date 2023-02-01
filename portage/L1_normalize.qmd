@@ -16,6 +16,16 @@ format:
 editor: visual
 ---
 
+This script
+
+-   Reads in the L0 files one by one
+
+-   Reshapes from wide to long; only `Logger`, `Table`, and `TIMESTAMP` don't get reshaped
+
+-   Joins with the design table, adding `Site` and `design_link` columns
+
+-   Writes into \<year\>\_*\<*month*\>*\_\<site\> folders
+
 ## Initializing
 
 ```{r}
