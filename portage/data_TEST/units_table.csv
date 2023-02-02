@@ -1,0 +1,14 @@
+sensor,variable,research_name,conversion,old_unit,new_unit,description
+Sapflow,NA,sapflow,x * 1,?,?,
+Teros,VWC,,(3.879*10^-4) * x - 0.6956,m3/m3,m3/m3,calibration equation for mineral soil VWC
+Teros,TSOIL,,x * 1,degC,degC,
+Teros,EC,,,dS/m,uS/cm,
+AquaTroll,Temperature600,sw_temperature,x * 1,degC,degC,"temperature, water"
+AquaTroll,Specific_Conductivity600,,x * 1,μS/cm,μS/cm,
+AquaTroll,Salinity600,,x * 1,PSU,PSU,salinity
+AquaTroll,Water_Density600,,x * 1,g/cm3,g/cm3,water_density
+AquaTroll,pH600,,x * 1,unitless,unitless,"ph, water"
+AquaTroll,pH_ORP600,,x * 1,mV,mV,ph_orp
+AquaTroll,RDO_concen600,,x * 1,mg/L,mg/L,rdo_concentration
+AquaTroll,Pressure600,sw_pressure,x * 68.948,psi,mbar,pressure
+AquaTroll,water level,,,m,m,water level below ground surface

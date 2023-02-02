@@ -6,5 +6,5 @@ Portage,Compass_PTR_UP_313,SapflowA,Statname,,
 Portage,Compass_PTR_UP_313,SapflowA,BattV-Avg,Logger-PTR-UP,voltage
 Portage,Compass_PTR_UP_313,SapflowA,DiffVoltA_Avg({1:8}),SF-PTR-UP-0{1:8},sapflow
 Portage,Compass_PTR_UP_313,SapflowA,DiffVoltA_Avg({9:12}),"SF-PTR-UP-0{1,2,3,8}D",sapflow_deep
-Portage,Compass_PTR_UP_313,WaterLevel600A,Barometric_Pressure600A,WL-BPress-UP,pressure
-Portage,Compass_PTR_UP_313,WaterLevel600A,Temperature600A,WL-Temp-UP,temperature
+Portage,Compass_PTR_UP_313,WaterLevel600A,Barometric_Pressure600A,WL-BPress-UP,sw_pressure
+Portage,Compass_PTR_UP_313,WaterLevel600A,Temperature600A,WL-Temp-UP,sw_temperature

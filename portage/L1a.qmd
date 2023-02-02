@@ -6,6 +6,7 @@ params:
   L1_normalize: "data_TEST/L1_normalize/"
   L1a: "data_TEST/L1a/"
   plot_table: "data_TEST/plot_table.csv"
+  units_table: "data_TEST/units_table.csv"
   timestamp_round: "15 minutes"
   html_outfile: "L1a.html"
   logfile: ""
@@ -21,7 +22,9 @@ This script
 
 -   Reads in all the L1_normalize files by year/month/site
 
--   Performs unit conversion and bounds checking (adding flags) for each \`research_name\` variable
+-   Performs unit conversion
+
+-   Performs bounds checking (adding flags) for each \`research_name\` variable
 
 -   Computes new variables: x, y, z
 
@@ -43,6 +46,8 @@ if(!exists("scan_folders")) {
 pt <- read_csv(params$plot_table, col_types = "cccc")
 pt_ex <- expand_df(pt)
 
+ut <- read_csv(params$units_table, col_types = "ccccccc")
+ut <- filter(ut, !is.na(research_name))
 source("helpers.R")
 
 dirs_to_process <- scan_folders(params$L1_normalize)
@@ -52,9 +57,41 @@ I see `r length(dirs_to_process)` directories to process.
 
 Plot table is `r nrow(pt)` rows, `r nrow(pt_ex)` after expansion.
 
+Units table is "`r params$units_table`" and has `r nrow(ut)` rows with conversion strings.
+
 HTML outfile is "`r params$html_outfile`".
 
 ## Processing
+
+```{r}
+# do unit conversion for data frame and unit conversion table:
+# isolate the various research_name entries one by one, find corresponding
+# conversion string, evaluate it against the whole `value` data column
+do_unit_conversion <- function(dat, ut) {
+    dat_conv <- list()
+    for(rn in unique(dat$research_name)) {
+        d <- dat[dat$research_name == rn,] # filter
+        x <- d$value
+        which_ut <- which(ut$research_name == rn)
+        # Isolate conversion string
+        if(length(which_ut) == 0) {
+            conv <- "<not found>"        
+        } else if(length(which_ut) == 1) {
+            conv <- ut$conversion[which_ut]
+            # ...and evaluate it
+            d$value_conv <- eval(parse(text = conv))
+            d$units <- ut$new_unit[which_ut]
+        } else {
+            stop("Multiple conversions for ", rn)
+        }
+        
+        message("\t\tUC: ", rn, " n=", nrow(d), ", conv=", conv)
+        
+        dat_conv[[rn]] <- d
+    }
+    bind_rows(dat_conv)
+}
+```
 
 ```{r}
 overwrites <- 0
@@ -91,9 +128,9 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     file_read_smry <<- rbind(file_read_smry, smry)
     
     message("\tDoing unit conversion")
-    # Do unit conversion
+    dat <- do_unit_conversion(dat, ut)
     
-    message("\tAdding units and OOB flags")
+    message("\tAdding OOB flags")
     # Create out-of-bounds flags
     dat$OOB <- 0 # temporary
     dat$Units <- "units" # temporary
