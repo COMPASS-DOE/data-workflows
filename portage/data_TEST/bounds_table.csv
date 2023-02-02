@@ -1,0 +1,15 @@
+sensor,variable,research_name,units,low,high
+Sapflow,NA,sapflow,,,
+Teros,VWC,,,0,1
+Teros,TSOIL,,degC,-40,60
+Teros,EC,,,0,20000
+AquaTroll,Temperature600,sw_temperature,degC,-5,50
+AquaTroll,Specific_Conductivity600,,μS/cm,0,350000
+AquaTroll,Salinity600,,PSU,0,350
+AquaTroll,Water_Density600,,g/cm3,,
+AquaTroll,pH600,,unitless,0,14
+AquaTroll,pH_ORP600,,mV,-1400,1400
+AquaTroll,RDO_concen600,,mg/L,0,20
+AquaTroll,Pressure600,sw_pressure,mbar,,
+AquaTroll,water level,,m,-7,3
+Aquatroll,Timestamp,,,,

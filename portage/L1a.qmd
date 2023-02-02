@@ -7,6 +7,7 @@ params:
   L1a: "data_TEST/L1a/"
   plot_table: "data_TEST/plot_table.csv"
   units_table: "data_TEST/units_table.csv"
+  bounds_table: "data_TEST/bounds_table.csv"
   timestamp_round: "15 minutes"
   html_outfile: "L1a.html"
   logfile: ""
@@ -47,6 +48,13 @@ pt_ex <- expand_df(pt)
 
 ut <- read_csv(params$units_table, col_types = "ccccccc")
 ut <- filter(ut, !is.na(research_name))
+
+read_csv(params$bounds_table, col_types = "cccccc") %>% 
+    filter(!is.na(research_name), !is.na(units)) %>% 
+    select(research_name, units, low, high) %>% 
+    mutate(low = as.numeric(low), high = as.numeric(high)) ->
+    bt
+
 source("helpers.R")
 
 dirs_to_process <- scan_folders(params$L1_normalize)
@@ -57,6 +65,8 @@ I see `r length(dirs_to_process)` directories to process.
 Plot table is `r nrow(pt)` rows, `r nrow(pt_ex)` after expansion.
 
 Units table is "`r params$units_table`" and has `r nrow(ut)` rows with conversion strings.
+
+Bounds table is "`r params$bounds_table`" and has `r nrow(bt)` rows with bounds.
 
 HTML outfile is "`r params$html_outfile`".
 
@@ -97,15 +107,20 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     file_read_smry <<- rbind(file_read_smry, smry)
     
     message("\tDoing unit conversion")
-    dat <- unit_conversion(dat, ut)
+    dat <- compasstools::unit_conversion(dat, ut)
+    dat <- rename(dat, value_raw = value, value = value_conv)
+    dat$value_conv <- NULL
     
-    message("\tAdding OOB flags")
     # Create out-of-bounds flags
-    dat$OOB <- 0 # temporary
-    dat$Units <- "units" # temporary
-
+    message("\tAdding OOB flags")
+    dat %>% 
+        left_join(bt, by = c("research_name", "units")) %>% 
+        mutate(OOB = value < low | value > high) %>% 
+        select(-low, -high) ->
+        dat
+    
     # Round timestamps
-    dat$TIMESTAMP_R <- round_date(dat$TIMESTAMP, params$timestamp_round)
+    dat$TIMESTAMP <- round_date(dat$TIMESTAMP, params$timestamp_round)
     message("\tRounded timestamps to nearest ", params$timestamp_round)
     
     message("\tComputing new variables")
@@ -123,10 +138,11 @@ f <- function(dir_name, dirs_to_process, out_dir) {
         summarise(TS_min = min(TIMESTAMP), 
                   TS_max = max(TIMESTAMP), 
                   Vars = length(unique(research_name)),
+                  OOB = sum(OOB, na.rm = TRUE),
                   .groups = "drop") %>% 
         mutate(Dir = basename(dir_name), 
                Note = "") %>%
-        select(Dir, Site, Plot, Vars, TS_min, TS_max, Note) ->
+        select(Dir, Site, Plot, Vars, OOB, TS_min, TS_max, Note) ->
         smry
 
        # Error check
@@ -148,7 +164,7 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     
     # Put columns in Site, Plot, Tree, TIMESTAMP_R, research_name, value,
     # and then <others alphabetized> order
-    lefts <- c("Site", "Plot", "Tree", "TIMESTAMP_R", "research_name", "value")
+    lefts <- c("Site", "Plot", "Tree", "TIMESTAMP", "research_name", "value")
     dat_mrg <- dat_mrg[c(lefts, sort(setdiff(names(dat_mrg), lefts)))]
     
     write_to_folders(dat_mrg, root_dir = out_dir, data_level = "L1a",
