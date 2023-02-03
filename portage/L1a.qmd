@@ -123,10 +123,15 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     dat$TIMESTAMP <- round_date(dat$TIMESTAMP, params$timestamp_round)
     message("\tRounded timestamps to nearest ", params$timestamp_round)
     
-    message("\tComputing new variables")
+    message("\tComputing derived variables")
     # Compute new variables
-
+    # 1. CSV file defines list of derived variables and what they need
+    # 2. Code isolates data needed, puts into wide form
+    #       just site, plot, tree, timestamp, research_name, value
+    # 3. Function (called based on name in CSV file) is called, returns new values
+    #       and new assigned design_link and research_name
     # Do the plot table merge
+    
     message("\tJoining with plot table")
     dat %>% 
         left_join(pt_ex, by = c("Site", "design_link")) ->

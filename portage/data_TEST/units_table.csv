@@ -1,5 +1,6 @@
 sensor,variable,research_name,conversion,old_unit,new_unit,description
 Sapflow,NA,sapflow,x * 1,?,?,
+Sapflow,NA,sapflow_deep,x * 1,?,?,
 Teros,VWC,,(3.879*10^-4) * x - 0.6956,m3/m3,m3/m3,calibration equation for mineral soil VWC
 Teros,TSOIL,,x * 1,degC,degC,
 Teros,EC,,,dS/m,uS/cm,

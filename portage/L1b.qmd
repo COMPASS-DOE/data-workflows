@@ -3,12 +3,10 @@ title: "L1b"
 author: "COMPASS workflows team"
 title-block-banner: true
 params:
-  L1a: "data/L1a/"
-  L1b: "data/L1b/"
-  plot_table: "data/plot_table.csv"
+  L1a: "data_TEST/L1a/"
+  L1b: "data_TEST/L1b/"
   html_outfile: "L1b.html"
   logfile: ""
-  date_round: "15 minutes"
 date: now
 date-format: "YYYY-MM-DD HH:mm:ssZ"
 format: 
@@ -30,8 +28,6 @@ if(!exists("scan_folders")) {
     stop("Please update to latest version of compasstools!\n",
          "devtools::install_github('COMPASS-DOE/compasstools')")
 }
-pt <- read_csv(params$plot_table)
-pt_ex <- expand_df(pt)
 
 source("helpers.R")
 
@@ -39,8 +35,6 @@ dirs_to_process <- scan_folders(params$L1a)
 ```
 
 I see `r length(dirs_to_process)` directories to process.
-
-Plot table is `r nrow(pt)` rows, `r nrow(pt_ex)` after expansion.
 
 HTML outfile is "`r params$html_outfile`".
 
@@ -61,7 +55,7 @@ f <- function(dir_name, dirs_to_process, out_dir) {
         # these files should all have same columns and types:
         # Logger, Table, TIMESTAMP, loggernet_variable, 
         # design_link, research_name, OOB, and Units
-        x <- try(read_csv(fn, col_types = "ccTcdcccic"))
+        x <- try(read_csv(fn))
         if(!is.data.frame(x)) {
             errors <<- errors + 1
             return(NULL)
@@ -72,66 +66,31 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     lapply(dirs_to_process[[dir_name]], readf) %>% 
         bind_rows() ->
         dat
+    
+    # File-based summary
     message("\tTotal data: ", nrow(dat), " rows, ", ncol(dat), " columns")
-    
-    # Round timestamps
-    # We do this to standardize, but also so that the pivot_wider below works cleanly
-    dat$TIMESTAMP <- round_date(dat$TIMESTAMP, params$date_round)
-    message("\tRounded timestamps to nearest ", params$date_round)
-    
-    # Do the plot table merge
+    smry <- data.frame(Dir = dir_name, Files = length(dirs_to_process[[dir_name]]), 
+                       Rows = nrow(dat), note = "")
+
+    # Separate OOB flags for reshaping
     dat %>% 
-        left_join(pt_ex, by = c("Site", "design_link")) ->
-        dat_mrg
+        select(TIMESTAMP, Site, Plot, Tree, research_name, OOB) %>% 
+        pivot_wider(names_from = "research_name", 
+                    values_from = "OOB", 
+                    names_prefix = "OOB_") ->
+        OOBs
     
-    # Summary
-    dat_mrg %>% 
-        group_by(Site, Plot) %>% 
-        summarise(TS_min = min(TIMESTAMP), 
-                  TS_max = max(TIMESTAMP), 
-                  n = n(), .groups = "drop") %>% 
-        mutate(Dir = basename(dir_name), 
-               Files = length(dirs_to_process[[dir_name]]),
-               Note = "") %>%
-        select(Dir, Site, Plot, Files, n, TS_min, TS_max, Note) ->
-        smry
+    # Reshape to wide form, with one experimental unit (here, tree) per row
+    dat %>% 
+        mutate(research_name_units = paste(research_name, units, sep = "_")) %>% 
+        select(TIMESTAMP, value, research_name_units, Site, Plot, Tree) %>% 
+        pivot_wider(names_from = "research_name_units", values_from = "value") %>% 
+        left_join(OOBs, by = c("TIMESTAMP", "Site", "Plot", "Tree")) ->
+        dat_final
     
-    # Error check
-    # There should be only one research_name for each timestamp/site/plot/tree
-    dat_mrg %>% 
-        group_by(TIMESTAMP, Site, Plot, Tree, research_name) %>% 
-        summarise(n = n(), .groups = "drop") %>% 
-        filter(n > 1) %>% 
-        mutate(Dir = basename(dir_name)) ->
-        dat_mrg_problems
-    
-    if(nrow(dat_mrg_problems)) {
-        dat_issues <<- dat_issues + 1
-        message("There are duplicate research_names associated with each site/plot/tree")
-        dat_mrg_problems$TIMESTAMP <- NULL
-        print(distinct(dat_mrg_problems))
-        smry$Note <- "Problems!"
-    } else {
-        # Separate OOB flags for reshaping
-        dat_mrg %>% 
-            select(TIMESTAMP, Site, Plot, Tree, research_name, OOB) %>% 
-            pivot_wider(names_from = "research_name", 
-                        values_from = "OOB", 
-                        names_prefix = "OOB_") ->
-            OOBs
-        
-        # Reshape to wide form, with one experimental unit (here, tree) per row
-        dat_mrg %>% 
-            mutate(research_name_units = paste(research_name, Units, sep = "_")) %>% 
-            select(TIMESTAMP, value, research_name_units, Site, Plot, Tree) %>% 
-            pivot_wider(names_from = "research_name_units", values_from = "value") %>% 
-            left_join(OOBs, by = c("TIMESTAMP", "Site", "Plot", "Tree")) ->
-            dat_mrg_final
-        
-        # Write out to L1b/
-        write_to_folders(dat_mrg_final, root_dir = out_dir, data_level = "L1b",
-                         site = dat_mrg_final$Site[1], logger = "", table = "")
-    }
+    # Write out to L1b/
+    write_to_folders(dat_final, root_dir = out_dir, data_level = "L1b",
+                     site = dat_final$Site[1], logger = "", table = "")
     
     return(smry)
 }

@@ -116,7 +116,6 @@ outfile <- file.path(LOGS, outfile)
 quarto_render("L1b.qmd",
               execute_params = list(L1a = L1A,
                                     L1b = L1B,
-                                    plot_table = pt,
                                     html_outfile = outfile,
                                     logfile = LOGFILE))
 copy_output("L1b.html", outfile)
