@@ -28,9 +28,11 @@ This script
 
 -   Performs bounds checking (adding flags) for each \`research_name\` variable
 
+-   Rounds timestsamps
+
 -   Computes new variables: x, y, z
 
--   Join with plot table
+-   Joins with plot table
 
 ## Initializing
 
