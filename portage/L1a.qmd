@@ -168,10 +168,14 @@ f <- function(dir_name, dirs_to_process, out_dir) {
         message("\t\t", new_rn, " <- ", nvt$needs_research_names[i],
                 " (using ", nrow(dat_subset), " rows)")
         
+        # Call the computation function based on the name of the new variable
         # New variable functions MUST add "value" and "units" columns; optionally "OOB"
         dat_subset <- do.call(paste0("NEWVAR_", new_rn), list(dat_subset))
+        # Clean up: add research_name...
         dat_subset$research_name <- new_rn
-        dat_subset[rn_needed] <- NULL  # drop old research names
+        # remove old research name columns (from the pivot_wider above)
+        dat_subset[rn_needed] <- NULL
+        # ...and add information entries in the design_link and Logger columns 
         if("design_link" %in% names(dat_mrg)) dat_subset$design_link <- "<derived>"
         if("Logger" %in% names(dat_mrg)) dat_subset$Logger <- "<derived>"
         # This is inefficient but assuming we won't have many
@@ -179,7 +183,6 @@ f <- function(dir_name, dirs_to_process, out_dir) {
         dat_mrg <- bind_rows(dat_mrg, dat_subset)
     }
  
-    
     # Plot table-based summary
     dat_mrg %>% 
         group_by(Site, Plot) %>% 
