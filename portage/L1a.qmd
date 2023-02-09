@@ -8,6 +8,7 @@ params:
   plot_table: "data_TEST/plot_table.csv"
   units_table: "data_TEST/units_table.csv"
   bounds_table: "data_TEST/bounds_table.csv"
+  newvars_table: "data_TEST/newvars_table.csv"
   timestamp_round: "15 minutes"
   html_outfile: "L1a.html"
   logfile: ""
@@ -55,6 +56,8 @@ read_csv(params$bounds_table, col_types = "cccccc") %>%
     mutate(low = as.numeric(low), high = as.numeric(high)) ->
     bt
 
+nvt <- read_csv(params$newvars_table, col_types = "cc")
+
 source("helpers.R")
 
 dirs_to_process <- scan_folders(params$L1_normalize)
@@ -68,9 +71,24 @@ Units table is "`r params$units_table`" and has `r nrow(ut)` rows with conversio
 
 Bounds table is "`r params$bounds_table`" and has `r nrow(bt)` rows with bounds.
 
+New variables table is "`r params$newvars_table`" and has `r nrow(nvt)` rows.
+
 HTML outfile is "`r params$html_outfile`".
 
 ## Processing
+
+```{r newvar_code}
+#| include: false
+
+# This chunk holds dedicated functions to compute new variables
+# These must be names "NEWVAR_[new_research_name]", where "new_research_name" is
+# given in the new variables CSV files
+NEWVAR_sapflow_avg <- function(x) {
+    x$value <- (x$sapflow + x$sapflow_deep) / 2.0
+    x$units <- "??"
+    return(x)
+}
+```
 
 ```{r}
 overwrites <- 0
@@ -120,23 +138,40 @@ f <- function(dir_name, dirs_to_process, out_dir) {
         dat
     
     # Round timestamps
+    message("\tRounding timestamps to nearest ", params$timestamp_round)
     dat$TIMESTAMP <- round_date(dat$TIMESTAMP, params$timestamp_round)
-    message("\tRounded timestamps to nearest ", params$timestamp_round)
-    
-    message("\tComputing derived variables")
-    # Compute new variables
-    # 1. CSV file defines list of derived variables and what they need
-    # 2. Code isolates data needed, puts into wide form
-    #       just site, plot, tree, timestamp, research_name, value
-    # 3. Function (called based on name in CSV file) is called, returns new values
-    #       and new assigned design_link and research_name
-    # Do the plot table merge
     
     message("\tJoining with plot table")
     dat %>% 
-        left_join(pt_ex, by = c("Site", "design_link")) ->
+        left_join(pt_ex, by = c("Site", "design_link")) %>% 
+        select(-Table, -loggernet_variable) ->
         dat_mrg
 
+    # Compute new (derived) variables
+    message("\tComputing derived variables")
+    for(i in seq_len(nrow(nvt))) {
+        new_rn <- nvt$new_research_name[i]
+        rn_needed <- strsplit(nvt$needs_research_names[i], ",", fixed = TRUE)[[1]]
+        # Isolate needed data and site/plot/tree/timestamp
+        dat_mrg %>% 
+            filter(research_name %in% rn_needed) %>% 
+            select(Site, Plot, Tree, TIMESTAMP, research_name, value) %>% 
+            pivot_wider(names_from = "research_name", values_from = "value") ->
+            dat_subset
+
+        message("\t\t", new_rn, " <- ", nvt$needs_research_names[i],
+                " (using ", nrow(dat_subset), " rows)")
+        
+        # New variable functions MUST add "value" and "units" columns; optionally "OOB"
+        dat_subset <- do.call(paste0("NEWVAR_", new_rn), list(dat_subset))
+        dat_subset$research_name <- new_rn
+        dat_subset[rn_needed] <- NULL  # drop old research names
+        # This is inefficient but assuming we won't have many
+        # Also, new variables might be needed by further ones?!?
+        dat_mrg <- bind_rows(dat_mrg, dat_subset)
+    }
+ 
+    
     # Plot table-based summary
     dat_mrg %>% 
         group_by(Site, Plot) %>% 
@@ -150,7 +185,7 @@ f <- function(dir_name, dirs_to_process, out_dir) {
         select(Dir, Site, Plot, Vars, OOB, TS_min, TS_max, Note) ->
         smry
 
-       # Error check
+    # Error check
     # There should be only one research_name for each timestamp/site/plot/tree
     dat_mrg %>% 
         group_by(TIMESTAMP, Site, Plot, Tree, research_name) %>% 
