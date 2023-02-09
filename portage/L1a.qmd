@@ -35,6 +35,8 @@ This script
 ## Initializing
 
 ```{r}
+#| include: false
+
 library(tidyr)
 library(dplyr)
 library(readr)
@@ -81,8 +83,12 @@ HTML outfile is "`r params$html_outfile`".
 #| include: false
 
 # This chunk holds dedicated functions to compute new variables
-# These must be names "NEWVAR_[new_research_name]", where "new_research_name" is
+# These must be named "NEWVAR_[new_research_name]", where "new_research_name" is
 # given in the new variables CSV files
+# Functions must return the data frame they're given, with "value" and "units" columns added
+# (Optional: "OOB" column)
+
+# Compute sapflow_avg, the average of shallow and deep sapflow values
 NEWVAR_sapflow_avg <- function(x) {
     x$value <- (x$sapflow + x$sapflow_deep) / 2.0
     x$units <- "??"
@@ -166,6 +172,8 @@ f <- function(dir_name, dirs_to_process, out_dir) {
         dat_subset <- do.call(paste0("NEWVAR_", new_rn), list(dat_subset))
         dat_subset$research_name <- new_rn
         dat_subset[rn_needed] <- NULL  # drop old research names
+        if("design_link" %in% names(dat_mrg)) dat_subset$design_link <- "<derived>"
+        if("Logger" %in% names(dat_mrg)) dat_subset$Logger <- "<derived>"
         # This is inefficient but assuming we won't have many
         # Also, new variables might be needed by further ones?!?
         dat_mrg <- bind_rows(dat_mrg, dat_subset)
