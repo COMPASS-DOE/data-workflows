@@ -40,8 +40,8 @@ copy_output <- function(from, to, overwrite = TRUE) {
 # Read a vector of CSV files with the same column structure, optionally
 # removing them as we read, and bind data together. The read error count
 # is returned as an attribute of the output
-read_file_group <- function(files, col_types = NULL,
-                            remove_input_files = FALSE, quiet = FALSE) {
+read_csv_group <- function(files, col_types = NULL,
+                           remove_input_files = FALSE, quiet = FALSE) {
     errors <- 0
 
     # Read in all files and bind data frames

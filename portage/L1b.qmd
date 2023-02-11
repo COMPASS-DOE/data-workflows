@@ -51,8 +51,8 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     message(Sys.time(), " Processing ", basename(dir_name))
     message("\tIt has ", length(dirs_to_process[[dir_name]]), " files")
     
-    dat <- read_file_group(dirs_to_process[[dir_name]],
-                           remove_input_files = params$remove_input_files)
+    dat <- read_csv_group(dirs_to_process[[dir_name]],
+                          remove_input_files = params$remove_input_files)
     errors <<- errors + attr(dat, "errors")
     
     # File-based summary
