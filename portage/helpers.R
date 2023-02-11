@@ -37,6 +37,30 @@ copy_output <- function(from, to, overwrite = TRUE) {
 }
 
 
+# Read a vector of CSV files with the same column structure, optionally
+# removing them as we read, and bind data together. The read error count
+# is returned as an attribute of the output
+read_file_group <- function(files, col_types = NULL,
+                            remove_input_files = FALSE, quiet = FALSE) {
+    errors <- 0
+
+    # Read in all files and bind data frames
+    readf <- function(fn) {
+        if(!quiet) message("\tReading ", basename(fn))
+        x <- try(read_csv(fn, col_types = col_types))
+        if(!is.data.frame(x)) {
+            errors <- errors + 1
+            return(NULL)
+        }
+        if(remove_input_files) file.remove(fn)
+        x
+    }
+    # Store the number of errors as an attribute of the data and return
+    dat <- bind_rows(lapply(files, readf))
+    attr(dat, "errors") <- errors
+    dat
+}
+
 # File data into sub-folders based on logger and date
 # The data should be a data frame with a 'TIMESTAMP' column
 # Sort into <yyyy>_<mm>_<logger> folders, splitting apart as needed

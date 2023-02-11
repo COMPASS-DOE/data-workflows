@@ -5,6 +5,7 @@ title-block-banner: true
 params:
   html_outfile: "L0.html"
   raw: "data_TEST/Raw/"
+  remove_input_files: false
   raw_done: "data_TEST/Raw_done/"
   L0: "data_TEST/L0/"
   logfile: ""
@@ -29,6 +30,8 @@ This script
 ## Initializing
 
 ```{r}
+#| include: false
+
 library(compasstools)
 if(!exists("read_datalogger_file")) {
     stop("Please update to latest version of compasstools!\n",
@@ -69,14 +72,11 @@ f <- function(fn, new_dir) {
             note <- "Overwriting existing file!"
             overwrites <<- overwrites + 1
         }
-        err <- try(write.csv(dat, file.path(new_dir, new_fn), row.names = FALSE))
-        if(is.null(err)) {
-            # Move to 'Raw_done' folder
-            #file.copy(fn, file.path(params$raw_done, basefn), overwrite = FALSE) # TODO
-            #file.remove(fn)  # TODO
-        } else {
-            note <- "Write error"
-            errors <<- errors + 1
+        write.csv(dat, file.path(new_dir, new_fn), row.names = FALSE)
+        # Move to 'Raw_done' folder
+        if(params$remove_input_files) {
+            file.copy(fn, file.path(params$raw_done, basefn), overwrite = FALSE)
+            file.remove(fn)
         }
     } else {
         note <- "Read error"

@@ -4,6 +4,7 @@ author: "COMPASS workflows team"
 title-block-banner: true
 params:
   L1_normalize: "data_TEST/L1_normalize/"
+  remove_input_files: false
   L1a: "data_TEST/L1a/"
   plot_table: "data_TEST/plot_table.csv"
   units_table: "data_TEST/units_table.csv"
@@ -30,7 +31,7 @@ This script
 
 -   Rounds timestsamps
 
--   Computes new variables: x, y, z
+-   Computes new variables: `sapflow_avg` (a test)
 
 -   Joins with plot table
 
@@ -85,10 +86,10 @@ HTML outfile is "`r params$html_outfile`".
 #| include: false
 
 # This chunk holds dedicated functions to compute new variables
-# These must be named "NEWVAR_[new_research_name]", where "new_research_name" is
-# given in the new variables CSV files
-# Functions must return the data frame they're given, with "value" and "units" columns added
-# (Optional: "OOB" column)
+# These must be named "NEWVAR_[new_research_name]", where "new_research_name"
+# is given in the new variables CSV files
+# Functions must return the data frame they're given, with "value" and "units" 
+# columns added (optionally, also a "OOB" column)
 
 # Compute sapflow_avg, the average of shallow and deep sapflow values
 NEWVAR_sapflow_avg <- function(x) {
@@ -108,23 +109,10 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     message(Sys.time(), " Processing ", basename(dir_name))
     message("\tIt has ", length(dirs_to_process[[dir_name]]), " files")
     
-    # Read in all files and bind data frames
-    readf <- function(fn) {
-        message("\tReading ", basename(fn))
-        # these files should all have same columns and types:
-        # Logger, Table, TIMESTAMP, loggernet_variable, 
-        # design_link, research_name, OOB, and Units
-        x <- try(read_csv(fn, col_types = "ccTcdcccic"))
-        if(!is.data.frame(x)) {
-            errors <<- errors + 1
-            return(NULL)
-        }
-        #file.remove(fn)
-        x
-    }
-    lapply(dirs_to_process[[dir_name]], readf) %>% 
-        bind_rows() ->
-        dat
+    dat <- read_file_group(dirs_to_process[[dir_name]],
+                           remove_input_files = params$remove_input_files, 
+                           col_types = "ccTcdcccic")
+    errors <<- errors + attr(dat, "errors")
     
     # File-based summary
     message("\tTotal data: ", nrow(dat), " rows, ", ncol(dat), " columns")

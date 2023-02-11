@@ -4,6 +4,7 @@ author: "COMPASS workflows team"
 title-block-banner: true
 params:
   L0: "data_TEST/L0/"
+  remove_input_files: false
   html_outfile: "L1_normalize.html"
   L1_normalize: "data_TEST/L1_normalize/"
   design_table: "data_TEST/design_table.csv"
@@ -29,7 +30,8 @@ This script
 ## Initializing
 
 ```{r}
-#| output: false
+#| include: false
+
 library(tidyr)
 library(dplyr)
 library(readr)
@@ -114,6 +116,8 @@ f <- function(fn, out_dir, design_table) {
                      site = dat_long$Site[1], 
                      logger = dat_long$Logger[1], table = dat_long$Table[1])
 
+    if(params$remove_input_files) file.remove(fn)
+    
     return(smry)
 }
 

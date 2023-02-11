@@ -4,6 +4,7 @@ author: "COMPASS workflows team"
 title-block-banner: true
 params:
   L1a: "data_TEST/L1a/"
+  remove_input_files: false
   L1b: "data_TEST/L1b/"
   html_outfile: "L1b.html"
   logfile: ""
@@ -18,7 +19,8 @@ editor: visual
 ## Initializing
 
 ```{r}
-#| output: false
+#| include: false
+
 library(tidyr)
 library(dplyr)
 library(readr)
@@ -49,23 +51,9 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     message(Sys.time(), " Processing ", basename(dir_name))
     message("\tIt has ", length(dirs_to_process[[dir_name]]), " files")
     
-    # Read in all files and bind data frames
-    readf <- function(fn) {
-        message("\tReading ", basename(fn))
-        # these files should all have same columns and types:
-        # Logger, Table, TIMESTAMP, loggernet_variable, 
-        # design_link, research_name, OOB, and Units
-        x <- try(read_csv(fn))
-        if(!is.data.frame(x)) {
-            errors <<- errors + 1
-            return(NULL)
-        }
-        #file.remove(fn)
-        x
-    }
-    lapply(dirs_to_process[[dir_name]], readf) %>% 
-        bind_rows() ->
-        dat
+    dat <- read_file_group(dirs_to_process[[dir_name]],
+                           remove_input_files = params$remove_input_files)
+    errors <<- errors + attr(dat, "errors")
     
     # File-based summary
     message("\tTotal data: ", nrow(dat), " rows, ", ncol(dat), " columns")
