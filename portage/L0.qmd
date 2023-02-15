@@ -23,7 +23,7 @@ This script
 
 -   Extracts `Logger` and `Table` information from the header and adds them as columns
 
--   Writes as CSV files
+-   Writes as CSV files with row/col/hash info in filename
 
 -   Moves the raw files to a Raw_done folder
 
@@ -63,10 +63,16 @@ errors <- 0
 f <- function(fn, new_dir) {
     basefn <- basename(fn)
     message(Sys.time(), " Processing ", basefn)
+    # Try to read in the data; if it doesn't work, we won't get a data frame back
     dat <- try(compasstools::read_datalogger_file(fn))
-    new_fn <- gsub("\\.dat$", "_L0\\.csv", basefn)
-    note <- ""
+    # Construct the new filename: old filename + nrow + ncol + hash
+    # This is so we can distinguish datasets with identical raw filename but
+    # differing data contents (can happen sometimes with dataloggers)
+    stripped_fn <- gsub("\\.dat$", "", basefn)
+    short_hash <- substr(digest::digest(dat), 1, 6)
+    new_fn <- paste0(stripped_fn, "_", nrow(dat), "_", ncol(dat), "_", short_hash, ".csv")
     if(is.data.frame(dat)) {
+        note <- ""
         message("\tWriting ", new_fn)
         if(file.exists(file.path(new_dir, new_fn))) {
             note <- "Overwriting existing file!"
@@ -82,11 +88,13 @@ f <- function(fn, new_dir) {
         note <- "Read error"
         errors <<- errors + 1
     }
+    # Return an informational data frame about file processed, dimensions, etc.
     data.frame(File = basefn,
                Logger = dat$Logger[1],
                Table = dat$Table[1],
                Rows = nrow(dat),
                Columns = ncol(dat),
+               Hash = short_hash,
                Note = note)
 }
 
@@ -120,3 +128,4 @@ knitr::kable(out_df)
 ```{r}
 sessionInfo()
 ```
+
