@@ -8,6 +8,7 @@ params:
   html_outfile: "L1_normalize.html"
   L1_normalize: "data_TEST/L1_normalize/"
   design_table: "data_TEST/design_table.csv"
+  debug_design_links: true
   logfile: ""
 date: now
 date-format: "YYYY-MM-DD HH:mm:ssZ"
@@ -104,6 +105,16 @@ f <- function(fn, out_dir, design_table) {
         pull(loggernet_variable) ->
         top3_na_vars
     
+    # Write out a debug table with all the unique site-logger-table-variables we see 
+    if(params$debug_design_links) {
+        fn <- "designlinks.csv"
+        dat_long %>% 
+            select(Site, Logger, Table, loggernet_variable, design_link) %>% 
+            distinct() %>% 
+            readr::write_csv(fn, append = file.exists(fn))
+    }
+    
+    # Summary information
     smry$Pivoted_rows <- nrow_orig
     smry$Joined_rows <- nrow(dat_long)
     smry$dl_NA <- sum(is.na(dat_long$design_link))
@@ -153,3 +164,4 @@ knitr::kable(out_df)
 ```{r}
 sessionInfo()
 ```
+

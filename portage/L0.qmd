@@ -70,7 +70,7 @@ f <- function(fn, new_dir) {
     # differing data contents (can happen sometimes with dataloggers)
     stripped_fn <- gsub("\\.dat$", "", basefn)
     short_hash <- substr(digest::digest(dat), 1, 6)
-    new_fn <- paste0(stripped_fn, "_", nrow(dat), "_", ncol(dat), "_", short_hash, ".csv")
+    new_fn <- paste0(stripped_fn, "_", nrow(dat), "x", ncol(dat), "_", short_hash, ".csv")
     if(is.data.frame(dat)) {
         note <- ""
         message("\tWriting ", new_fn)
@@ -128,4 +128,3 @@ knitr::kable(out_df)
 ```{r}
 sessionInfo()
 ```
-

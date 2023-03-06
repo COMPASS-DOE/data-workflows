@@ -8,3 +8,9 @@ Portage,Compass_PTR_UP_313,SapflowA,DiffVoltA_Avg({1:8}),SF-PTR-UP-0{1:8},sapflo
 Portage,Compass_PTR_UP_313,SapflowA,DiffVoltA_Avg({9:12}),"SF-PTR-UP-0{1,2,3,8}D",sapflow_deep
 Portage,Compass_PTR_UP_313,WaterLevel600A,Barometric_Pressure600A,WL-BPress-UP,sw_pressure
 Portage,Compass_PTR_UP_313,WaterLevel600A,Temperature600A,WL-Temp-UP,sw_temperature
+Portage,Compass_PTR_UP_313,TerosTableA,"TerosA({1:4},1)",SoilT-PTR-UP-0{1:4},soil_temp_10cm
+Portage,Compass_PTR_UP_313,TerosTableA,"TerosA({5:6},1)",SoilT-PTR-UP-0{5:6},soil_temp_30cm
+Portage,Compass_PTR_UP_313,TerosTableA,"TerosA({1:4},2)",SoilVWC-PTR-UP-0{1:4},soil_vwc_10cm
+Portage,Compass_PTR_UP_313,TerosTableA,"TerosA({5:6},2)",SoilVWC-PTR-UP-0{5:6},soil_vwc_30cm
+Portage,Compass_PTR_UP_313,TerosTableA,"TerosA({1:4},3)",SoilEC-PTR-UP-0{1:4},soil_EC_10cm
+Portage,Compass_PTR_UP_313,TerosTableA,"TerosA({5:6},3)",SoilEC-PTR-UP-0{5:6},soil_EC_30cm
