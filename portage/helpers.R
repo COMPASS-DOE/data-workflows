@@ -72,8 +72,8 @@ write_to_folders <- function(x, root_dir, data_level, site, logger, table, quiet
         for(y in unique(years)) {
             for(m in unique(months)) {
 
-                # Construct folder name (<year>_<month>_<site>) and create if necessary
-                folder <- file.path(root_dir, paste(y, m, site, sep = "_"))
+                # Construct folder name (<site>_<year>_<month>) and create if necessary
+                folder <- file.path(root_dir, paste(site, y, m, sep = "_"))
                 if(!dir.exists(folder)) {
                     # Create folder
                     if(!quiet) message("Creating ", basename(folder))
@@ -91,8 +91,8 @@ write_to_folders <- function(x, root_dir, data_level, site, logger, table, quiet
                     # L1_normalize data: <logger>_<table>_<year>_<month>
                     filename <- paste0(paste(logger, table, y, m, sep = "_"), ".csv")
                 } else if(data_level %in% c("L1b", "L1a")) {
-                    # L1a and L1b data: <site>_<year>_<month>
-                    filename <- paste0(paste(site, y, m, sep = "_"), ".csv")
+                    # L1a and L1b data: <site>_<year>_<month>_<level>
+                    filename <- paste0(paste(site, y, m, data_level, sep = "_"), ".csv")
                 } else {
                     stop("Unkown data_level ", data_level)
                 }

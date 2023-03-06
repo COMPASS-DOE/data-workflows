@@ -1,0 +1,12 @@
+Column,Description
+Logger,Datalogger name
+OOB,"Out of bounds flag (1/TRUE, 0/FALSE)"
+Plot,Plot name
+research_name,Measurement name
+Site,Site name
+TIMESTAMP,Rounded timestamp
+TIMESTAMP_raw,Original datalogger timestamp
+Tree,Tree name/code
+units,Units
+value,Observed value
+value_raw,Raw value from datalogger
