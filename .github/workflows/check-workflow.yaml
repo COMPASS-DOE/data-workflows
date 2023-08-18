@@ -4,7 +4,7 @@ on:
       - main
       - portage
 
-name: Check Portage data workflow
+name: Run test workflow
 
 jobs:
   render:
@@ -28,10 +28,11 @@ jobs:
       - uses: quarto-dev/quarto-actions/setup@v2
       - name: Install needed packages
         run: |
-          install.packages(c("dplyr", "tidyr", "remotes", "readr", "lubridate", "quarto"))
+          install.packages("quarto", repos = "https://cran.rstudio.com/")
+          install.packages(c("dplyr", "tidyr", "remotes", "readr", "lubridate"))
           remotes::install_github("COMPASS-DOE/compasstools")
         shell: Rscript {0}
-      - name: Check workflow
+      - name: Run workflow
         run: |
           cd portage/
           Rscript --verbose ./driver.R
