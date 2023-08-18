@@ -8,7 +8,6 @@ name: Check Portage data workflow
 
 jobs:
   render:
-    name: Check data workflow
     runs-on: ${{ matrix.config.os }}
 
     name: ${{ matrix.config.os }} (${{ matrix.config.r }})
