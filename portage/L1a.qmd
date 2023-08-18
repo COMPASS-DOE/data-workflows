@@ -49,8 +49,10 @@ if(!exists("scan_folders") | !exists("unit_conversion")) {
     stop("Please update to latest version of compasstools!\n",
          "devtools::install_github('COMPASS-DOE/compasstools')")
 }
+
+# For compactness, the plot table may have expansions
 pt <- read_csv(params$plot_table, col_types = "cccc")
-pt_ex <- expand_df(pt)
+pt_ex <- compasstools::expand_df(pt)
 
 ut <- read_csv(params$units_table, col_types = "ccccccc")
 ut <- filter(ut, !is.na(research_name))
@@ -87,7 +89,9 @@ HTML outfile is "`r params$html_outfile`".
 
 # This chunk holds dedicated functions to compute new variables
 # These must be named "NEWVAR_[new_research_name]", where "new_research_name"
-# is given in the new variables CSV files
+# is given in the `newvars_table` CSV file
+# Functions are given a data frame that is guaranteed to have needed variables
+# (research names) as defined in the `newvars_table` CSV file
 # Functions must return the data frame they're given, with "value" and "units" 
 # columns added (optionally, also a "OOB" column)
 
@@ -110,8 +114,8 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     message("\tIt has ", length(dirs_to_process[[dir_name]]), " files")
     
     dat_raw <- read_csv_group(dirs_to_process[[dir_name]],
-                          remove_input_files = params$remove_input_files, 
-                          col_types = "ccTcdcccic")
+                              remove_input_files = params$remove_input_files, 
+                              col_types = "ccTcdcccic")
     errors <<- errors + attr(dat_raw, "errors")
     
     # File-based summary
@@ -122,10 +126,8 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     
     # Remove duplicate rows (e.g. from multiple datalogger downloads)
     dat <- distinct(dat_raw)
-    if(nrow(dat) < nrow(dat_raw)) {
-        message("\tRemoved ", nrow(dat_raw) - nrow(dat), " duplicate rows")    
-    }
-    
+    message("\tRemoved ", nrow(dat_raw) - nrow(dat), " duplicate rows")    
+
     # Unit conversion
     message("\tDoing unit conversion")
     dat <- compasstools::unit_conversion(dat, ut)
@@ -153,7 +155,7 @@ f <- function(dir_name, dirs_to_process, out_dir) {
         left_join(pt_ex, by = c("Site", "design_link")) %>% 
         select(-Table, -loggernet_variable, -design_link) ->
         dat_mrg
-
+    
     # Compute new (derived) variables
     message("\tComputing derived variables")
     for(i in seq_len(nrow(nvt))) {
@@ -165,7 +167,7 @@ f <- function(dir_name, dirs_to_process, out_dir) {
             select(Site, Plot, Tree, TIMESTAMP, research_name, value) %>% 
             pivot_wider(names_from = "research_name", values_from = "value") ->
             dat_subset
-
+        
         message("\t\t", new_rn, " <- ", nvt$needs_research_names[i],
                 " (using ", nrow(dat_subset), " rows)")
         
@@ -183,7 +185,7 @@ f <- function(dir_name, dirs_to_process, out_dir) {
         # Also, new variables might be needed by further ones?!?
         dat_mrg <- bind_rows(dat_mrg, dat_subset)
     }
- 
+    
     # Plot table-based summary
     dat_mrg %>% 
         group_by(Site, Plot) %>% 
@@ -196,7 +198,7 @@ f <- function(dir_name, dirs_to_process, out_dir) {
                Note = "") %>%
         select(Dir, Site, Plot, Vars, OOB, TS_min, TS_max, Note) ->
         smry
-
+    
     # Error check
     # There should be only one research_name for each timestamp/site/plot/tree
     dat_mrg %>% 
