@@ -1,0 +1,41 @@
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+      - portage
+name: Check Portage data workflow
+
+jobs:
+  render:
+    name: Check data workflow
+    runs-on: ${{ matrix.config.os }}
+
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: ubuntu-latest, r: release}
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: r-lib/actions/setup-r@v2
+      - uses: r-lib/actions/setup-pandoc@v2
+      - name: Install any needed packages
+        run: |
+          install.packages(c("dplyr", "tidyr", "remotes" "readr", "lubridate"))
+          remotes::install_github('COMPASS-DOE/compasstools')
+        shell: Rscript {0}
+      - name: Check workflow
+        run: |
+          cd portage/
+          Rscript --verbose ./driver.R
