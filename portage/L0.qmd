@@ -65,27 +65,39 @@ f <- function(fn, new_dir) {
     message(Sys.time(), " Processing ", basefn)
     # Try to read in the data; if it doesn't work, we won't get a data frame back
     dat <- try(compasstools::read_datalogger_file(fn))
-    # Construct the new filename: old filename + nrow + ncol + hash
-    # This is so we can distinguish datasets with identical raw filename but
-    # differing data contents (can happen sometimes with dataloggers)
-    stripped_fn <- gsub("\\.dat$", "", basefn)
-    short_hash <- substr(digest::digest(dat), 1, 6)
-    new_fn <- paste0(stripped_fn, "_", nrow(dat), "x", ncol(dat), "_", short_hash, ".csv")
     if(is.data.frame(dat)) {
+        # Construct the new filename: old filename + nrow + ncol + hash
+        # This is so we can distinguish datasets with identical raw filename but
+        # differing data contents (can happen sometimes with dataloggers)
+        stripped_fn <- gsub("\\.dat$", "", basefn)
+        short_hash <- substr(digest::digest(dat), 1, 6)
+        new_fn <- paste0(stripped_fn, "_", nrow(dat), "x", ncol(dat), "_", short_hash, ".csv")
+        
         note <- ""
         message("\tWriting ", new_fn)
         if(file.exists(file.path(new_dir, new_fn))) {
-            note <- "Overwriting existing file!"
+            note <- "Overwriting existing file"
+            message(paste0("\t", note))
             overwrites <<- overwrites + 1
         }
-        write.csv(dat, file.path(new_dir, new_fn), row.names = FALSE)
-        # Move to 'Raw_done' folder
-        if(params$remove_input_files) {
-            file.copy(fn, file.path(params$raw_done, basefn), overwrite = FALSE)
-            file.remove(fn)
+        
+        # Write the new file, checking to make sure successful
+        new_fqfn <- file.path(new_dir, new_fn)
+        try(write.csv(dat, new_fqfn, row.names = FALSE))
+        if(!file.exists(new_fqfn)) {
+            note <- "Write error"
+            message(paste0("\t", note))
+            errors <<- errors + 1
+       } else {
+            # Move to 'Raw_done' folder
+            if(params$remove_input_files) {
+                file.copy(fn, file.path(params$raw_done, basefn), overwrite = FALSE)
+                file.remove(fn)
+            }
         }
     } else {
         note <- "Read error"
+        message(paste0("\t", note))
         errors <<- errors + 1
     }
     # Return an informational data frame about file processed, dimensions, etc.
@@ -107,12 +119,12 @@ out <- lapply(files_to_process, f, new_dir = params$L0)
 #| echo: false
 #| output: asis
 if(overwrites) {
-    cat("### WARNING: ", overwrites, " file overwrite(s)\n")
+    cat("#### NOTE: ", overwrites, " file overwrite(s)\n")
     log_warning(paste("File overwrite(s)", params$html_outfile), 
                 logfile = params$logfile)
 }
 if(errors) {
-    cat("### WARNING: ", errors, " file read/write error(s)\n")
+    cat("#### WARNING: ", errors, " file read/write error(s)\n")
     log_warning(paste("File read/write error(s)", params$html_outfile), 
                 logfile = params$logfile)
 }

@@ -9,6 +9,9 @@ library(quarto)
 if(basename(getwd()) != "portage") {
     stop("Working directory needs to be portage/")
 }
+if(!require("compasstools")) {
+    stop("Need to remotes::install_github('COMPASS-DOE/compasstools')")
+}
 
 source("helpers.R")
 
