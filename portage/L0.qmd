@@ -77,7 +77,7 @@ f <- function(fn, new_dir) {
         message("\tWriting ", new_fn)
         if(file.exists(file.path(new_dir, new_fn))) {
             note <- "Overwriting existing file"
-            message(paste0("\t", note))
+            message("\t", note)
             overwrites <<- overwrites + 1
         }
         
@@ -86,7 +86,7 @@ f <- function(fn, new_dir) {
         try(write.csv(dat, new_fqfn, row.names = FALSE))
         if(!file.exists(new_fqfn)) {
             note <- "Write error"
-            message(paste0("\t", note))
+            message("\t", note)
             errors <<- errors + 1
        } else {
             # Move to 'Raw_done' folder
@@ -97,7 +97,7 @@ f <- function(fn, new_dir) {
         }
     } else {
         note <- "Read error"
-        message(paste0("\t", note))
+        message("\t", note)
         errors <<- errors + 1
     }
     # Return an informational data frame about file processed, dimensions, etc.

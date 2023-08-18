@@ -42,7 +42,10 @@ if(!exists("expand_df")) {
          "devtools::install_github('COMPASS-DOE/compasstools')")
 }
 dt <- read_csv(params$design_table, col_types = "cccccc")
-dt_ex <- expand_df(dt)
+# For compactness, the design table may have expansions. For example,
+# "DiffVoltA_Avg({1:8})" -> "DiffVoltA_Avg(1)", "DiffVoltA_Avg(2)", etc., with
+# extra rows added as needed:
+dt_ex <- compasstools::expand_df(dt)
 
 files_to_process <- list.files(params$L0, pattern = "*.csv$", full.names = TRUE)
 
@@ -75,6 +78,7 @@ f <- function(fn, out_dir, design_table) {
                     col_types = list(TIMESTAMP = col_character())))
     if(!is.data.frame(dat)) {
         smry$note <- "Read error" 
+        message("\t", note)
         errors <<- errors + 1
         return(smry)
     }
@@ -123,9 +127,11 @@ f <- function(fn, out_dir, design_table) {
     message("\tFiltering out missing design_link rows")
     dat_long <- filter(dat_long, !is.na(design_link))
     
-    write_to_folders(dat_long, root_dir = out_dir, data_level = "L1_normalize",
+    write_to_folders(dat_long, root_dir = out_dir, 
+                     data_level = "L1_normalize",
                      site = dat_long$Site[1], 
-                     logger = dat_long$Logger[1], table = dat_long$Table[1])
+                     logger = dat_long$Logger[1],
+                     table = dat_long$Table[1])
 
     if(params$remove_input_files) file.remove(fn)
     
@@ -164,4 +170,3 @@ knitr::kable(out_df)
 ```{r}
 sessionInfo()
 ```
-
