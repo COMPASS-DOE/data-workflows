@@ -1,14 +1,9 @@
 on:
-  push:
-    branches:
-      - main
-      - master
-      - portage
   pull_request:
     branches:
       - main
-      - master
       - portage
+
 name: Check Portage data workflow
 
 jobs:
