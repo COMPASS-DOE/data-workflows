@@ -4,7 +4,7 @@ on:
       - main
       - portage
 
-name: Run test workflow
+name: Test data workflow
 
 jobs:
   render:
@@ -30,17 +30,15 @@ jobs:
         with:
           packages:
             any::quarto
- #           any::dplyr
- #           any::tidyr
- #           any::readr
- #           any::lubridate
-      - name: Install needed packages
+            any::dplyr
+            any::tidyr
+            any::readr
+            any::lubridate
+      - name: Install other needed packages
         run: |
-          #install.packages(c("dplyr", "tidyr", "remotes", "readr", "lubridate"))
-          #remotes::install_github("COMPASS-DOE/compasstools")
           pak::pkg_install("COMPASS-DOE/compasstools")
         shell: Rscript {0}
-      - name: Run workflow
+      - name: Run data workflow
         run: |
           cd portage/
           Rscript --verbose ./driver.R
