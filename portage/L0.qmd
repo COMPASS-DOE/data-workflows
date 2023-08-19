@@ -29,7 +29,7 @@ This script
 
 ## Initializing
 
-```{r}
+```{r init}
 #| include: false
 
 library(compasstools)
@@ -56,7 +56,7 @@ Working directory is `r getwd()`.
 
 ## Processing
 
-```{r}
+```{r processing}
 overwrites <- 0
 errors <- 0
 
@@ -115,7 +115,7 @@ out <- lapply(files_to_process, f, new_dir = params$L0)
 
 ## Summary
 
-```{r}
+```{r summary}
 #| echo: false
 #| output: asis
 if(overwrites) {
@@ -130,13 +130,13 @@ if(errors) {
 }
 ```
 
-```{r}
+```{r summary_table}
 out_df <- do.call("rbind", out)
 knitr::kable(out_df)
 ```
 
 ## Reproducibility
 
-```{r}
+```{r reproducibility}
 sessionInfo()
 ```
