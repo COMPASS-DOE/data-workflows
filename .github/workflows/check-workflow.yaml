@@ -30,16 +30,15 @@ jobs:
         with:
           packages:
             any::quarto
-            any::dplyr
-            any::tidyr
-            any::remotes
-            any::readr
-            any::lubridate
+ #           any::dplyr
+ #           any::tidyr
+ #           any::readr
+ #           any::lubridate
       - name: Install needed packages
         run: |
-          #install.packages("quarto", repos = "https://cran.rstudio.com/")
           #install.packages(c("dplyr", "tidyr", "remotes", "readr", "lubridate"))
-          remotes::install_github("COMPASS-DOE/compasstools")
+          #remotes::install_github("COMPASS-DOE/compasstools")
+          pak::pkg_install("COMPASS-DOE/compasstools")
         shell: Rscript {0}
       - name: Run workflow
         run: |
