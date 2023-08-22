@@ -57,8 +57,7 @@ outfile <- file.path(LOGS, outfile)
 quarto_render("L1_normalize.qmd",
               execute_params = list(DATA_ROOT = ROOT,
                                     html_outfile = outfile,
-                                    logfile = LOGFILE,
-                                    design_table = dt))
+                                    logfile = LOGFILE))
 copy_output("L1_normalize.html", outfile)
 
 
