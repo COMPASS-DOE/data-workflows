@@ -4,7 +4,7 @@ author: "COMPASS workflows team"
 title-block-banner: true
 params:
   L0: "data_TEST/L0/"
-  remove_input_files: false
+  REMOVE_INPUT_FILES: false
   html_outfile: "L1_normalize.html"
   L1_normalize: "data_TEST/L1_normalize/"
   design_table: "data_TEST/design_table.csv"
@@ -90,17 +90,19 @@ f <- function(fn, out_dir, design_table) {
     smry <- data.frame(File = basename(fn), 
                        Pivoted_rows = NA_integer_,
                        dl_NA = NA_integer_,
-                       note = "")
+                       Note = "")
     dat <- try(read_csv(fn, 
                     # don't want timestamp parsed to a datetime at this point
                     col_types = list(TIMESTAMP = col_character())))
     if(!is.data.frame(dat)) {
-        smry$note <- "Read error" 
-        message("\t", note)
+        smry$Note <- "Read error" 
+        message("\t", Note)
         errors <<- errors + 1
         return(smry)
     }
     
+    # ------------- Reshape to long form
+
     dat_long <- pivot_longer(dat, c(-Logger, -Table, -TIMESTAMP),
                              names_to = "loggernet_variable",
                              values_to = "value",
@@ -110,6 +112,8 @@ f <- function(fn, out_dir, design_table) {
                              values_transform = as.character)
     message("\tPivoted data has ", nrow(dat_long), " rows")
     smry$Pivoted_rows <- nrow(dat_long)
+
+    # ------------- Design table
 
     # Check for missing entries in the design table
     dat_long %>% 
@@ -122,7 +126,7 @@ f <- function(fn, out_dir, design_table) {
     if(nrow(missings)) {
         message("\tERROR: missing design links: ", 
                 paste(missings$loggernet_variable, collapse = ", "))
-        smry$note <- "Missing design link" 
+        smry$Note <- "Missing design link" 
         errors <<- errors + 1
         return(smry)
     }
@@ -132,11 +136,6 @@ f <- function(fn, out_dir, design_table) {
                           by = c("Logger", "Table", "loggernet_variable"),
                           relationship = "many-to-one")
     
-    # Summary information
-    smry$dl_NA <- sum(is.na(dat_long$design_link))
-    message("\tFiltering out ", smry$dl_NA, " missing design_link rows")
-    dat_long <- filter(dat_long, !is.na(design_link))
-
     # Check for missing entries in the design table
     dat_long %>% 
         anti_join(design_table,
@@ -147,19 +146,24 @@ f <- function(fn, out_dir, design_table) {
     
     if(nrow(missings)) {
         message("\tERROR: missing design links: ", paste(missings$loggernet_variable, collapse = ", "))
-        smry$note <- "Design link error" 
+        smry$Note <- "Design link error" 
         errors <<- errors + 1
         return(smry)
     }
 
-    # Unit conversion
+    # Summary information
+    smry$dl_NA <- sum(is.na(dat_long$design_link))
+    message("\tFiltering out ", smry$dl_NA, " empty design_link rows")
+    dat_long <- filter(dat_long, !is.na(design_link))
+
+    # ------------- Unit conversion
     
     # Check for missing entries in the units table
     rns <- unique(dat_long$research_name)
     missings <- rns[!rns %in% ut$research_name]
     if(length(missings)) {
         message("\tERROR: missing units entries: ", paste(missings, collapse = ", "))
-        smry$note <- "Missing unit entries" 
+        smry$Note <- "Missing unit entries" 
         errors <<- errors + 1
         return(smry)
     }
@@ -171,7 +175,8 @@ f <- function(fn, out_dir, design_table) {
     dat_long <- rename(dat_long, value_raw = value, value = value_conv)
     dat_long$value_conv <- NULL
     
-    # Create out-of-bounds flags
+    # ------------- Out-of-bounds flags
+
     message("\tAdding OOB flags")
     dat_long %>% 
         left_join(bt, by = c("research_name", "units")) %>% 
@@ -185,7 +190,7 @@ f <- function(fn, out_dir, design_table) {
                      logger = dat_long$Logger[1],
                      table = dat_long$Table[1])
 
-    if(params$remove_input_files) file.remove(fn)
+    if(params$REMOVE_INPUT_FILES) file.remove(fn)
     
     return(smry)
 }
