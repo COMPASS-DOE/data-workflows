@@ -41,7 +41,7 @@ L1B <- file.path(params$DATA_ROOT, params$L1B)
 
 I see `r length(dirs_to_process)` directories to process in `r L1A`.
 
-Output directory is \`r L1B\`.
+Output directory is `r L1B`.
 
 HTML outfile is "`r params$html_outfile`".
 
