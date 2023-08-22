@@ -35,7 +35,7 @@ if(!exists("scan_folders")) {
 source("helpers.R")
 
 L1A <- file.path(params$DATA_ROOT, params$L1A)
-dirs_to_process <- scan_folders(params$L1A)
+dirs_to_process <- scan_folders(L1A)
 L1B <- file.path(params$DATA_ROOT, params$L1B)
 ```
 
