@@ -3,13 +3,14 @@ title: "L1_normalize"
 author: "COMPASS workflows team"
 title-block-banner: true
 params:
-  L0: "data_TEST/L0/"
-  REMOVE_INPUT_FILES: false
   html_outfile: "L1_normalize.html"
-  L1_normalize: "data_TEST/L1_normalize/"
-  design_table: "data_TEST/design_table.csv"
-  units_table: "data_TEST/units_table.csv"
-  bounds_table: "data_TEST/bounds_table.csv"
+  DATA_ROOT: "data_TEST/"
+  L0: "L0/"
+  REMOVE_INPUT_FILES: false
+  L1_NORMALIZE: "L1_normalize/"
+  DESIGN_TABLE: "design_table.csv"
+  UNITS_TABLE: "units_table.csv"
+  BOUNDS_TABLE: "bounds_table.csv"
   logfile: ""
 date: now
 date-format: "YYYY-MM-DD HH:mm:ssZ"
@@ -46,35 +47,45 @@ if(!exists("expand_df")) {
     stop("Please update to latest version of compasstools!\n",
          "devtools::install_github('COMPASS-DOE/compasstools')")
 }
-dt <- read_csv(params$design_table, col_types = "cccccc")
+
+# Read the design table (everything must have an entry)
+DESIGN_TABLE <- file.path(params$DATA_ROOT, params$DESIGN_TABLE)
+dt <- read_csv(DESIGN_TABLE, col_types = "cccccc")
 # For compactness, the design table may have expansions. For example,
 # "DiffVoltA_Avg({1:8})" -> "DiffVoltA_Avg(1)", "DiffVoltA_Avg(2)", etc., with
 # extra rows added as needed:
 dt_ex <- compasstools::expand_df(dt)
 
 # Read the unit table (everything must have an entry)
-ut <- read_csv(params$units_table, col_types = "ccccccc")
+UNITS_TABLE <- file.path(params$DATA_ROOT, params$UNITS_TABLE)
+ut <- read_csv(UNITS_TABLE, col_types = "ccccccc")
 ut <- filter(ut, !is.na(research_name))
 
 # Read the bounds table (not everything needs an entry)
-read_csv(params$bounds_table, col_types = "cccccc") %>% 
+BOUNDS_TABLE <- file.path(params$DATA_ROOT, params$BOUNDS_TABLE)
+read_csv(BOUNDS_TABLE, col_types = "cccccc") %>% 
     filter(!is.na(research_name), !is.na(units)) %>% 
     select(research_name, units, low, high) %>% 
     mutate(low = as.numeric(low), high = as.numeric(high)) ->
     bt
 
-files_to_process <- list.files(params$L0, pattern = "*.csv$", full.names = TRUE)
+L0 <- file.path(params$DATA_ROOT, params$L0)
+files_to_process <- list.files(L0, pattern = "*.csv$", full.names = TRUE)
+
+L1_NORMALIZE <- file.path(params$DATA_ROOT, params$L1_NORMALIZE)
 
 source("helpers.R")
 ```
 
-I see `r length(files_to_process)` files to process.
+I see `r length(files_to_process)` files to process in `r L0`.
 
-Design table is `r nrow(dt)` rows, `r nrow(dt_ex)` after expansion.
+Output directory is `r L1_NORMALIZE`.
 
-Units table is "`r params$units_table`" and has `r nrow(ut)` rows with conversion strings.
+Design table "`r DESIGN_TABLE`" and has `r nrow(dt)` rows, `r nrow(dt_ex)` after expansion.
 
-Bounds table is "`r params$bounds_table`" and has `r nrow(bt)` rows with bounds.
+Units table is "`r UNITS_TABLE`" and has `r nrow(ut)` rows with conversion strings.
+
+Bounds table is "`r BOUNDS_TABLE`" and has `r nrow(bt)` rows with bounds.
 
 HTML outfile is "`r params$html_outfile`".
 
@@ -196,7 +207,7 @@ f <- function(fn, out_dir, design_table) {
 }
 
 out <- lapply(files_to_process, f, 
-              out_dir = params$L1_normalize,
+              out_dir = L1_NORMALIZE,
               design_table = dt_ex)
 ```
 

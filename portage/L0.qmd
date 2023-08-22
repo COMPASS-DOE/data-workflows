@@ -4,10 +4,11 @@ author: "COMPASS workflows team"
 title-block-banner: true
 params:
   html_outfile: "L0.html"
-  raw: "data_TEST/Raw/"
+  DATA_ROOT: "data_test/"
+  RAW: "Raw/"
   remove_input_files: false
-  raw_done: "data_TEST/Raw_done/"
-  L0: "data_TEST/L0/"
+  RAW_DONE: "Raw_done/"
+  L0: "L0/"
   logfile: ""
 date: now
 date-format: "YYYY-MM-DD HH:mm:ssZ"
@@ -37,16 +38,23 @@ if(!exists("read_datalogger_file")) {
     stop("Please update to latest version of compasstools!\n",
          "devtools::install_github('COMPASS-DOE/compasstools')")
 }
+
+RAW <- file.path(params$DATA_ROOT, params$RAW)
+RAW_DONE <- file.path(params$DATA_ROOT, params$RAW_DONE)
+L0 <- file.path(params$DATA_ROOT, params$L0)
+
 library(readr)
-files_to_process <- list.files(params$raw, pattern = "*.dat$", 
+files_to_process <- list.files(RAW, pattern = "*.dat$", 
                                full.names = TRUE, recursive = TRUE)
 
 source("helpers.R")
 ```
 
-I see `r length(files_to_process)` files to process.
+I see `r length(files_to_process)` files to process in `r RAW`.
 
-Writing to `r normalizePath(params$L0)`.
+Output directory is `r L0`.
+
+Moving done files to `r RAW_DONE`.
 
 HTML outfile is `r params$html_outfile`.
 
