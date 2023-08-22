@@ -3,10 +3,11 @@ title: "L1b"
 author: "COMPASS workflows team"
 title-block-banner: true
 params:
-  L1a: "data_TEST/L1a/"
-  remove_input_files: false
-  L1b: "data_TEST/L1b/"
   html_outfile: "L1b.html"
+  DATA_ROOT: "data_TEST/"
+  L1A: "L1a/"
+  L1B: "L1b/"
+  remove_input_files: false
   logfile: ""
 date: now
 date-format: "YYYY-MM-DD HH:mm:ssZ"
@@ -33,10 +34,14 @@ if(!exists("scan_folders")) {
 
 source("helpers.R")
 
-dirs_to_process <- scan_folders(params$L1a)
+L1A <- file.path(params$DATA_ROOT, params$L1A)
+dirs_to_process <- scan_folders(L1A)
+L1B <- file.path(params$DATA_ROOT, params$L1B)
 ```
 
-I see `r length(dirs_to_process)` directories to process.
+I see `r length(dirs_to_process)` directories to process in `r L1A`.
+
+Output directory is `r L1B`.
 
 HTML outfile is "`r params$html_outfile`".
 
@@ -59,6 +64,14 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     message("\tTotal data: ", nrow(dat), " rows, ", ncol(dat), " columns")
     smry <- data.frame(Dir = dir_name, Files = length(dirs_to_process[[dir_name]]), 
                        Rows = nrow(dat), note = "")
+
+    # Round timestamps
+    message("\tRounding timestamps to nearest ", params$timestamp_round)
+    dat$TIMESTAMP_raw <- dat$TIMESTAMP
+    dat$TIMESTAMP <- round_date(dat$TIMESTAMP, params$timestamp_round)
+    # Note that L1a preserves multiple observations within a rounded
+    # timestamp, whereas L1b computes their average
+    
 
     # Average data by rounded timestamp
     # Note that L1a preserves multiple observations within a rounded
@@ -95,7 +108,7 @@ f <- function(dir_name, dirs_to_process, out_dir) {
 }
 
 out <- lapply(names(dirs_to_process), f, 
-              dirs_to_process = dirs_to_process, out_dir = params$L1b)
+              dirs_to_process = dirs_to_process, out_dir = L1B)
 ```
 
 ## Summary

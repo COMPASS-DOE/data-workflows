@@ -21,12 +21,6 @@ now_string <- function() format(Sys.time(), "%Y%m%d.%H%M")
 
 ROOT <- "./data_TEST"
 
-RAW <- file.path(ROOT, "Raw/")
-RAW_DONE <- file.path(ROOT, "Raw_done/")
-L0 <- file.path(ROOT, "L0/")
-L1_NORMALIZE <- file.path(ROOT, "L1_normalize/")
-L1A <- file.path(ROOT, "L1a/")
-L1B <- file.path(ROOT, "L1b/")
 LOGS <- file.path(ROOT, "Logs/")
 
 # Main logfile
@@ -44,9 +38,7 @@ outfile <- paste0("L0_", now_string(), ".html")
 outfile <- file.path(LOGS, outfile)
 
 quarto_render("L0.qmd",
-              execute_params = list(raw = RAW,
-                                    raw_done = RAW_DONE,
-                                    L0 = L0,
+              execute_params = list(DATA_ROOT = ROOT,
                                     html_outfile = outfile,
                                     logfile = LOGFILE))
 copy_output("L0.html", outfile)
@@ -63,11 +55,9 @@ outfile <- paste0("L1_normalize_", now_string(), ".html")
 outfile <- file.path(LOGS, outfile)
 
 quarto_render("L1_normalize.qmd",
-              execute_params = list(L0 = L0,
-                                    L1_normalize = L1_NORMALIZE,
+              execute_params = list(DATA_ROOT = ROOT,
                                     html_outfile = outfile,
-                                    logfile = LOGFILE,
-                                    design_table = dt))
+                                    logfile = LOGFILE))
 copy_output("L1_normalize.html", outfile)
 
 
@@ -86,8 +76,7 @@ outfile <- paste0("L1a_", now_string(), ".html")
 outfile <- file.path(LOGS, outfile)
 
 quarto_render("L1a.qmd",
-              execute_params = list(L1_normalize = L1_NORMALIZE,
-                                    L1a = L1A,
+              execute_params = list(DATA_ROOT = ROOT,
                                     html_outfile = outfile,
                                     logfile = LOGFILE))
 copy_output("L1a.html", outfile)
@@ -117,8 +106,7 @@ outfile <- paste0("L1b_", now_string(), ".html")
 outfile <- file.path(LOGS, outfile)
 
 quarto_render("L1b.qmd",
-              execute_params = list(L1a = L1A,
-                                    L1b = L1B,
+              execute_params = list(DATA_ROOT = ROOT,
                                     html_outfile = outfile,
                                     logfile = LOGFILE))
 copy_output("L1b.html", outfile)
