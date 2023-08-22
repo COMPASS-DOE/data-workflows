@@ -2,8 +2,9 @@ Site,Logger,Table,loggernet_variable,design_link,research_name
 Portage,Compass_PTR_UP_313,SapflowA,TIMESTAMP,Timestamp,timestamp
 Portage,Compass_PTR_UP_313,SapflowA,RECORD,,
 Portage,Compass_PTR_UP_313,SapflowA,PB,,
+Portage,Compass_PTR_UP_313,SapflowA,Format,,
 Portage,Compass_PTR_UP_313,SapflowA,Statname,,
-Portage,Compass_PTR_UP_313,SapflowA,BattV-Avg,Logger-PTR-UP,voltage
+Portage,Compass_PTR_UP_313,SapflowA,BattV_Avg,Logger-PTR-UP,voltage
 Portage,Compass_PTR_UP_313,SapflowA,DiffVoltA_Avg({1:8}),SF-PTR-UP-0{1:8},sapflow
 Portage,Compass_PTR_UP_313,SapflowA,DiffVoltA_Avg({9:12}),"SF-PTR-UP-0{1,2,3,8}D",sapflow_deep
 Portage,Compass_PTR_UP_313,WaterLevel600A,Barometric_Pressure600A,WL-BPress-UP,sw_pressure

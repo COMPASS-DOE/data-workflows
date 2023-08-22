@@ -8,7 +8,8 @@ params:
   html_outfile: "L1_normalize.html"
   L1_normalize: "data_TEST/L1_normalize/"
   design_table: "data_TEST/design_table.csv"
-  debug_design_links: true
+  units_table: "data_TEST/units_table.csv"
+  bounds_table: "data_TEST/bounds_table.csv"
   logfile: ""
 date: now
 date-format: "YYYY-MM-DD HH:mm:ssZ"
@@ -24,7 +25,11 @@ This script
 
 -   Reshapes from wide to long; only `Logger`, `Table`, and `TIMESTAMP` don't get reshaped
 
--   Joins with the design table, adding `Site` and `design_link` columns
+-   Joins with the design table, adding `Site`, `design_link`, and `research_name` columns (every loggernet variable must have an entry)
+
+-   Performs unit conversion (every research\_ name must have an entry)
+
+-   Performs bounds checking (adding flags) for each \`research_name\` variable
 
 -   Writes into \<year\>\_*\<*month*\>*\_\<site\> folders
 
@@ -47,6 +52,17 @@ dt <- read_csv(params$design_table, col_types = "cccccc")
 # extra rows added as needed:
 dt_ex <- compasstools::expand_df(dt)
 
+# Read the unit table (everything must have an entry)
+ut <- read_csv(params$units_table, col_types = "ccccccc")
+ut <- filter(ut, !is.na(research_name))
+
+# Read the bounds table (not everything needs an entry)
+read_csv(params$bounds_table, col_types = "cccccc") %>% 
+    filter(!is.na(research_name), !is.na(units)) %>% 
+    select(research_name, units, low, high) %>% 
+    mutate(low = as.numeric(low), high = as.numeric(high)) ->
+    bt
+
 files_to_process <- list.files(params$L0, pattern = "*.csv$", full.names = TRUE)
 
 source("helpers.R")
@@ -55,6 +71,10 @@ source("helpers.R")
 I see `r length(files_to_process)` files to process.
 
 Design table is `r nrow(dt)` rows, `r nrow(dt_ex)` after expansion.
+
+Units table is "`r params$units_table`" and has `r nrow(ut)` rows with conversion strings.
+
+Bounds table is "`r params$bounds_table`" and has `r nrow(bt)` rows with bounds.
 
 HTML outfile is "`r params$html_outfile`".
 
@@ -69,9 +89,7 @@ f <- function(fn, out_dir, design_table) {
 
     smry <- data.frame(File = basename(fn), 
                        Pivoted_rows = NA_integer_,
-                       Joined_rows = NA_integer_,
                        dl_NA = NA_integer_,
-                       dl_NA_top3 = NA_character_,
                        note = "")
     dat <- try(read_csv(fn, 
                     # don't want timestamp parsed to a datetime at this point
@@ -91,42 +109,76 @@ f <- function(fn, out_dir, design_table) {
                              # loss since data came from a text file anyway)
                              values_transform = as.character)
     message("\tPivoted data has ", nrow(dat_long), " rows")
-    dat_long <- filter(dat_long, !is.na(value))
-    message("\tFiltered data has ", nrow(dat_long), " rows")
-    
-    # Join with design table
-    nrow_orig <- nrow(dat_long)
-    dat_long <- left_join(dat_long, design_table,
-                          by = c("Logger", "Table", "loggernet_variable"))
-    
-    # Compute the top three loggernet variables with missing design links
+    smry$Pivoted_rows <- nrow(dat_long)
+
+    # Check for missing entries in the design table
     dat_long %>% 
-        filter(is.na(design_link)) %>% 
-        group_by(loggernet_variable) %>% 
-        summarise(N = n()) %>% 
-        arrange(desc(N)) %>% 
-        slice_head(n = 3) %>% 
-        pull(loggernet_variable) ->
-        top3_na_vars
+        anti_join(design_table,
+                          by = c("Logger", "Table", "loggernet_variable")) %>% 
+        select(Logger, Table, loggernet_variable) %>% 
+        distinct() ->
+        missings
     
-    # Write out a debug table with all the unique site-logger-table-variables we see 
-    if(params$debug_design_links) {
-        fn <- "designlinks.csv"
-        dat_long %>% 
-            select(Site, Logger, Table, loggernet_variable, design_link) %>% 
-            distinct() %>% 
-            readr::write_csv(fn, append = file.exists(fn))
+    if(nrow(missings)) {
+        message("\tERROR: missing design links: ", 
+                paste(missings$loggernet_variable, collapse = ", "))
+        smry$note <- "Missing design link" 
+        errors <<- errors + 1
+        return(smry)
     }
     
-    # Summary information
-    smry$Pivoted_rows <- nrow_orig
-    smry$Joined_rows <- nrow(dat_long)
-    smry$dl_NA <- sum(is.na(dat_long$design_link))
-    smry$dl_NA_top3 <- paste(top3_na_vars, collapse = ", ")
-
-    message("\tFiltering out missing design_link rows")
-    dat_long <- filter(dat_long, !is.na(design_link))
+    # Join with design table
+    dat_long <- left_join(dat_long, design_table,
+                          by = c("Logger", "Table", "loggernet_variable"),
+                          relationship = "many-to-one")
     
+    # Summary information
+    smry$dl_NA <- sum(is.na(dat_long$design_link))
+    message("\tFiltering out ", smry$dl_NA, " missing design_link rows")
+    dat_long <- filter(dat_long, !is.na(design_link))
+
+    # Check for missing entries in the design table
+    dat_long %>% 
+        anti_join(design_table,
+                          by = c("Logger", "Table", "loggernet_variable")) %>% 
+        select(Logger, Table, loggernet_variable) %>% 
+        distinct() ->
+        missings
+    
+    if(nrow(missings)) {
+        message("\tERROR: missing design links: ", paste(missings$loggernet_variable, collapse = ", "))
+        smry$note <- "Design link error" 
+        errors <<- errors + 1
+        return(smry)
+    }
+
+    # Unit conversion
+    
+    # Check for missing entries in the units table
+    rns <- unique(dat_long$research_name)
+    missings <- rns[!rns %in% ut$research_name]
+    if(length(missings)) {
+        message("\tERROR: missing units entries: ", paste(missings, collapse = ", "))
+        smry$note <- "Missing unit entries" 
+        errors <<- errors + 1
+        return(smry)
+    }
+
+    message("\tDoing unit conversion")
+    # At this point everything in the value column should be numeric
+    dat_long$value <- as.numeric(dat_long$value)
+    dat_long <- compasstools::unit_conversion(dat_long, ut)
+    dat_long <- rename(dat_long, value_raw = value, value = value_conv)
+    dat_long$value_conv <- NULL
+    
+    # Create out-of-bounds flags
+    message("\tAdding OOB flags")
+    dat_long %>% 
+        left_join(bt, by = c("research_name", "units")) %>% 
+        mutate(OOB = value < low | value > high) %>% 
+        select(-low, -high) ->
+        dat_long
+   
     write_to_folders(dat_long, root_dir = out_dir, 
                      data_level = "L1_normalize",
                      site = dat_long$Site[1], 
@@ -154,8 +206,8 @@ if(overwrites) {
                 logfile = params$logfile)
 }
 if(errors) {
-    cat("### WARNING: ", errors, " file read/write error(s)\n")
-    log_warning(paste("File read/write error(s)", params$html_outfile), 
+    cat("### ERROR: ", errors, " error(s)\n")
+    log_warning(paste("File read/write or processing error(s)", params$html_outfile), 
                 logfile = params$logfile)
 }
 ```

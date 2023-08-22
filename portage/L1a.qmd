@@ -7,8 +7,6 @@ params:
   remove_input_files: false
   L1a: "data_TEST/L1a/"
   plot_table: "data_TEST/plot_table.csv"
-  units_table: "data_TEST/units_table.csv"
-  bounds_table: "data_TEST/bounds_table.csv"
   newvars_table: "data_TEST/newvars_table.csv"
   timestamp_round: "15 minutes"
   html_outfile: "L1a.html"
@@ -24,10 +22,6 @@ editor: visual
 This script
 
 -   Reads in all the L1_normalize files by year/month/site
-
--   Performs unit conversion
-
--   Performs bounds checking (adding flags) for each \`research_name\` variable
 
 -   Rounds timestsamps
 
@@ -54,15 +48,6 @@ if(!exists("scan_folders") | !exists("unit_conversion")) {
 pt <- read_csv(params$plot_table, col_types = "cccc")
 pt_ex <- compasstools::expand_df(pt)
 
-ut <- read_csv(params$units_table, col_types = "ccccccc")
-ut <- filter(ut, !is.na(research_name))
-
-read_csv(params$bounds_table, col_types = "cccccc") %>% 
-    filter(!is.na(research_name), !is.na(units)) %>% 
-    select(research_name, units, low, high) %>% 
-    mutate(low = as.numeric(low), high = as.numeric(high)) ->
-    bt
-
 nvt <- read_csv(params$newvars_table, col_types = "cc")
 
 source("helpers.R")
@@ -73,10 +58,6 @@ dirs_to_process <- scan_folders(params$L1_normalize)
 I see `r length(dirs_to_process)` directories to process.
 
 Plot table is `r nrow(pt)` rows, `r nrow(pt_ex)` after expansion.
-
-Units table is "`r params$units_table`" and has `r nrow(ut)` rows with conversion strings.
-
-Bounds table is "`r params$bounds_table`" and has `r nrow(bt)` rows with bounds.
 
 New variables table is "`r params$newvars_table`" and has `r nrow(nvt)` rows.
 
@@ -128,20 +109,6 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     dat <- distinct(dat_raw)
     message("\tRemoved ", nrow(dat_raw) - nrow(dat), " duplicate rows")    
 
-    # Unit conversion
-    message("\tDoing unit conversion")
-    dat <- compasstools::unit_conversion(dat, ut)
-    dat <- rename(dat, value_raw = value, value = value_conv)
-    dat$value_conv <- NULL
-    
-    # Create out-of-bounds flags
-    message("\tAdding OOB flags")
-    dat %>% 
-        left_join(bt, by = c("research_name", "units")) %>% 
-        mutate(OOB = value < low | value > high) %>% 
-        select(-low, -high) ->
-        dat
-    
     # Round timestamps
     message("\tRounding timestamps to nearest ", params$timestamp_round)
     dat$TIMESTAMP_raw <- dat$TIMESTAMP
