@@ -65,7 +65,7 @@ L1A <- file.path(params$DATA_ROOT, params$L1A)
 
 I see `r length(dirs_to_process)` directories to process in `r L1_NORMALIZE`.
 
-Output directory is \`r L1A\`.
+Output directory is `r L1A`.
 
 Plot table "`r PLOT_TABLE`" has `r nrow(pt)` rows, `r nrow(pt_ex)` after expansion.
 
@@ -106,32 +106,35 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     
     dat_raw <- read_csv_group(dirs_to_process[[dir_name]],
                               remove_input_files = params$remove_input_files, 
-                              col_types = "ccTcdcccic")
+                              col_types = "ccTcdcccdcl")
     errors <<- errors + attr(dat_raw, "errors")
     
     # File-based summary
     message("\tTotal data: ", nrow(dat_raw), " rows, ", ncol(dat_raw), " columns")
     smry <- data.frame(Dir = dir_name, Files = length(dirs_to_process[[dir_name]]), 
-                       Rows = nrow(dat_raw), note = "")
+                       Rows = nrow(dat_raw), Note = "")
     file_read_smry <<- rbind(file_read_smry, smry)
     
     # Remove duplicate rows (e.g. from multiple datalogger downloads)
     dat <- distinct(dat_raw)
     message("\tRemoved ", nrow(dat_raw) - nrow(dat), " duplicate rows")    
 
-    # Round timestamps
-    message("\tRounding timestamps to nearest ", params$timestamp_round)
-    dat$TIMESTAMP_raw <- dat$TIMESTAMP
-    dat$TIMESTAMP <- round_date(dat$TIMESTAMP, params$timestamp_round)
-    # Note that L1a preserves multiple observations within a rounded
-    # timestamp, whereas L1b computes their average
-    
-    # Join with plot table
+    # Join plot table with data
     message("\tJoining with plot table")
-    dat %>% 
-        left_join(pt_ex, by = c("Site", "design_link")) %>% 
-        select(-Table, -loggernet_variable, -design_link) ->
+    pt_ex %>% 
+        left_join(dat, by = c("Site", "design_link"), 
+                  relationship = "many-to-many") %>% 
+        select(-Table, -loggernet_variable) ->
         dat_mrg
+    
+    missing <- anti_join(pt_ex, dat, by = c("Site", "design_link"))
+    if(nrow(missing)) {
+        dat_issues <<- dat_issues + 1
+        message("ERROR: some design links in plot table not found: ", 
+                paste(missing$design_link, collapse = ", "))
+        smry$Note <- "Missing design_link(s)"
+        return(smry)
+    }
     
     # Compute new (derived) variables
     message("\tComputing derived variables")
