@@ -27,7 +27,7 @@ This script
 
 -   Computes new variables: `sapflow_avg` (a test)
 
--   Joins with plot table
+-   Loads all template tables and generates L1a output tables from them
 
 ## Initializing
 
@@ -98,7 +98,6 @@ NEWVAR_sapflow_avg <- function(x) {
 ```
 
 ```{r processing}
-overwrites <- 0
 errors <- 0
 dat_issues <- 0
 file_read_smry <- data.frame()
@@ -150,7 +149,7 @@ f <- function(dir_name, dirs_to_process, out_dir) {
             smry_all[[template]]$Note <- "Missing design_link(s)"
             next
         }
-        
+        browser()
         # Put columns in Site, Plot, Tree, TIMESTAMP, research_name, value,
         # and then <others alphabetized> order
         lefts <- c(colnames(pt_ex), "TIMESTAMP", "research_name", "value")
@@ -173,11 +172,6 @@ out <- lapply(names(dirs_to_process), f,
 ```{r summary}
 #| echo: false
 #| output: asis
-if(overwrites) {
-    cat("### WARNING: ", overwrites, " file overwrite(s)\n")
-    log_warning(paste("File overwrite(s)", params$html_outfile), 
-                logfile = params$logfile)
-}
 if(errors) {
     cat("### WARNING: ", errors, " file read/write error(s)\n")
     log_warning(paste("File read/write error(s)", params$html_outfile), 
