@@ -7,6 +7,7 @@ params:
   DATA_ROOT: "data_TEST/"
   L1A: "L1a/"
   L1B: "L1b/"
+  timestamp_round: "15 minutes"
   remove_input_files: false
   logfile: ""
 date: now
@@ -65,6 +66,8 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     smry <- data.frame(Dir = dir_name, Files = length(dirs_to_process[[dir_name]]), 
                        Rows = nrow(dat), note = "")
 
+    browser()
+    
     # Round timestamps
     message("\tRounding timestamps to nearest ", params$timestamp_round)
     dat$TIMESTAMP_raw <- dat$TIMESTAMP

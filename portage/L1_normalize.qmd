@@ -9,8 +9,7 @@ params:
   REMOVE_INPUT_FILES: false
   L1_NORMALIZE: "L1_normalize/"
   DESIGN_TABLE: "design_table.csv"
-  UNITS_TABLE: "units_table.csv"
-  BOUNDS_TABLE: "bounds_table.csv"
+  METADATA_TABLE: "metadata_vars.csv"
   logfile: ""
 date: now
 date-format: "YYYY-MM-DD HH:mm:ssZ"
@@ -28,11 +27,11 @@ This script
 
 -   Joins with the design table, adding `Site`, `design_link`, and `research_name` columns (every loggernet variable must have an entry)
 
--   Performs unit conversion (every research\_ name must have an entry)
+-   Performs unit conversion (every research name must have an entry)
 
--   Performs bounds checking (adding flags) for each \`research_name\` variable
+-   Performs bounds checking (adding flags) for each `research_name` variable
 
--   Writes into \<year\>\_*\<*month*\>*\_\<site\> folders
+-   Writes into <year>_<month>_<site> folders
 
 ## Initializing
 
@@ -56,17 +55,19 @@ dt <- read_csv(DESIGN_TABLE, col_types = "cccccc")
 # extra rows added as needed:
 dt_ex <- compasstools::expand_df(dt)
 
-# Read the unit table (everything must have an entry)
-UNITS_TABLE <- file.path(params$DATA_ROOT, params$UNITS_TABLE)
-ut <- read_csv(UNITS_TABLE, col_types = "ccccccc")
-ut <- filter(ut, !is.na(research_name))
+# Read the metadata table
+METADATA_TABLE <- file.path(params$DATA_ROOT, params$METADATA_TABLE)
+mt <- read_csv(METADATA_TABLE, col_types = "ccccccddc")
+# ...and create the units table (everything must have an entry)
+mt %>% 
+    filter(!is.na(research_name)) %>% 
+    select(research_name, conversion, new_unit = final_units) ->
+    ut
 
-# Read the bounds table (not everything needs an entry)
-BOUNDS_TABLE <- file.path(params$DATA_ROOT, params$BOUNDS_TABLE)
-read_csv(BOUNDS_TABLE, col_types = "cccccc") %>% 
-    filter(!is.na(research_name), !is.na(units)) %>% 
-    select(research_name, units, low, high) %>% 
-    mutate(low = as.numeric(low), high = as.numeric(high)) ->
+# Create the bounds table (not everything needs an entry)
+mt %>% 
+    filter(!is.na(research_name), !is.na(final_units)) %>% 
+    select(research_name, units = final_units, low_bound, high_bound) ->
     bt
 
 L0 <- file.path(params$DATA_ROOT, params$L0)
@@ -83,9 +84,9 @@ Output directory is `r L1_NORMALIZE`.
 
 Design table "`r DESIGN_TABLE`" and has `r nrow(dt)` rows, `r nrow(dt_ex)` after expansion.
 
-Units table is "`r UNITS_TABLE`" and has `r nrow(ut)` rows with conversion strings.
+Variable metadata table is "`r METADATA_TABLE`" and has `r nrow(mt)` rows.
 
-Bounds table is "`r BOUNDS_TABLE`" and has `r nrow(bt)` rows with bounds.
+Units table has `r nrow(ut)` rows; bounds table `r nrow(bt)`.
 
 HTML outfile is "`r params$html_outfile`".
 
@@ -191,8 +192,8 @@ f <- function(fn, out_dir, design_table) {
     message("\tAdding OOB flags")
     dat_long %>% 
         left_join(bt, by = c("research_name", "units")) %>% 
-        mutate(OOB = value < low | value > high) %>% 
-        select(-low, -high) ->
+        mutate(OOB = value < low_bound | value > high_bound) %>% 
+        select(-low_bound, -high_bound) ->
         dat_long
    
     write_to_folders(dat_long, root_dir = out_dir, 
