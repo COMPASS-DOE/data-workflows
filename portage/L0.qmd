@@ -6,9 +6,9 @@ params:
   html_outfile: "L0.html"
   DATA_ROOT: "data_test/"
   RAW: "Raw/"
-  remove_input_files: false
   RAW_DONE: "Raw_done/"
   L0: "L0/"
+  remove_input_files: false
   logfile: ""
 date: now
 date-format: "YYYY-MM-DD HH:mm:ssZ"

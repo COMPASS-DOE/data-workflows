@@ -6,11 +6,10 @@ params:
   html_outfile: "L1a.html"
   DATA_ROOT: "data_TEST/"
   L1_NORMALIZE: "L1_normalize/"
-  remove_input_files: false
   L1A: "L1a/"
-  PLOT_TABLE: "plot_table.csv"
+  OUTPUT_TABLES: "L1a_output_tables/"
   NEWVARS_TABLE: "newvars_table.csv"
-  timestamp_round: "15 minutes"
+  remove_input_files: false
   logfile: ""
 date: now
 date-format: "YYYY-MM-DD HH:mm:ssZ"

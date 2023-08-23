@@ -1,0 +1,5 @@
+Site,Plot,Sensor,design_link
+Portage,Upland,01,"{SoilT,SoilVWC,SoilEC}-PTR-UP-01"
+Portage,Upland,02,"{SoilT,SoilVWC,SoilEC}-PTR-UP-02"
+Portage,Upland,03,"{SoilT,SoilVWC,SoilEC}-PTR-UP-03"
+Portage,Upland,04,"{SoilT,SoilVWC,SoilEC}-PTR-UP-04"
