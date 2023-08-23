@@ -7,7 +7,7 @@ params:
   DATA_ROOT: "data_TEST/"
   L1_NORMALIZE: "L1_normalize/"
   L1A: "L1a/"
-  OUTPUT_TABLES: "L1a_output_tables/"
+  OUTPUT_TEMPLATES: "L1a_output_templates/"
   NEWVARS_TABLE: "newvars_table.csv"
   remove_input_files: false
   logfile: ""
@@ -44,10 +44,14 @@ if(!exists("scan_folders") | !exists("unit_conversion")) {
          "devtools::install_github('COMPASS-DOE/compasstools')")
 }
 
-# For compactness, the plot table may have expansions
-PLOT_TABLE <- file.path(params$DATA_ROOT, params$PLOT_TABLE)
-pt <- read_csv(PLOT_TABLE, col_types = "cccc")
-pt_ex <- compasstools::expand_df(pt)
+# The template tables in $OUTPUT_TEMPLATES are 'plot tables' in RR's terminology
+# Read them into a list
+ot <- list.files(file.path(params$DATA_ROOT, params$OUTPUT_TEMPLATES),
+                 pattern = "*.csv$", full.names = TRUE)
+templates <- lapply(ot, read_csv, show_col_types = FALSE)
+names(templates) <- gsub("\\.csv", "", basename(ot))
+# For compactness, plot tables may have expansions
+templates <- lapply(templates, compasstools::expand_df)
 
 # Read new variables table
 NEWVARS_TABLE <- file.path(params$DATA_ROOT, params$NEWVARS_TABLE)
@@ -66,7 +70,7 @@ I see `r length(dirs_to_process)` directories to process in `r L1_NORMALIZE`.
 
 Output directory is `r L1A`.
 
-Plot table "`r PLOT_TABLE`" has `r nrow(pt)` rows, `r nrow(pt_ex)` after expansion.
+Output table templates are in `r params$OUTPUT_TEMPLATES`; there are `r length(templates)` of them.
 
 New variables table "`r NEWVARS_TABLE`" has `r nrow(nvt)` rows.
 
@@ -118,6 +122,8 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     dat <- distinct(dat_raw)
     message("\tRemoved ", nrow(dat_raw) - nrow(dat), " duplicate rows")    
 
+    # Go through the output tables one by one
+    
     # Join plot table with data
     message("\tJoining with plot table")
     pt_ex %>% 
