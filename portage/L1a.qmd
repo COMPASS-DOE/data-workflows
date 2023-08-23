@@ -105,85 +105,63 @@ file_read_smry <- data.frame()
 
 f <- function(dir_name, dirs_to_process, out_dir) {
     message(Sys.time(), " Processing ", basename(dir_name))
-    message("\tIt has ", length(dirs_to_process[[dir_name]]), " files")
+    d <- dirs_to_process[[dir_name]]
+    message("\tIt has ", length(d), " files")
     
-    dat_raw <- read_csv_group(dirs_to_process[[dir_name]],
+    dat_raw <- read_csv_group(d,
                               remove_input_files = params$remove_input_files, 
                               col_types = "ccTcdcccdcl")
     errors <<- errors + attr(dat_raw, "errors")
     
     # File-based summary
     message("\tTotal data: ", nrow(dat_raw), " rows, ", ncol(dat_raw), " columns")
-    smry <- data.frame(Dir = dir_name, Files = length(dirs_to_process[[dir_name]]), 
-                       Rows = nrow(dat_raw), Note = "")
-    file_read_smry <<- rbind(file_read_smry, smry)
+    file_read_smry <<- rbind(file_read_smry,
+                             data.frame(Dir = dir_name, 
+                                        Files = length(d), 
+                                        Rows = nrow(dat_raw)))
     
     # Remove duplicate rows (e.g. from multiple datalogger downloads)
     dat <- distinct(dat_raw)
     message("\tRemoved ", nrow(dat_raw) - nrow(dat), " duplicate rows")    
-
-    # Go through the output tables one by one
+    
+    # Go through the output templates to generate output tables
+    smry_all <- list()
     for(template in names(templates)) {
-        pt_ex <- templates[[template]]
+        pt_ex <- templates[[template]] # the expanded 'plot table'
+        
+        # Join plot table with data
+        message("\tJoining with output template (plot table) ", template)
+        pt_ex %>% 
+            left_join(dat, by = c("Site", "design_link"), 
+                      relationship = "many-to-many") %>% 
+            select(-Table, -loggernet_variable) ->
+            dat_mrg
+
+        smry_all[[template]] <- data.frame(File = basename(dir_name),
+                                           Template = template,
+                                           Rows = nrow(dat_mrg),
+                                           Note = "")
+        
+        missing <- anti_join(pt_ex, dat, by = c("Site", "design_link"))
+        if(nrow(missing)) {
+            dat_issues <<- dat_issues + 1
+            message("ERROR: some design links in plot table not found: ", 
+                    paste(missing$design_link, collapse = ", "))
+            smry_all[[template]]$Note <- "Missing design_link(s)"
+            next
+        }
+        
+        # Put columns in Site, Plot, Tree, TIMESTAMP, research_name, value,
+        # and then <others alphabetized> order
+        lefts <- c(colnames(pt_ex), "TIMESTAMP", "research_name", "value")
+        dat_mrg <- dat_mrg[c(lefts, sort(setdiff(names(dat_mrg), lefts)))]
+        
+        write_to_folders(dat_mrg, root_dir = out_dir, data_level = "L1a",
+                         site = dat$Site[1], logger = dat$Logger[1], table = template)
         
     }
     
-    # Join plot table with data
-    message("\tJoining with plot table")
-    pt_ex %>% 
-        left_join(dat, by = c("Site", "design_link"), 
-                  relationship = "many-to-many") %>% 
-        select(-Table, -loggernet_variable) ->
-        dat_mrg
-    
-    missing <- anti_join(pt_ex, dat, by = c("Site", "design_link"))
-    if(nrow(missing)) {
-        dat_issues <<- dat_issues + 1
-        message("ERROR: some design links in plot table not found: ", 
-                paste(missing$design_link, collapse = ", "))
-        smry$Note <- "Missing design_link(s)"
-        return(smry)
-    }
-    
-    # Plot table-based summary
-    dat_mrg %>% 
-        group_by(Site, Plot) %>% 
-        summarise(TS_min = min(TIMESTAMP), 
-                  TS_max = max(TIMESTAMP), 
-                  Vars = length(unique(research_name)),
-                  OOB = sum(OOB, na.rm = TRUE),
-                  .groups = "drop") %>% 
-        mutate(Dir = basename(dir_name), 
-               Note = "") %>%
-        select(Dir, Site, Plot, Vars, OOB, TS_min, TS_max, Note) ->
-        smry
-    
-    # Error check
-    # There should be only one research_name for each timestamp/site/plot/tree
-    dat_mrg %>% 
-        group_by(TIMESTAMP, Site, Plot, Tree, research_name) %>% 
-        summarise(n = n(), .groups = "drop") %>% 
-        filter(n > 1) %>% 
-        mutate(Dir = basename(dir_name)) ->
-        dat_mrg_problems
-    
-    if(nrow(dat_mrg_problems)) {
-        dat_issues <<- dat_issues + 1
-        message("There are duplicate research_names associated with each site/plot/tree")
-        dat_mrg_problems$TIMESTAMP <- NULL
-        print(distinct(dat_mrg_problems))
-        smry$Note <- "Problems!"
-    }
-    
-    # Put columns in Site, Plot, Tree, TIMESTAMP, research_name, value,
-    # and then <others alphabetized> order
-    lefts <- c("Site", "Plot", "Tree", "TIMESTAMP", "research_name", "value")
-    dat_mrg <- dat_mrg[c(lefts, sort(setdiff(names(dat_mrg), lefts)))]
-    
-    write_to_folders(dat_mrg, root_dir = out_dir, data_level = "L1a",
-                     site = dat$Site[1], logger = dat$Logger[1], table = "")
-    
-    return(smry)
+    return(bind_rows(smry_all))
 }
 
 out <- lapply(names(dirs_to_process), f, 
@@ -216,9 +194,9 @@ if(dat_issues) {
 knitr::kable(file_read_smry)
 ```
 
-## Plot summary:
+## Output summary
 
-```{r plot_summary_table}
+```{r output_summary_table}
 out_df <- do.call("rbind", out)
 knitr::kable(out_df)
 ```

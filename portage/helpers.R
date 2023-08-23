@@ -91,8 +91,12 @@ write_to_folders <- function(x, root_dir, data_level, site, logger, table, quiet
                     # L1_normalize data: <logger>_<table>_<year>_<month>
                     filename <- paste0(paste(logger, table, y, m, sep = "_"), ".csv")
                 } else if(data_level %in% c("L1b", "L1a")) {
-                    # L1a and L1b data: <site>_<year>_<month>_<level>
-                    filename <- paste0(paste(site, y, m, data_level, sep = "_"), ".csv")
+                    # L1a and L1b data: <site>_<year>_<month>_<level> (and table if present)
+                    if(missing(table)) {
+                        filename <- paste0(paste(site, y, m, data_level, sep = "_"), ".csv")
+                    } else {
+                        filename <- paste0(paste(site, y, m, data_level, table, sep = "_"), ".csv")
+                    }
                 } else {
                     stop("Unkown data_level ", data_level)
                 }
