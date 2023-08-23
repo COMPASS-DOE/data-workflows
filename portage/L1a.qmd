@@ -123,6 +123,10 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     message("\tRemoved ", nrow(dat_raw) - nrow(dat), " duplicate rows")    
 
     # Go through the output tables one by one
+    for(template in names(templates)) {
+        pt_ex <- templates[[template]]
+        
+    }
     
     # Join plot table with data
     message("\tJoining with plot table")
@@ -139,36 +143,6 @@ f <- function(dir_name, dirs_to_process, out_dir) {
                 paste(missing$design_link, collapse = ", "))
         smry$Note <- "Missing design_link(s)"
         return(smry)
-    }
-    
-    # Compute new (derived) variables
-    message("\tComputing derived variables")
-    for(i in seq_len(nrow(nvt))) {
-        new_rn <- nvt$new_research_name[i]
-        rn_needed <- strsplit(nvt$needs_research_names[i], ",", fixed = TRUE)[[1]]
-        # Isolate needed data and site/plot/tree/timestamp
-        dat_mrg %>% 
-            filter(research_name %in% rn_needed) %>% 
-            select(Site, Plot, Tree, TIMESTAMP, research_name, value) %>% 
-            pivot_wider(names_from = "research_name", values_from = "value") ->
-            dat_subset
-        
-        message("\t\t", new_rn, " <- ", nvt$needs_research_names[i],
-                " (using ", nrow(dat_subset), " rows)")
-        
-        # Call the computation function based on the name of the new variable
-        # New variable functions MUST add "value" and "units" columns; optionally "OOB"
-        dat_subset <- do.call(paste0("NEWVAR_", new_rn), list(dat_subset))
-        # Clean up: add research_name...
-        dat_subset$research_name <- new_rn
-        # remove old research name columns (from the pivot_wider above)
-        dat_subset[rn_needed] <- NULL
-        # ...and add information entries in the design_link and Logger columns 
-        if("design_link" %in% names(dat_mrg)) dat_subset$design_link <- "<derived>"
-        if("Logger" %in% names(dat_mrg)) dat_subset$Logger <- "<derived>"
-        # This is inefficient but assuming we won't have many
-        # Also, new variables might be needed by further ones?!?
-        dat_mrg <- bind_rows(dat_mrg, dat_subset)
     }
     
     # Plot table-based summary
