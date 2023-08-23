@@ -136,9 +136,11 @@ f <- function(fn, out_dir, design_table) {
         missings
     
     if(nrow(missings)) {
+        missing_dls <- paste(missings$loggernet_variable, collapse = ", ")
+        missing_dls <- strwrap(missing_dls, width = 40)
         message("\tERROR: missing design links: ", 
-                paste(missings$loggernet_variable, collapse = ", "))
-        smry$Note <- "Missing design link" 
+                paste(missing_dls, collapse = "\n\t\t"))
+        smry$Note <- "Missing design link(s)"
         errors <<- errors + 1
         return(smry)
     }
@@ -148,21 +150,6 @@ f <- function(fn, out_dir, design_table) {
                           by = c("Logger", "Table", "loggernet_variable"),
                           relationship = "many-to-one")
     
-    # Check for missing entries in the design table
-    dat_long %>% 
-        anti_join(design_table,
-                          by = c("Logger", "Table", "loggernet_variable")) %>% 
-        select(Logger, Table, loggernet_variable) %>% 
-        distinct() ->
-        missings
-    
-    if(nrow(missings)) {
-        message("\tERROR: missing design links: ", paste(missings$loggernet_variable, collapse = ", "))
-        smry$Note <- "Design link error" 
-        errors <<- errors + 1
-        return(smry)
-    }
-
     # Summary information
     smry$dl_NA <- sum(is.na(dat_long$design_link))
     message("\tFiltering out ", smry$dl_NA, " empty design_link rows")
@@ -174,7 +161,10 @@ f <- function(fn, out_dir, design_table) {
     rns <- unique(dat_long$research_name)
     missings <- rns[!rns %in% ut$research_name]
     if(length(missings)) {
-        message("\tERROR: missing units entries: ", paste(missings, collapse = ", "))
+        missing_units <- paste(missings, collapse = ", ")
+        missing_units <- strwrap(missing_units, width = 40)
+        message("\tERROR: missing units entries: ",
+                paste(missing_units, collapse = "\n\t\t"))
         smry$Note <- "Missing unit entries" 
         errors <<- errors + 1
         return(smry)
