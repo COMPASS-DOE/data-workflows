@@ -10,7 +10,6 @@ params:
   L1A: "L1a/"
   PLOT_TABLE: "plot_table.csv"
   NEWVARS_TABLE: "newvars_table.csv"
-  timestamp_round: "15 minutes"
   logfile: ""
 date: now
 date-format: "YYYY-MM-DD HH:mm:ssZ"
