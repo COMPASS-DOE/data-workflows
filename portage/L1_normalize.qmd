@@ -136,9 +136,11 @@ f <- function(fn, out_dir, design_table) {
         missings
     
     if(nrow(missings)) {
+        missing_dls <- paste(missings$loggernet_variable, collapse = ", ")
+        missing_dls <- strwrap(missing_dls, width = 40)
         message("\tERROR: missing design links: ", 
-                paste(missings$loggernet_variable, collapse = ", "))
-        smry$Note <- "Missing design link" 
+                paste(missing_dls, collapse = "\n\t\t"))
+        smry$Note <- "Missing design link(s)"
         errors <<- errors + 1
         return(smry)
     }
