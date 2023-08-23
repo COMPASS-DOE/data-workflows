@@ -6,10 +6,11 @@ params:
   html_outfile: "L1_normalize.html"
   DATA_ROOT: "data_TEST/"
   L0: "L0/"
-  REMOVE_INPUT_FILES: false
   L1_NORMALIZE: "L1_normalize/"
   DESIGN_TABLE: "design_table.csv"
   METADATA_TABLE: "metadata_vars.csv"
+  debug: false
+  remove_input_files: false
   logfile: ""
 date: now
 date-format: "YYYY-MM-DD HH:mm:ssZ"
@@ -31,7 +32,7 @@ This script
 
 -   Performs bounds checking (adding flags) for each `research_name` variable
 
--   Writes into <year>_<month>_<site> folders
+-   Writes into <year><month><site> folders
 
 ## Initializing
 
@@ -192,17 +193,25 @@ f <- function(fn, out_dir, design_table) {
     message("\tAdding OOB flags")
     dat_long %>% 
         left_join(bt, by = c("research_name", "units")) %>% 
-        mutate(OOB = value < low_bound | value > high_bound) %>% 
-        select(-low_bound, -high_bound) ->
+        mutate(OOB = value < low_bound | value > high_bound) ->
         dat_long
-   
+    
+    # Remove unneeded columns unless needed for debugging
+    if(!params$debug) {
+        message("\tDropping bounds columns")
+        dat_long <- select(dat_long, -low_bound, -high_bound)
+    }
+    
     write_to_folders(dat_long, root_dir = out_dir, 
                      data_level = "L1_normalize",
                      site = dat_long$Site[1], 
                      logger = dat_long$Logger[1],
                      table = dat_long$Table[1])
 
-    if(params$REMOVE_INPUT_FILES) file.remove(fn)
+    if(params$remove_input_files) {
+        message("\tRemoving input files")
+        file.remove(fn)
+    }
     
     return(smry)
 }
