@@ -9,6 +9,7 @@ params:
   L1A: "L1a/"
   OUTPUT_TEMPLATES: "L1a_output_templates/"
   NEWVARS_TABLE: "newvars_table.csv"
+  debug: false
   remove_input_files: false
   logfile: ""
 date: now
@@ -129,12 +130,14 @@ f <- function(dir_name, dirs_to_process, out_dir) {
         # Join plot table with data
         message("\t------------------------------------------------")
         message("\tJoining with output template (plot table) ", template)
-        pt_ex %>% 
-            left_join(dat, by = c("Site", "design_link"), 
-                      relationship = "many-to-many") %>% 
-            select(-Table, -loggernet_variable, -design_link, -Logger) ->
-            dat_mrg
-
+        dat_mrg <- left_join(pt_ex, dat, by = c("Site", "design_link"), 
+                      relationship = "many-to-many")
+        # Remove unneeded columns unless needed for debugging
+        if(!params$debug) {
+            message("\tDropping logger/design info columns")
+            dat_mrg <- select(dat_mrg, -Table, -loggernet_variable, -design_link, -Logger)
+        }
+        
         smry_all[[template]] <- data.frame(File = basename(dir_name),
                                            Template = template,
                                            Rows = nrow(dat_mrg),
