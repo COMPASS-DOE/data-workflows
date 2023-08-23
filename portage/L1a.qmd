@@ -23,8 +23,6 @@ This script
 
 -   Reads in all the L1_normalize files by year/month/site
 
--   Rounds timestsamps
-
 -   Computes new variables: `sapflow_avg` (a test)
 
 -   Loads all template tables and generates L1a output tables from them
@@ -129,11 +127,12 @@ f <- function(dir_name, dirs_to_process, out_dir) {
         pt_ex <- templates[[template]] # the expanded 'plot table'
         
         # Join plot table with data
+        message("\t------------------------------------------------")
         message("\tJoining with output template (plot table) ", template)
         pt_ex %>% 
             left_join(dat, by = c("Site", "design_link"), 
                       relationship = "many-to-many") %>% 
-            select(-Table, -loggernet_variable) ->
+            select(-Table, -loggernet_variable, -design_link, -Logger) ->
             dat_mrg
 
         smry_all[[template]] <- data.frame(File = basename(dir_name),
@@ -149,11 +148,13 @@ f <- function(dir_name, dirs_to_process, out_dir) {
             smry_all[[template]]$Note <- "Missing design_link(s)"
             next
         }
-        browser()
-        # Put columns in Site, Plot, Tree, TIMESTAMP, research_name, value,
-        # and then <others alphabetized> order
-        lefts <- c(colnames(pt_ex), "TIMESTAMP", "research_name", "value")
-        dat_mrg <- dat_mrg[c(lefts, sort(setdiff(names(dat_mrg), lefts)))]
+
+        # Put columns in order: first the ones in the template (if available),
+        # then TIMESTAMP, research_name, and value; and then any other columns
+        # in alphabetized order
+        left_cols <- c(base::intersect(colnames(pt_ex), colnames(dat_mrg)), 
+                   "TIMESTAMP", "research_name", "value")
+        dat_mrg <- dat_mrg[c(left_cols, sort(setdiff(names(dat_mrg), left_cols)))]
         
         write_to_folders(dat_mrg, root_dir = out_dir, data_level = "L1a",
                          site = dat$Site[1], logger = dat$Logger[1], table = template)
