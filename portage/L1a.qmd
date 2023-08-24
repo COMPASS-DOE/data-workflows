@@ -156,7 +156,9 @@ f <- function(dir_name, dirs_to_process, out_dir) {
         # then TIMESTAMP, research_name, and value; and then any other columns
         # in alphabetized order
         left_cols <- c(base::intersect(colnames(pt_ex), colnames(dat_mrg)), 
-                   "TIMESTAMP", "research_name", "value")
+                   "research_name", "TIMESTAMP", "value")
+        # Note that this order is important, as L1b depends on the fact that
+        # everything to the left of TIMESTAMP is a grouping variable
         dat_mrg <- dat_mrg[c(left_cols, sort(setdiff(names(dat_mrg), left_cols)))]
         
         write_to_folders(dat_mrg, root_dir = out_dir, data_level = "L1a",

@@ -41,13 +41,13 @@ copy_output <- function(from, to, overwrite = TRUE) {
 # removing them as we read, and bind data together. The read error count
 # is returned as an attribute of the output
 read_csv_group <- function(files, col_types = NULL,
-                           remove_input_files = FALSE, quiet = FALSE) {
+                           remove_input_files = FALSE, quiet = FALSE, ...) {
     errors <- 0
 
     # Read in all files and bind data frames
     readf <- function(fn) {
         if(!quiet) message("\tReading ", basename(fn))
-        x <- try(read_csv(fn, col_types = col_types))
+        x <- try(read_csv(fn, col_types = col_types, ...))
         if(!is.data.frame(x)) {
             errors <- errors + 1
             return(NULL)

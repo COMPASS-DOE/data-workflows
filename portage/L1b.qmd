@@ -58,54 +58,47 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     message("\tIt has ", length(dirs_to_process[[dir_name]]), " files")
     
     dat <- read_csv_group(dirs_to_process[[dir_name]],
-                          remove_input_files = params$remove_input_files)
+                          remove_input_files = params$remove_input_files,
+                          show_col_types = FALSE)
     errors <<- errors + attr(dat, "errors")
     
     # File-based summary
     message("\tTotal data: ", nrow(dat), " rows, ", ncol(dat), " columns")
-    smry <- data.frame(Dir = dir_name, Files = length(dirs_to_process[[dir_name]]), 
-                       Rows = nrow(dat), note = "")
+    smry <- data.frame(Dir = dir_name,
+                       Files = length(dirs_to_process[[dir_name]]), 
+                       Rows = nrow(dat),
+                       Note = "")
 
-    browser()
-    
-    # Round timestamps
+    # Round timestamps and compute per-period averages
+    # Note that this depends on L1a putting all grouping columns to the left of TIMESTAMP
+    # TODO: maybe don't use dplyr for this? Their NSE approach has changed so many times...
+    grouping_vars <- colnames(dat)[1:which(colnames(dat) == "TIMESTAMP")]
+    grouping_vars <- c(grouping_vars, "units")
     message("\tRounding timestamps to nearest ", params$timestamp_round)
-    dat$TIMESTAMP_raw <- dat$TIMESTAMP
-    dat$TIMESTAMP <- round_date(dat$TIMESTAMP, params$timestamp_round)
-    # Note that L1a preserves multiple observations within a rounded
-    # timestamp, whereas L1b computes their average
-    
-
-    # Average data by rounded timestamp
-    # Note that L1a preserves multiple observations within a rounded
+    # Note that L1a preserves multiple observations within a given
     # timestamp, whereas L1b computes their average
     dat %>% 
-        group_by(Site, Plot, Tree, TIMESTAMP, research_name, units) %>% 
+        mutate(TIMESTAMP = round_date(TIMESTAMP, params$timestamp_round)) %>% 
+        group_by(across(all_of(grouping_vars))) %>% 
         summarise(value = mean(value, na.rm = TRUE),
-                  OOB = sum(OOB, na.rm = TRUE),
                   N = n(),
                   .groups = "drop") ->
         dat
-    
-    # Separate OOB flags for reshaping
-    dat %>% 
-        select(TIMESTAMP, Site, Plot, Tree, research_name, OOB) %>% 
-        pivot_wider(names_from = "research_name", 
-                    values_from = "OOB", 
-                    names_prefix = "OOB_") ->
-        OOBs
-    
+
     # Reshape to wide form, with one experimental unit (here, tree) per row
     dat %>% 
-        mutate(research_name_units = paste(research_name, units, sep = "_")) %>% 
-        select(TIMESTAMP, value, research_name_units, Site, Plot, Tree) %>% 
-        pivot_wider(names_from = "research_name_units", values_from = "value") %>% 
-        left_join(OOBs, by = c("TIMESTAMP", "Site", "Plot", "Tree")) ->
+        unite("rn_units", research_name, units) %>% 
+        pivot_wider(names_from = "rn_units", values_from = "value") ->
         dat_final
     
     # Write out to L1b/
-    write_to_folders(dat_final, root_dir = out_dir, data_level = "L1b",
-                     site = dat_final$Site[1], logger = "", table = "")
+    # Extract table name from dir name (should be last element)
+    x <- strsplit(dir_name, "_")[[1]]
+    write_to_folders(dat_final, 
+                     root_dir = out_dir,
+                     data_level = "L1b",
+                     site = dat_final$Site[1],
+                     table = x[length(x)])
     
     return(smry)
 }
