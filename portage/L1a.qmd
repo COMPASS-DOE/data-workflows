@@ -6,10 +6,11 @@ params:
   html_outfile: "L1a.html"
   DATA_ROOT: "data_TEST/"
   L1_NORMALIZE: "L1_normalize/"
-  remove_input_files: false
   L1A: "L1a/"
-  PLOT_TABLE: "plot_table.csv"
+  OUTPUT_TEMPLATES: "L1a_output_templates/"
   NEWVARS_TABLE: "newvars_table.csv"
+  debug: false
+  remove_input_files: false
   logfile: ""
 date: now
 date-format: "YYYY-MM-DD HH:mm:ssZ"
@@ -23,11 +24,9 @@ This script
 
 -   Reads in all the L1_normalize files by year/month/site
 
--   Rounds timestsamps
-
 -   Computes new variables: `sapflow_avg` (a test)
 
--   Joins with plot table
+-   Loads all template tables and generates L1a output tables from them
 
 ## Initializing
 
@@ -44,10 +43,14 @@ if(!exists("scan_folders") | !exists("unit_conversion")) {
          "devtools::install_github('COMPASS-DOE/compasstools')")
 }
 
-# For compactness, the plot table may have expansions
-PLOT_TABLE <- file.path(params$DATA_ROOT, params$PLOT_TABLE)
-pt <- read_csv(PLOT_TABLE, col_types = "cccc")
-pt_ex <- compasstools::expand_df(pt)
+# The template tables in $OUTPUT_TEMPLATES are 'plot tables' in RR's terminology
+# Read them into a list
+ot <- list.files(file.path(params$DATA_ROOT, params$OUTPUT_TEMPLATES),
+                 pattern = "*.csv$", full.names = TRUE)
+templates <- lapply(ot, read_csv, show_col_types = FALSE)
+names(templates) <- gsub("\\.csv", "", basename(ot))
+# For compactness, plot tables may have expansions
+templates <- lapply(templates, compasstools::expand_df)
 
 # Read new variables table
 NEWVARS_TABLE <- file.path(params$DATA_ROOT, params$NEWVARS_TABLE)
@@ -66,7 +69,7 @@ I see `r length(dirs_to_process)` directories to process in `r L1_NORMALIZE`.
 
 Output directory is `r L1A`.
 
-Plot table "`r PLOT_TABLE`" has `r nrow(pt)` rows, `r nrow(pt_ex)` after expansion.
+Output table templates are in `r params$OUTPUT_TEMPLATES`; there are `r length(templates)` of them.
 
 New variables table "`r NEWVARS_TABLE`" has `r nrow(nvt)` rows.
 
@@ -94,116 +97,76 @@ NEWVAR_sapflow_avg <- function(x) {
 ```
 
 ```{r processing}
-overwrites <- 0
 errors <- 0
 dat_issues <- 0
 file_read_smry <- data.frame()
 
 f <- function(dir_name, dirs_to_process, out_dir) {
     message(Sys.time(), " Processing ", basename(dir_name))
-    message("\tIt has ", length(dirs_to_process[[dir_name]]), " files")
+    d <- dirs_to_process[[dir_name]]
+    message("\tIt has ", length(d), " files")
     
-    dat_raw <- read_csv_group(dirs_to_process[[dir_name]],
+    dat_raw <- read_csv_group(d,
                               remove_input_files = params$remove_input_files, 
                               col_types = "ccTcdcccdcl")
     errors <<- errors + attr(dat_raw, "errors")
     
     # File-based summary
     message("\tTotal data: ", nrow(dat_raw), " rows, ", ncol(dat_raw), " columns")
-    smry <- data.frame(Dir = dir_name, Files = length(dirs_to_process[[dir_name]]), 
-                       Rows = nrow(dat_raw), Note = "")
-    file_read_smry <<- rbind(file_read_smry, smry)
+    file_read_smry <<- rbind(file_read_smry,
+                             data.frame(Dir = dir_name, 
+                                        Files = length(d), 
+                                        Rows = nrow(dat_raw)))
     
     # Remove duplicate rows (e.g. from multiple datalogger downloads)
     dat <- distinct(dat_raw)
     message("\tRemoved ", nrow(dat_raw) - nrow(dat), " duplicate rows")    
+    
+    # Go through the output templates to generate output tables
+    smry_all <- list()
+    for(template in names(templates)) {
+        pt_ex <- templates[[template]] # the expanded 'plot table'
+        
+        # Join plot table with data
+        message("\t------------------------------------------------")
+        message("\tJoining with output template (plot table) ", template)
+        dat_mrg <- left_join(pt_ex, dat, by = c("Site", "design_link"), 
+                      relationship = "many-to-many")
+        # Remove unneeded columns unless needed for debugging
+        if(!params$debug) {
+            message("\tDropping logger/design info columns")
+            dat_mrg <- select(dat_mrg, -Table, -loggernet_variable, -design_link, -Logger)
+        }
+        
+        smry_all[[template]] <- data.frame(File = basename(dir_name),
+                                           Template = template,
+                                           Rows = nrow(dat_mrg),
+                                           Note = "")
+        
+        missing <- anti_join(pt_ex, dat, by = c("Site", "design_link"))
+        if(nrow(missing)) {
+            dat_issues <<- dat_issues + 1
+            message("ERROR: some design links in plot table not found: ", 
+                    paste(missing$design_link, collapse = ", "))
+            smry_all[[template]]$Note <- "Missing design_link(s)"
+            next
+        }
 
-    # Join plot table with data
-    message("\tJoining with plot table")
-    pt_ex %>% 
-        left_join(dat, by = c("Site", "design_link"), 
-                  relationship = "many-to-many") %>% 
-        select(-Table, -loggernet_variable) ->
-        dat_mrg
-    
-    missing <- anti_join(pt_ex, dat, by = c("Site", "design_link"))
-    if(nrow(missing)) {
-        dat_issues <<- dat_issues + 1
-        message("ERROR: some design links in plot table not found: ", 
-                paste(missing$design_link, collapse = ", "))
-        smry$Note <- "Missing design_link(s)"
-        return(smry)
-    }
-    
-    # Compute new (derived) variables
-    message("\tComputing derived variables")
-    for(i in seq_len(nrow(nvt))) {
-        new_rn <- nvt$new_research_name[i]
-        rn_needed <- strsplit(nvt$needs_research_names[i], ",", fixed = TRUE)[[1]]
-        # Isolate needed data and site/plot/tree/timestamp
-        dat_mrg %>% 
-            filter(research_name %in% rn_needed) %>% 
-            select(Site, Plot, Tree, TIMESTAMP, research_name, value) %>% 
-            pivot_wider(names_from = "research_name", values_from = "value") ->
-            dat_subset
+        # Put columns in order: first the ones in the template (if available),
+        # then TIMESTAMP, research_name, and value; and then any other columns
+        # in alphabetized order
+        left_cols <- c(base::intersect(colnames(pt_ex), colnames(dat_mrg)), 
+                   "research_name", "TIMESTAMP", "value")
+        # Note that this order is important, as L1b depends on the fact that
+        # everything to the left of TIMESTAMP is a grouping variable
+        dat_mrg <- dat_mrg[c(left_cols, sort(setdiff(names(dat_mrg), left_cols)))]
         
-        message("\t\t", new_rn, " <- ", nvt$needs_research_names[i],
-                " (using ", nrow(dat_subset), " rows)")
+        write_to_folders(dat_mrg, root_dir = out_dir, data_level = "L1a",
+                         site = dat$Site[1], logger = dat$Logger[1], table = template)
         
-        # Call the computation function based on the name of the new variable
-        # New variable functions MUST add "value" and "units" columns; optionally "OOB"
-        dat_subset <- do.call(paste0("NEWVAR_", new_rn), list(dat_subset))
-        # Clean up: add research_name...
-        dat_subset$research_name <- new_rn
-        # remove old research name columns (from the pivot_wider above)
-        dat_subset[rn_needed] <- NULL
-        # ...and add information entries in the design_link and Logger columns 
-        if("design_link" %in% names(dat_mrg)) dat_subset$design_link <- "<derived>"
-        if("Logger" %in% names(dat_mrg)) dat_subset$Logger <- "<derived>"
-        # This is inefficient but assuming we won't have many
-        # Also, new variables might be needed by further ones?!?
-        dat_mrg <- bind_rows(dat_mrg, dat_subset)
     }
     
-    # Plot table-based summary
-    dat_mrg %>% 
-        group_by(Site, Plot) %>% 
-        summarise(TS_min = min(TIMESTAMP), 
-                  TS_max = max(TIMESTAMP), 
-                  Vars = length(unique(research_name)),
-                  OOB = sum(OOB, na.rm = TRUE),
-                  .groups = "drop") %>% 
-        mutate(Dir = basename(dir_name), 
-               Note = "") %>%
-        select(Dir, Site, Plot, Vars, OOB, TS_min, TS_max, Note) ->
-        smry
-    
-    # Error check
-    # There should be only one research_name for each timestamp/site/plot/tree
-    dat_mrg %>% 
-        group_by(TIMESTAMP, Site, Plot, Tree, research_name) %>% 
-        summarise(n = n(), .groups = "drop") %>% 
-        filter(n > 1) %>% 
-        mutate(Dir = basename(dir_name)) ->
-        dat_mrg_problems
-    
-    if(nrow(dat_mrg_problems)) {
-        dat_issues <<- dat_issues + 1
-        message("There are duplicate research_names associated with each site/plot/tree")
-        dat_mrg_problems$TIMESTAMP <- NULL
-        print(distinct(dat_mrg_problems))
-        smry$Note <- "Problems!"
-    }
-    
-    # Put columns in Site, Plot, Tree, TIMESTAMP, research_name, value,
-    # and then <others alphabetized> order
-    lefts <- c("Site", "Plot", "Tree", "TIMESTAMP", "research_name", "value")
-    dat_mrg <- dat_mrg[c(lefts, sort(setdiff(names(dat_mrg), lefts)))]
-    
-    write_to_folders(dat_mrg, root_dir = out_dir, data_level = "L1a",
-                     site = dat$Site[1], logger = dat$Logger[1], table = "")
-    
-    return(smry)
+    return(bind_rows(smry_all))
 }
 
 out <- lapply(names(dirs_to_process), f, 
@@ -215,11 +178,6 @@ out <- lapply(names(dirs_to_process), f,
 ```{r summary}
 #| echo: false
 #| output: asis
-if(overwrites) {
-    cat("### WARNING: ", overwrites, " file overwrite(s)\n")
-    log_warning(paste("File overwrite(s)", params$html_outfile), 
-                logfile = params$logfile)
-}
 if(errors) {
     cat("### WARNING: ", errors, " file read/write error(s)\n")
     log_warning(paste("File read/write error(s)", params$html_outfile), 
@@ -236,9 +194,9 @@ if(dat_issues) {
 knitr::kable(file_read_smry)
 ```
 
-## Plot summary:
+## Output summary
 
-```{r plot_summary_table}
+```{r output_summary_table}
 out_df <- do.call("rbind", out)
 knitr::kable(out_df)
 ```

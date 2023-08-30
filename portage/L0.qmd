@@ -6,9 +6,9 @@ params:
   html_outfile: "L0.html"
   DATA_ROOT: "data_test/"
   RAW: "Raw/"
-  remove_input_files: false
   RAW_DONE: "Raw_done/"
   L0: "L0/"
+  remove_input_files: false
   logfile: ""
 date: now
 date-format: "YYYY-MM-DD HH:mm:ssZ"
@@ -99,6 +99,7 @@ f <- function(fn, new_dir) {
        } else {
             # Move to 'Raw_done' folder
             if(params$remove_input_files) {
+                message("\tArchiving raw input files")
                 file.copy(fn, file.path(params$raw_done, basefn), overwrite = FALSE)
                 file.remove(fn)
             }

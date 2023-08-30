@@ -41,13 +41,13 @@ copy_output <- function(from, to, overwrite = TRUE) {
 # removing them as we read, and bind data together. The read error count
 # is returned as an attribute of the output
 read_csv_group <- function(files, col_types = NULL,
-                           remove_input_files = FALSE, quiet = FALSE) {
+                           remove_input_files = FALSE, quiet = FALSE, ...) {
     errors <- 0
 
     # Read in all files and bind data frames
     readf <- function(fn) {
         if(!quiet) message("\tReading ", basename(fn))
-        x <- try(read_csv(fn, col_types = col_types))
+        x <- try(read_csv(fn, col_types = col_types, ...))
         if(!is.data.frame(x)) {
             errors <- errors + 1
             return(NULL)
@@ -61,51 +61,66 @@ read_csv_group <- function(files, col_types = NULL,
     dat
 }
 
-# File data into sub-folders based on logger and date
-# The data should be a data frame with a 'TIMESTAMP' column
-# Sort into <yyyy>_<mm>_<logger> folders, splitting apart as needed
-# based on the timestamp
-write_to_folders <- function(x, root_dir, data_level, site, logger, table, quiet = FALSE) {
+# File data into sub-folders based on what level data it is:
+# L1_normalize outputs
+#   Folders are site-year-month
+#   Filenames are logger-table-year-month
+# L1_a outputs
+#   Folders are site-year-month-table (table = template)
+#   Filenames are site-year-month-table-data_level
+# L1_b outputs
+#   Folders are site-year
+#   Filenames are site-year-month-table-data_level
+
+# The data (x) should be a data frame with a posixct 'TIMESTAMP' column
+# This is used to split the data for sorting into <yyyy>_<mm> folders
+
+write_to_folders <- function(x, root_dir, data_level, site,
+                             logger, table, quiet = FALSE) {
     years <- year(x$TIMESTAMP)
     months <- sprintf("%02i", month(x$TIMESTAMP)) # add leading zero if needed
 
-        for(y in unique(years)) {
-            for(m in unique(months)) {
+    for(y in unique(years)) {
+        for(m in unique(months)) {
 
-                # Construct folder name (<site>_<year>_<month>) and create if necessary
+            # Isolate the data to write
+            dat <- x[y == years & m == months,]
+            stopifnot(nrow(dat) > 0) # this shouldn't happen
+
+            # Construct folder and file names
+            if(data_level == "L1_normalize") {
                 folder <- file.path(root_dir, paste(site, y, m, sep = "_"))
-                if(!dir.exists(folder)) {
-                    # Create folder
-                    if(!quiet) message("Creating ", basename(folder))
-                    if(!dir.create(folder)) {
-                        stop("dir.create returned an error")
-                    }
-                }
-
-                # Isolate the data to write
-                dat <- x[y == years & m == months,]
-                stopifnot(nrow(dat) > 0) # this shouldn't happen
-
-                # Construct filename and write the data
-                if(data_level == "L1_normalize") {
-                    # L1_normalize data: <logger>_<table>_<year>_<month>
-                    filename <- paste0(paste(logger, table, y, m, sep = "_"), ".csv")
-                } else if(data_level %in% c("L1b", "L1a")) {
-                    # L1a and L1b data: <site>_<year>_<month>_<level>
-                    filename <- paste0(paste(site, y, m, data_level, sep = "_"), ".csv")
-                } else {
-                    stop("Unkown data_level ", data_level)
-                }
-
-                if(!quiet) message("Writing ", nrow(dat), "/", nrow(x), " rows of data to ",
-                                   basename(folder), "/", filename)
-
-                fn <- file.path(folder, filename)
-                if(file.exists(fn)) message("NOTE: overwriting existing file")
-                readr::write_csv(dat, fn)
+                filename <- paste0(paste(logger, table, y, m, sep = "_"), ".csv")
+            } else if(data_level == "L1a") {
+                folder <- file.path(root_dir, paste(site, y, m, table, sep = "_"))
+                filename <- paste0(paste(site, y, m, table, data_level, sep = "_"), ".csv")
+            } else if(data_level == "L1b") {
+                folder <- file.path(root_dir, paste(site, y, sep = "_"))
+                filename <- paste0(paste(site, y, m, data_level, table, data_level, sep = "_"), ".csv")
+            } else {
+                stop("Unkown data_level ", data_level)
             }
-    }
 
+            # Create folder, if needed
+            if(!dir.exists(folder)) {
+                if(!quiet) message("Creating ", basename(folder))
+                if(!dir.create(folder)) {
+                    stop("dir.create returned an error")
+                }
+            }
+
+            # Write data
+            if(!quiet) message("Writing ", nrow(dat), "/", nrow(x), " rows of data to ",
+                               basename(folder), "/", filename)
+
+            fn <- file.path(folder, filename)
+            if(file.exists(fn)) message("NOTE: overwriting existing file")
+            readr::write_csv(dat, fn)
+            if(!file.exists(fn)) {
+                stop("File ", fn, "was not written")
+            }
+        } # for m
+    } # for y
 }
 
 
