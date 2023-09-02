@@ -105,11 +105,11 @@ pt <- file.path(ROOT, "plot_table.csv")
 outfile <- paste0("L1b_", now_string(), ".html")
 outfile <- file.path(LOGS, outfile)
 
-quarto_render("L1b.qmd",
-              execute_params = list(DATA_ROOT = ROOT,
-                                    html_outfile = outfile,
-                                    logfile = LOGFILE))
-copy_output("L1b.html", outfile)
+# quarto_render("L1b.qmd",
+#               execute_params = list(DATA_ROOT = ROOT,
+#                                     html_outfile = outfile,
+#                                     logfile = LOGFILE))
+# copy_output("L1b.html", outfile)
 
 
 message("All done.")

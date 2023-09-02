@@ -192,7 +192,8 @@ f <- function(fn, out_dir, design_table) {
         dat_long <- select(dat_long, -low_bound, -high_bound)
     }
     
-    write_to_folders(dat_long, root_dir = out_dir, 
+    write_to_folders(dat_long, 
+                     root_dir = out_dir, 
                      data_level = "L1_normalize",
                      site = dat_long$Site[1], 
                      logger = dat_long$Logger[1],
