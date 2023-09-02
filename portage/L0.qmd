@@ -4,7 +4,7 @@ author: "COMPASS workflows team"
 title-block-banner: true
 params:
   html_outfile: "L0.html"
-  DATA_ROOT: "data_test/"
+  DATA_ROOT: "data_TEST/"
   RAW: "Raw/"
   RAW_DONE: "Raw_done/"
   L0: "L0/"
@@ -82,7 +82,6 @@ f <- function(fn, new_dir) {
         new_fn <- paste0(stripped_fn, "_", nrow(dat), "x", ncol(dat), "_", short_hash, ".csv")
         
         note <- ""
-        message("\tWriting ", new_fn)
         if(file.exists(file.path(new_dir, new_fn))) {
             note <- "Overwriting existing file"
             message("\t", note)
@@ -91,6 +90,7 @@ f <- function(fn, new_dir) {
         
         # Write the new file, checking to make sure successful
         new_fqfn <- file.path(new_dir, new_fn)
+        message("\tWriting ", new_fqfn)
         try(write.csv(dat, new_fqfn, row.names = FALSE))
         if(!file.exists(new_fqfn)) {
             note <- "Write error"
@@ -119,7 +119,7 @@ f <- function(fn, new_dir) {
                Note = note)
 }
 
-out <- lapply(files_to_process, f, new_dir = params$L0)
+out <- lapply(files_to_process, f, new_dir = L0)
 ```
 
 ## Summary

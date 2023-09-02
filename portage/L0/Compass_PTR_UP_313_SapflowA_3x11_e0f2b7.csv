@@ -1,4 +1,0 @@
-"Logger","Table","Format","TIMESTAMP","RECORD","PB","Statname","BattV_Avg","DiffVoltA_Avg(1)","DiffVoltA_Avg(2)","DiffVoltA_Avg(9)"
-"Compass_PTR_UP_313","SapflowA","TOA5","2022-11-09 00:00:00",16933,313,"COMPASS_PTR_UP",11.85,0.598,0.583,0.581
-"Compass_PTR_UP_313","SapflowA","TOA5","2022-11-09 00:15:00",16934,313,"COMPASS_PTR_UP",11.85,0.599,0.585,0.583
-"Compass_PTR_UP_313","SapflowA","TOA5","2022-11-09 00:30:00",16935,313,"COMPASS_PTR_UP",11.85,0.599,0.586,0.583
