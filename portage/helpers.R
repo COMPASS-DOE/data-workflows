@@ -66,8 +66,8 @@ read_csv_group <- function(files, col_types = NULL,
 #   Folders are site-year-month
 #   Filenames are logger-table-year-month
 # L1_a outputs
-#   Folders are site-year-month-table (table = template)
-#   Filenames are site-year-month-table-data_level
+#   Folders are site-year-month
+#   Filenames are site-year-month-data_level
 # L1_b outputs
 #   Folders are site-year
 #   Filenames are site-year-month-table-data_level
@@ -88,12 +88,17 @@ write_to_folders <- function(x, root_dir, data_level, site,
             stopifnot(nrow(dat) > 0) # this shouldn't happen
 
             # Construct folder and file names
+            start <- min(dat$TIMESTAMP)
+            end <- max(dat$TIMESTAMP)
+            tr <- paste(format(start, format = "%Y%m%d"),
+                        format(end, format = "%Y%m%d"),
+                        sep = "-")
             if(data_level == "L1_normalize") {
                 folder <- file.path(root_dir, paste(site, y, m, sep = "_"))
                 filename <- paste0(paste(logger, table, y, m, sep = "_"), ".csv")
             } else if(data_level == "L1a") {
-                folder <- file.path(root_dir, paste(site, y, m, table, sep = "_"))
-                filename <- paste0(paste(site, y, m, table, data_level, sep = "_"), ".csv")
+                folder <- file.path(root_dir, paste(site, y, m, sep = "_"))
+                filename <- paste0(paste(site, tr, data_level, sep = "_"), ".csv")
             } else if(data_level == "L1b") {
                 folder <- file.path(root_dir, paste(site, y, sep = "_"))
                 filename <- paste0(paste(site, y, m, data_level, table, data_level, sep = "_"), ".csv")
