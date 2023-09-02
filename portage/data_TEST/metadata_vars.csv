@@ -16,7 +16,6 @@ AquaTroll,pH600,gw_ph,unitless,unitless,x * 1,0,14,"ph, water"
 AquaTroll,pH_ORP600,gw_ph_orp,mV,mV,x * 1,-1400,1400,ph_orp
 AquaTroll,RDO_concen600,gw_rdo_concentration,mg/L,mg/L,x * 1,0,20,rdo_concentration
 AquaTroll,Pressure600,gw_pressure,psi,mbar,x * 68.948,NA,NA,pressure
-AquaTroll,water level,NA,m,m,NA,-7,3,water level below ground surface
 ClimateVue,,wx_rain,,,x * 1,,,
 ClimateVue,,wx_winddir,,,x * 1,,,
 ClimateVue,,wx_maxws,,,x * 1,,,
