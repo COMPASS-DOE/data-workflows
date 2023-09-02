@@ -50,7 +50,8 @@ if(!exists("expand_df")) {
 
 # Read the design table (everything must have an entry)
 DESIGN_TABLE <- file.path(params$DATA_ROOT, params$DESIGN_TABLE)
-dt <- read_csv(DESIGN_TABLE, col_types = "cccccc")
+dt <- read_csv(DESIGN_TABLE, col_types = "ccccccc")
+dt$note <- NULL
 # For compactness, the design table may have expansions. For example,
 # "DiffVoltA_Avg({1:8})" -> "DiffVoltA_Avg(1)", "DiffVoltA_Avg(2)", etc., with
 # extra rows added as needed:

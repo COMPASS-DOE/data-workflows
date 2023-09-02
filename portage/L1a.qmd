@@ -7,8 +7,6 @@ params:
   DATA_ROOT: "data_TEST/"
   L1_NORMALIZE: "L1_normalize/"
   L1A: "L1a/"
-  OUTPUT_TEMPLATES: "L1a_output_templates/"
-  NEWVARS_TABLE: "newvars_table.csv"
   debug: false
   remove_input_files: false
   logfile: ""
@@ -43,19 +41,6 @@ if(!exists("scan_folders") | !exists("unit_conversion")) {
          "devtools::install_github('COMPASS-DOE/compasstools')")
 }
 
-# The template tables in $OUTPUT_TEMPLATES are 'plot tables' in RR's terminology
-# Read them into a list
-ot <- list.files(file.path(params$DATA_ROOT, params$OUTPUT_TEMPLATES),
-                 pattern = "*.csv$", full.names = TRUE)
-templates <- lapply(ot, read_csv, show_col_types = FALSE)
-names(templates) <- gsub("\\.csv", "", basename(ot))
-# For compactness, plot tables may have expansions
-templates <- lapply(templates, compasstools::expand_df)
-
-# Read new variables table
-NEWVARS_TABLE <- file.path(params$DATA_ROOT, params$NEWVARS_TABLE)
-nvt <- read_csv(NEWVARS_TABLE, col_types = "cc")
-
 source("helpers.R")
 
 L1_NORMALIZE <- file.path(params$DATA_ROOT, params$L1_NORMALIZE)
@@ -69,8 +54,6 @@ I see `r length(dirs_to_process)` directories to process in `r L1_NORMALIZE`.
 
 Output directory is `r L1A`.
 
-Output table templates are in `r params$OUTPUT_TEMPLATES`; there are `r length(templates)` of them.
-
 HTML outfile is "`r params$html_outfile`".
 
 ## Processing
@@ -83,9 +66,12 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     d <- dirs_to_process[[dir_name]]
     message("\tIt has ", length(d), " files")
     
+    # Read all files in a folder
+    # Note that we're forcing `value` and `value_raw` to be character, so that
+    # everything can be stacked into a single data frame
     dat_raw <- read_csv_group(d,
                               remove_input_files = params$remove_input_files, 
-                              col_types = "ccTcdcccdcl")
+                              col_types = "ccTcccccccl")
     errors <<- errors + attr(dat_raw, "errors")
     
     # File-based summary
