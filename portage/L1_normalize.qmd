@@ -50,7 +50,8 @@ if(!exists("expand_df")) {
 
 # Read the design table (everything must have an entry)
 DESIGN_TABLE <- file.path(params$DATA_ROOT, params$DESIGN_TABLE)
-dt <- read_csv(DESIGN_TABLE, col_types = "cccccc")
+dt <- read_csv(DESIGN_TABLE, col_types = "ccccccc")
+dt$note <- NULL
 # For compactness, the design table may have expansions. For example,
 # "DiffVoltA_Avg({1:8})" -> "DiffVoltA_Avg(1)", "DiffVoltA_Avg(2)", etc., with
 # extra rows added as needed:
@@ -141,7 +142,7 @@ f <- function(fn, out_dir, design_table) {
         missing_dls <- strwrap(missing_dls, width = 40)
         message("\tERROR: missing design links: ", 
                 paste(missing_dls, collapse = "\n\t\t"))
-        smry$Note <- "Missing design link(s)"
+        smry$Note <- "Missing design link row(s)"
         errors <<- errors + 1
         return(smry)
     }
@@ -154,8 +155,14 @@ f <- function(fn, out_dir, design_table) {
     # Summary information
     smry$dl_NA <- sum(is.na(dat_long$design_link))
     message("\tFiltering out ", smry$dl_NA, " empty design_link rows")
-    dat_long <- filter(dat_long, !is.na(design_link))
+    dat_long <- subset(dat_long, !is.na(dat_long$design_link))
 
+    # If no rows left, note this fact and move on
+    if(!nrow(dat_long)) {
+        smry$Note <- "No design links; nothing to process"
+        return(smry)
+    }
+    
     # ------------- Unit conversion
     
     # Check for missing entries in the units table
