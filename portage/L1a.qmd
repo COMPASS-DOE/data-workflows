@@ -71,30 +71,9 @@ Output directory is `r L1A`.
 
 Output table templates are in `r params$OUTPUT_TEMPLATES`; there are `r length(templates)` of them.
 
-New variables table "`r NEWVARS_TABLE`" has `r nrow(nvt)` rows.
-
 HTML outfile is "`r params$html_outfile`".
 
 ## Processing
-
-```{r newvar_code}
-#| include: false
-
-# This chunk holds dedicated functions to compute new variables
-# These must be named "NEWVAR_[new_research_name]", where "new_research_name"
-# is given in the `newvars_table` CSV file
-# Functions are given a data frame that is guaranteed to have needed variables
-# (research names) as defined in the `newvars_table` CSV file
-# Functions must return the data frame they're given, with "value" and "units" 
-# columns added (optionally, also a "OOB" column)
-
-# Compute sapflow_avg, the average of shallow and deep sapflow values
-NEWVAR_sapflow_avg <- function(x) {
-    x$value <- (x$sapflow + x$sapflow_deep) / 2.0
-    x$units <- "??"
-    return(x)
-}
-```
 
 ```{r processing}
 errors <- 0
