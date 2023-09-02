@@ -155,7 +155,7 @@ f <- function(fn, out_dir, design_table) {
     # Summary information
     smry$dl_NA <- sum(is.na(dat_long$design_link))
     message("\tFiltering out ", smry$dl_NA, " empty design_link rows")
-    dat_long <- filter(dat_long, !is.na(design_link))
+    dat_long <- subset(dat_long, !is.na(dat_long$design_link))
 
     # If no rows left, note this fact and move on
     if(!nrow(dat_long)) {
