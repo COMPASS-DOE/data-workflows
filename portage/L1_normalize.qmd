@@ -141,7 +141,7 @@ f <- function(fn, out_dir, design_table) {
         missing_dls <- strwrap(missing_dls, width = 40)
         message("\tERROR: missing design links: ", 
                 paste(missing_dls, collapse = "\n\t\t"))
-        smry$Note <- "Missing design link(s)"
+        smry$Note <- "Missing design link row(s)"
         errors <<- errors + 1
         return(smry)
     }
@@ -156,6 +156,12 @@ f <- function(fn, out_dir, design_table) {
     message("\tFiltering out ", smry$dl_NA, " empty design_link rows")
     dat_long <- filter(dat_long, !is.na(design_link))
 
+    # If no rows left, note this fact and move on
+    if(!nrow(dat_long)) {
+        smry$Note <- "No design links; nothing to process"
+        return(smry)
+    }
+    
     # ------------- Unit conversion
     
     # Check for missing entries in the units table
