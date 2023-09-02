@@ -100,6 +100,7 @@ errors <- 0
 
 f <- function(fn, out_dir, design_table) {
     message(Sys.time(), " Processing ", basename(fn))
+    cat(Sys.time(), " Processing ", basename(fn), "\n")
 
     smry <- data.frame(File = basename(fn), 
                        Pivoted_rows = NA_integer_,
@@ -125,6 +126,7 @@ f <- function(fn, out_dir, design_table) {
                              # loss since data came from a text file anyway)
                              values_transform = as.character)
     message("\tPivoted data has ", nrow(dat_long), " rows")
+    cat("\tPivoted data has ", nrow(dat_long), " rows\n")
     smry$Pivoted_rows <- nrow(dat_long)
 
     # ------------- Design table
