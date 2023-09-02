@@ -43,7 +43,6 @@ quarto_render("L0.qmd",
                                     logfile = LOGFILE))
 copy_output("L0.html", outfile)
 
-list_directories(list("data_TEST/L0/", "data_TEST/L1_normalize/", "data_TEST/L1a/"))
 
 # 'Normalize' L0 data -------------------------------------------
 # Reshaped to long form and matched with design_link info
@@ -62,7 +61,6 @@ quarto_render("L1_normalize.qmd",
                                     logfile = LOGFILE))
 copy_output("L1_normalize.html", outfile)
 
-list_directories(list("data_TEST/L0/", "data_TEST/L1_normalize/", "data_TEST/L1a/"))
 
 # Construct L1a data --------------------------------------------
 # Unit conversion and bounds checks performed
@@ -84,7 +82,6 @@ quarto_render("L1a.qmd",
                                     logfile = LOGFILE))
 copy_output("L1a.html", outfile)
 
-list_directories(list("data_TEST/L0/", "data_TEST/L1_normalize/", "data_TEST/L1a/"))
 
 # Manual QA/QC step ---------------------------------------------
 # A MarineGEO-like Shiny app, allowing technicians to
