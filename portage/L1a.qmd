@@ -20,21 +20,15 @@ editor: visual
 
 This script
 
--   Reads in all the L1_normalize files by year/month/site
+-   Reads in all the L1_normalize files
 
--   Computes new variables: `sapflow_avg` (a test)
-
--   Loads all template tables and generates L1a output tables from them
+-   Compiles and writes them out into separate <year><month><site> files
 
 ## Initializing
 
 ```{r init}
 #| include: false
 
-library(tidyr)
-library(dplyr)
-library(readr)
-library(lubridate)
 library(compasstools)
 if(!exists("scan_folders") | !exists("unit_conversion")) {
     stop("Please update to latest version of compasstools!\n",
@@ -82,14 +76,16 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     
     # Remove duplicate rows (e.g. from multiple datalogger downloads)
     dat <- distinct(dat_raw)
-    message("\tRemoved ", nrow(dat_raw) - nrow(dat), " duplicate rows")    
-    
+    message("\tRemoved ", nrow(dat_raw) - nrow(dat), " duplicate rows")
     # Make sure Site and Plot columns, if present, are on the left
     lefts <- intersect(c("Site", "Plot"), colnames(dat))
     rights <- setdiff(colnames(dat), lefts)
     dat <- dat[c(lefts, rights)]
-    # ...and remove Logger, Table, and loggernet_variable if present
-    dat <- dat[setdiff(colnames(dat), c("Logger", "Table", "loggernet_variable"))]
+    # Remove Logger, Table, and loggernet_variable if present
+    dat <- dat[setdiff(colnames(dat), 
+                       c("Logger", "Table", "loggernet_variable"))]
+    # And finally, sort
+    dat <- dat[order(dat$Site, dat$TIMESTAMP, dat$design_link),]
     
     write_to_folders(dat, 
                      root_dir = out_dir, 

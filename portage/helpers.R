@@ -1,10 +1,8 @@
 # Helper functions
 
-# TODO: move into compasstools?
-
 library(lubridate)
 library(readr)
-
+library(dplyr)
 
 # Small helper functions to make the various steps obvious in the log
 if(!exists("LOGFILE")) LOGFILE <- ""
@@ -74,12 +72,13 @@ read_csv_group <- function(files, col_types = NULL,
 
 # The data (x) should be a data frame with a posixct 'TIMESTAMP' column
 # This is used to split the data for sorting into <yyyy>_<mm> folders
-
+# Returns a list of filenames written (names) and number of data lines (values)
 write_to_folders <- function(x, root_dir, data_level, site,
                              logger, table, quiet = FALSE) {
     years <- year(x$TIMESTAMP)
     months <- sprintf("%02i", month(x$TIMESTAMP)) # add leading zero if needed
 
+    lines_written <- list()
     for(y in unique(years)) {
         for(m in unique(months)) {
 
@@ -126,11 +125,16 @@ write_to_folders <- function(x, root_dir, data_level, site,
             if(!file.exists(fn)) {
                 stop("File ", fn, "was not written")
             }
+
+            lines_written[[fn]] <- nrow(dat)
         } # for m
     } # for y
+    invisible(lines_written)
 }
 
 
+# Reset the system by removing all intermediate files in L0, L1_normalize,
+# L1a, L1b, and Logs folders
 reset <- function(root = here::here("portage/data")) {
     message("root is ", root)
     items <- list.files(file.path(root, "L0/"), pattern = "*.csv",
@@ -174,7 +178,7 @@ reset <- function(root = here::here("portage/data")) {
     message("All done.")
 }
 
-# Print a directory tree and its files
+# Print a nicely-formatted directory tree and its files
 # Usage:
 # list_directories(list("portage/Raw/", "portage/L0/", "portage/L1_normalize/",
 #                       "portage/L1a/", "portage/L1b"))
