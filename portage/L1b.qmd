@@ -18,6 +18,12 @@ format:
 editor: visual
 ---
 
+This script
+
+-   Computes new variables: `sapflow_avg` (a test)
+
+-   Loads all template tables and generates L1a output tables from them
+
 ## Initializing
 
 ```{r init}
