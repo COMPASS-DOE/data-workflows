@@ -59,7 +59,7 @@ dt_ex <- compasstools::expand_df(dt)
 
 # Read the metadata table
 METADATA_TABLE <- file.path(params$DATA_ROOT, params$METADATA_TABLE)
-mt <- read_csv(METADATA_TABLE, col_types = "ccccccddc")
+mt <- read_csv(METADATA_TABLE, col_types = "ccccccccddc")
 # ...and create the units table (everything must have an entry)
 mt %>% 
     filter(!is.na(research_name)) %>% 
