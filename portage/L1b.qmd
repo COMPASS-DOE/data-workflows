@@ -109,8 +109,16 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     return(smry)
 }
 
+log_info("About to L1b", logfile = params$logfile)
+tryCatch({
 out <- lapply(names(dirs_to_process), f, 
               dirs_to_process = dirs_to_process, out_dir = L1B)
+},
+error = function(e) {
+    log_warning("L1b: an error occurred!", logfile = params$logfile)
+    log_info(as.character(e), logfile = params$logfile)
+    stop(e)
+})
 ```
 
 ## Summary

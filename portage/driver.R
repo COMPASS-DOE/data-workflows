@@ -39,9 +39,9 @@ ERROR_OCCURRED <- FALSE
 driver_try <- function(...) {
     tryCatch(eval(...),
              error = function(e) {
-                 ERROR_OCCURRED <- TRUE
-                 log_warning("An error occurred!")
-                 log_info(as.character(.Last.error))
+                 ERROR_OCCURRED <<- TRUE
+                 log_warning("Driver: an error occurred!")
+                 log_info(as.character(e))
                  if(STOP_ON_ERROR) stop(e)
              }
     )
