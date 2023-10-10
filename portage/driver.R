@@ -21,12 +21,31 @@ now_string <- function() format(Sys.time(), "%Y%m%d.%H%M")
 
 ROOT <- "./data_TEST"
 
+# Log file ----------------------------------------------------
+
 LOGS <- file.path(ROOT, "Logs/")
 
 # Main logfile
 LOGFILE <- file.path(LOGS, paste0("driver_log_", now_string(), ".txt"))
 if(file.exists(LOGFILE)) file.remove(LOGFILE)
 
+# Error handling ----------------------------------------------
+
+STOP_ON_ERROR <- TRUE
+ERROR_OCCURRED <- FALSE
+
+# driver_try: ensure that if an *unexpected* error occurs,
+# it's captured in the driver log file, and a flag is set
+driver_try <- function(...) {
+    tryCatch(eval(...),
+             error = function(e) {
+                 ERROR_OCCURRED <<- TRUE
+                 log_warning("Driver: an error occurred!")
+                 log_info(as.character(e))
+                 if(STOP_ON_ERROR) stop(e)
+             }
+    )
+}
 
 # Construct L0 data ---------------------------------------------
 # L0 data are raw but in CSV form, and with "Logger" and "Table" columns added
@@ -37,10 +56,12 @@ new_section("Starting L0")
 outfile <- paste0("L0_", now_string(), ".html")
 outfile <- file.path(LOGS, outfile)
 
-quarto_render("L0.qmd",
-              execute_params = list(DATA_ROOT = ROOT,
-                                    html_outfile = outfile,
-                                    logfile = LOGFILE))
+driver_try(
+    quarto_render("L0.qmd",
+                  execute_params = list(DATA_ROOT = ROOT,
+                                        html_outfile = outfile,
+                                        logfile = LOGFILE))
+)
 copy_output("L0.html", outfile)
 
 
@@ -55,10 +76,12 @@ dt <- file.path(ROOT, "design_table.csv")
 outfile <- paste0("L1_normalize_", now_string(), ".html")
 outfile <- file.path(LOGS, outfile)
 
-quarto_render("L1_normalize.qmd",
+driver_try(
+    quarto_render("L1_normalize.qmd",
               execute_params = list(DATA_ROOT = ROOT,
                                     html_outfile = outfile,
                                     logfile = LOGFILE))
+)
 copy_output("L1_normalize.html", outfile)
 
 
@@ -76,10 +99,12 @@ new_section("Starting L1a")
 outfile <- paste0("L1a_", now_string(), ".html")
 outfile <- file.path(LOGS, outfile)
 
-quarto_render("L1a.qmd",
+driver_try(
+    quarto_render("L1a.qmd",
               execute_params = list(DATA_ROOT = ROOT,
                                     html_outfile = outfile,
                                     logfile = LOGFILE))
+)
 copy_output("L1a.html", outfile)
 
 
@@ -106,11 +131,15 @@ pt <- file.path(ROOT, "plot_table.csv")
 outfile <- paste0("L1b_", now_string(), ".html")
 outfile <- file.path(LOGS, outfile)
 
-# quarto_render("L1b.qmd",
+# driver_try(
+#     quarto_render("L1b.qmd",
 #               execute_params = list(DATA_ROOT = ROOT,
 #                                     html_outfile = outfile,
 #                                     logfile = LOGFILE))
+# )
 # copy_output("L1b.html", outfile)
 
+
+if(ERROR_OCCURRED) warning ("One or more errors occurred!")
 
 message("All done.")

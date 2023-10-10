@@ -69,6 +69,7 @@ overwrites <- 0
 errors <- 0
 
 f <- function(fn, new_dir) {
+
     basefn <- basename(fn)
     message(Sys.time(), " Processing ", basefn)
     # Try to read in the data; if it doesn't work, we won't get a data frame back
@@ -119,7 +120,15 @@ f <- function(fn, new_dir) {
                Note = note)
 }
 
-out <- lapply(files_to_process, f, new_dir = L0)
+log_info("About to L0", logfile = params$logfile)
+tryCatch({
+    out <- lapply(files_to_process, f, new_dir = L0)
+},
+error = function(e) {
+    log_warning("L0: an error occurred!", logfile = params$logfile)
+    log_info(as.character(e), logfile = params$logfile)
+    stop(e)
+})
 ```
 
 ## Summary
