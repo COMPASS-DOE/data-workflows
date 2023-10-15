@@ -37,12 +37,6 @@ This script
 ```{r init}
 #| include: false
 
-library(compasstools)
-if(!exists("read_datalogger_file")) {
-    stop("Please update to latest version of compasstools!\n",
-         "devtools::install_github('COMPASS-DOE/compasstools')")
-}
-
 RAW <- file.path(params$DATA_ROOT, params$RAW)
 RAW_DONE <- file.path(params$DATA_ROOT, params$RAW_DONE)
 L0 <- file.path(params$DATA_ROOT, params$L0)
@@ -99,24 +93,23 @@ f <- function(fn, new_dir) {
     message("\tPivoted data has ", nrow(dat_long), " rows")
 
     # Add a unique ID column
-    # We use digest::digest() and the "md5" algorithm for this
-    # This is not *guaranteed* to be unique, but collisions are highly unlikely; originally
-    # we tried the "crc32" algorithm but this generated duplicate IDs
+    # We use digest::digest() and the "md5" algorithm (first 10 characters);
+    # originally tried the "crc32" algorithm but this generated duplicate IDs
+    # This is not *guaranteed* to be unique, but collisions are highly unlikely
     dat_long$ID <- sapply(apply(dat_long, 1, paste, collapse = ""),
                           FUN = function(x) {
                               substr(digest::digest(x, algo = "md5"), 1, 10)
                           })
     if(any(duplicated(dat_long$ID))) {
-        # browser()
-        message("Duplicate IDs!")
+        stop("Duplicate ID hashes!")
     }
 
-    # Construct the new filename: old filename + nrow + ncol + hash
+    # Construct the new filename: old filename + nrow + ncol + short hash
     # This is so we can distinguish datasets with identical raw filename but
     # differing data contents (can happen sometimes with dataloggers)
     stripped_fn <- gsub("\\.dat$", "", basefn)
-    hash <- substr(digest::digest(dat_long, algo = "md5"), 1, 6)
-    new_fn <- paste0(stripped_fn, "_", nrow(dat_long), "x", ncol(dat_long), "_", hash, ".csv")
+    short_hash <- substr(digest::digest(dat_long, algo = "md5"), 1, 6)
+    new_fn <- paste0(stripped_fn, "_", nrow(dat_long), "x", ncol(dat_long), "_", short_hash, ".csv")
     
     note <- ""
     if(file.exists(file.path(new_dir, new_fn))) {
@@ -148,7 +141,7 @@ f <- function(fn, new_dir) {
                Orig_columns = ncol(dat),
                Rows = nrow(dat_long),
                Columns = ncol(dat_long),
-               Hash = hash,
+               Hash = short_hash,
                Note = note)
 }
 
