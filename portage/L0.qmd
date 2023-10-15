@@ -24,6 +24,10 @@ This script
 
 -   Extracts `Logger` and `Table` information from the header and adds them as columns
 
+-   Reshapes from wide to long; only `Logger`, `Table`, and `TIMESTAMP` don't get reshaped
+
+-   Adds a unique observation ID (using `digest::digest()` )
+
 -   Writes as CSV files with row/col/hash info in filename
 
 -   Moves the raw files to a Raw_done folder
@@ -43,6 +47,7 @@ RAW <- file.path(params$DATA_ROOT, params$RAW)
 RAW_DONE <- file.path(params$DATA_ROOT, params$RAW_DONE)
 L0 <- file.path(params$DATA_ROOT, params$L0)
 
+library(tidyr)
 library(readr)
 files_to_process <- list.files(RAW, pattern = "*.dat$", 
                                full.names = TRUE, recursive = TRUE)
@@ -72,51 +77,78 @@ f <- function(fn, new_dir) {
 
     basefn <- basename(fn)
     message(Sys.time(), " Processing ", basefn)
-    # Try to read in the data; if it doesn't work, we won't get a data frame back
-    dat <- try(compasstools::read_datalogger_file(fn))
-    if(is.data.frame(dat)) {
-        # Construct the new filename: old filename + nrow + ncol + hash
-        # This is so we can distinguish datasets with identical raw filename but
-        # differing data contents (can happen sometimes with dataloggers)
-        stripped_fn <- gsub("\\.dat$", "", basefn)
-        short_hash <- substr(digest::digest(dat), 1, 6)
-        new_fn <- paste0(stripped_fn, "_", nrow(dat), "x", ncol(dat), "_", short_hash, ".csv")
-        
-        note <- ""
-        if(file.exists(file.path(new_dir, new_fn))) {
-            note <- "Overwriting existing file"
-            message("\t", note)
-            overwrites <<- overwrites + 1
-        }
-        
-        # Write the new file, checking to make sure successful
-        new_fqfn <- file.path(new_dir, new_fn)
-        message("\tWriting ", new_fqfn)
-        try(write.csv(dat, new_fqfn, row.names = FALSE))
-        if(!file.exists(new_fqfn)) {
-            note <- "Write error"
-            message("\t", note)
-            errors <<- errors + 1
-       } else {
-            # Move to 'Raw_done' folder
-            if(params$remove_input_files) {
-                message("\tArchiving raw input files")
-                file.copy(fn, file.path(params$raw_done, basefn), overwrite = FALSE)
-                file.remove(fn)
-            }
-        }
-    } else {
-        note <- "Read error"
+    
+    # Parse the datalogger file, extracting logger, table, and format names from header
+    # We're forcing everything to character, so not using compasstools::read_datalogger_file()
+    dat_raw <- read_lines(fn)
+    header_split <- strsplit(dat_raw[1], ",")[[1]]
+    header_split <- gsub("\"", "", header_split)
+    format_name <- header_split[1]
+    logger_name <- header_split[2]
+    table_name <- header_split[length(header_split)]
+    x <- read_csv(I(dat_raw[-c(1, 3, 4)]), col_types = cols(.default = col_character()))
+    info <- tibble(Logger = rep(logger_name, nrow(x)), 
+                   Table = rep(table_name, nrow(x)),
+                   Format = rep(format_name, nrow(x)))
+    dat <- as_tibble(cbind(info, x))
+    
+    # Pivot to long form. We need to do this now to calculate unique observation IDs
+    dat_long <- pivot_longer(dat, c(-Logger, -Table, -TIMESTAMP),
+                             names_to = "loggernet_variable",
+                             values_to = "value")
+    message("\tPivoted data has ", nrow(dat_long), " rows")
+
+    # Add a unique ID column
+    # We use digest::digest() and the "md5" algorithm for this
+    # This is not *guaranteed* to be unique, but collisions are highly unlikely; originally
+    # we tried the "crc32" algorithm but this generated duplicate IDs
+    dat_long$ID <- sapply(apply(dat_long, 1, paste, collapse = ""),
+                          FUN = function(x) {
+                              substr(digest::digest(x, algo = "md5"), 1, 10)
+                          })
+    if(any(duplicated(dat_long$ID))) {
+        # browser()
+        message("Duplicate IDs!")
+    }
+
+    # Construct the new filename: old filename + nrow + ncol + hash
+    # This is so we can distinguish datasets with identical raw filename but
+    # differing data contents (can happen sometimes with dataloggers)
+    stripped_fn <- gsub("\\.dat$", "", basefn)
+    hash <- substr(digest::digest(dat_long, algo = "md5"), 1, 6)
+    new_fn <- paste0(stripped_fn, "_", nrow(dat_long), "x", ncol(dat_long), "_", hash, ".csv")
+    
+    note <- ""
+    if(file.exists(file.path(new_dir, new_fn))) {
+        note <- "Overwriting existing file"
+        message("\t", note)
+        overwrites <<- overwrites + 1
+    }
+    
+    # Write the new file, checking to make sure successful
+    new_fqfn <- file.path(new_dir, new_fn)
+    message("\tWriting ", new_fqfn)
+    try(write.csv(dat_long, new_fqfn, row.names = FALSE))
+    if(!file.exists(new_fqfn)) {
+        note <- "Write error"
         message("\t", note)
         errors <<- errors + 1
+    } else {
+        # Move to 'Raw_done' folder
+        if(params$remove_input_files) {
+            message("\tArchiving raw input files")
+            file.copy(fn, file.path(params$raw_done, basefn), overwrite = FALSE)
+            file.remove(fn)
+        }
     }
+    
     # Return an informational data frame about file processed, dimensions, etc.
     data.frame(File = basefn,
-               Logger = dat$Logger[1],
-               Table = dat$Table[1],
-               Rows = nrow(dat),
-               Columns = ncol(dat),
-               Hash = short_hash,
+               Orig_rows = nrow(dat),
+               Orig_columns = ncol(dat),
+               Rows = nrow(dat_long),
+               Columns = ncol(dat_long),
+               Hash = hash,
                Note = note)
 }
 

@@ -24,8 +24,6 @@ This script
 
 -   Reads in the L0 files one by one
 
--   Reshapes from wide to long; only `Logger`, `Table`, and `TIMESTAMP` don't get reshaped
-
 -   Joins with the design table, adding `Site`, `design_link`, and `research_name` columns (every loggernet variable must have an entry)
 
 -   Performs unit conversion (every research name must have an entry)
@@ -100,14 +98,13 @@ errors <- 0
 
 f <- function(fn, out_dir, design_table) {
     message(Sys.time(), " Processing ", basename(fn))
-
+    
     smry <- data.frame(File = basename(fn), 
-                       Pivoted_rows = NA_integer_,
-                       dl_NA = NA_integer_,
+                       no_design_links = NA_integer_,
                        Note = "")
     dat <- try(read_csv(fn, 
-                    # don't want timestamp parsed to a datetime at this point
-                    col_types = list(TIMESTAMP = col_character())))
+                        # don't want timestamp parsed to a datetime at this point
+                        col_types = list(TIMESTAMP = col_character())))
     if(!is.data.frame(dat)) {
         smry$Note <- "Read error" 
         message("\t", Note)
@@ -115,24 +112,12 @@ f <- function(fn, out_dir, design_table) {
         return(smry)
     }
     
-    # ------------- Reshape to long form
-
-    dat_long <- pivot_longer(dat, c(-Logger, -Table, -TIMESTAMP),
-                             names_to = "loggernet_variable",
-                             values_to = "value",
-                             # We're stacking both numeric and character columns, 
-                             # so force everything to character (no precision 
-                             # loss since data came from a text file anyway)
-                             values_transform = as.character)
-    message("\tPivoted data has ", nrow(dat_long), " rows")
-    smry$Pivoted_rows <- nrow(dat_long)
-
     # ------------- Design table
-
+    
     # Check for missing entries in the design table
-    dat_long %>% 
+    dat %>% 
         anti_join(design_table,
-                          by = c("Logger", "Table", "loggernet_variable")) %>% 
+                  by = c("Logger", "Table", "loggernet_variable")) %>% 
         select(Logger, Table, loggernet_variable) %>% 
         distinct() ->
         missings
@@ -148,17 +133,17 @@ f <- function(fn, out_dir, design_table) {
     }
     
     # Join with design table
-    dat_long <- left_join(dat_long, design_table,
-                          by = c("Logger", "Table", "loggernet_variable"),
-                          relationship = "many-to-one")
+    dat <- left_join(dat, design_table,
+                     by = c("Logger", "Table", "loggernet_variable"),
+                     relationship = "many-to-one")
     
     # Summary information
-    smry$dl_NA <- sum(is.na(dat_long$design_link))
-    message("\tFiltering out ", smry$dl_NA, " empty design_link rows")
-    dat_long <- subset(dat_long, !is.na(dat_long$design_link))
-
+    smry$no_design_links <- sum(is.na(dat$design_link))
+    message("\tFiltering out ", smry$no_design_links, " empty design_link rows")
+    dat <- subset(dat, !is.na(dat$design_link))
+    
     # If no rows left, note this fact and move on
-    if(!nrow(dat_long)) {
+    if(!nrow(dat)) {
         smry$Note <- "No design links; nothing to process"
         return(smry)
     }
@@ -166,7 +151,7 @@ f <- function(fn, out_dir, design_table) {
     # ------------- Unit conversion
     
     # Check for missing entries in the units table
-    rns <- unique(dat_long$research_name)
+    rns <- unique(dat$research_name)
     missings <- rns[!rns %in% ut$research_name]
     if(length(missings)) {
         missing_units <- paste(missings, collapse = ", ")
@@ -177,35 +162,35 @@ f <- function(fn, out_dir, design_table) {
         errors <<- errors + 1
         return(smry)
     }
-
+    
     message("\tDoing unit conversion")
     # At this point everything in the value column should be numeric
-    dat_long$value <- as.numeric(dat_long$value)
-    dat_long <- compasstools::unit_conversion(dat_long, ut)
-    dat_long <- rename(dat_long, value_raw = value, value = value_conv)
-    dat_long$value_conv <- NULL
+    dat$value <- as.numeric(dat$value)
+    dat <- compasstools::unit_conversion(dat, ut)
+    dat <- rename(dat, value_raw = value, value = value_conv)
+    dat$value_conv <- NULL
     
     # ------------- Out-of-bounds flags
-
+    
     message("\tAdding OOB flags")
-    dat_long %>% 
+    dat %>% 
         left_join(bt, by = c("research_name", "units")) %>% 
         mutate(OOB = value < low_bound | value > high_bound) ->
-        dat_long
+        dat
     
     # Remove unneeded columns unless needed for debugging
     if(!params$debug) {
         message("\tDropping bounds columns")
-        dat_long <- select(dat_long, -low_bound, -high_bound)
+        dat <- select(dat, -low_bound, -high_bound)
     }
     
-    write_to_folders(dat_long, 
+    write_to_folders(dat, 
                      root_dir = out_dir, 
                      data_level = "L1_normalize",
-                     site = dat_long$Site[1], 
-                     logger = dat_long$Logger[1],
-                     table = dat_long$Table[1])
-
+                     site = dat$Site[1], 
+                     logger = dat$Logger[1],
+                     table = dat$Table[1])
+    
     if(params$remove_input_files) {
         message("\tRemoving input files")
         file.remove(fn)
