@@ -99,7 +99,7 @@ f <- function(fn, new_dir) {
     # This is not *guaranteed* to be unique, but collisions are highly unlikely
     dat_long$ID <- sapply(apply(dat_long, 1, paste, collapse = ""),
                           FUN = function(x) {
-                              substr(digest::digest(x, algo = "md5"), 1, 10)
+                              substr(digest::digest(x, algo = "md5"), 1, 16)
                           })
     if(any(duplicated(dat_long$ID))) {
         stop("Duplicate ID hashes!")
