@@ -30,7 +30,7 @@ This script
 #| include: false
 
 library(compasstools)
-if(!exists("scan_folders") | !exists("unit_conversion")) {
+if(packageVersion("compasstools") < "0.2") {
     stop("Please update to latest version of compasstools!\n",
          "devtools::install_github('COMPASS-DOE/compasstools')")
 }

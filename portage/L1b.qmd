@@ -34,7 +34,7 @@ library(dplyr)
 library(readr)
 library(lubridate)
 library(compasstools)
-if(!exists("scan_folders")) {
+if(packageVersion("compasstools") < "0.2") {
     stop("Please update to latest version of compasstools!\n",
          "devtools::install_github('COMPASS-DOE/compasstools')")
 }

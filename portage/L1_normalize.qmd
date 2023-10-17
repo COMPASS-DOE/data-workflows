@@ -41,7 +41,7 @@ library(tidyr)
 library(dplyr)
 library(readr)
 library(compasstools)
-if(!exists("expand_df")) {
+if(packageVersion("compasstools") < "0.2") {
     stop("Please update to latest version of compasstools!\n",
          "devtools::install_github('COMPASS-DOE/compasstools')")
 }
