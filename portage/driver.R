@@ -1,7 +1,7 @@
 # Driver script for data workflow
 #
 # This calls the quarto (*.qmd) files that handle data processing for
-# each step (raw data to L0, L0 to L1a, etc).
+# each step (raw data to L0, L0 to L1, etc).
 
 library(quarto)
 
@@ -85,27 +85,27 @@ driver_try(
 copy_output("L1_normalize.html", outfile)
 
 
-# Construct L1a data --------------------------------------------
+# Construct L1 data --------------------------------------------
 # Unit conversion and bounds checks performed
-# L1a data are long form but without any plot (experimental) info
+# L1 data are long form but without any plot (experimental) info
 
 # This step will use a 'units_bounds.csv' file or something like that
 # This step also sorts data into folders based on site, year, and month;
 # see write_to_folders() in helpers.R
 
-message("Running L1a.qmd")
-new_section("Starting L1a")
+message("Running L1.qmd")
+new_section("Starting L1")
 
-outfile <- paste0("L1a_", now_string(), ".html")
+outfile <- paste0("L1_", now_string(), ".html")
 outfile <- file.path(LOGS, outfile)
 
 driver_try(
-    quarto_render("L1a.qmd",
+    quarto_render("L1.qmd",
               execute_params = list(DATA_ROOT = ROOT,
                                     html_outfile = outfile,
                                     logfile = LOGFILE))
 )
-copy_output("L1a.html", outfile)
+copy_output("L1.html", outfile)
 
 
 # Manual QA/QC step ---------------------------------------------
@@ -114,30 +114,30 @@ copy_output("L1a.html", outfile)
 # from this step
 
 
-# Summary report data at L1a stage ------------------------------
+# Summary report data at L1 stage ------------------------------
 
 # Seems like it? So that we move files out of this stage by hand
 # (i.e. when month folder is complete)?
 
 
-# Construct L1b data --------------------------------------------
-# L1b data are semi-wide form, organized around experimental units for
+# Construct L2 data --------------------------------------------
+# L2 data are semi-wide form, organized around experimental units for
 # each timestamp. They have been matched with plot/experimental info, and ready for analysis
 
-message("Running L1b.qmd")
-new_section("Starting L1b")
+message("Running L2.qmd")
+new_section("Starting L2")
 
 pt <- file.path(ROOT, "plot_table.csv")
-outfile <- paste0("L1b_", now_string(), ".html")
+outfile <- paste0("L2_", now_string(), ".html")
 outfile <- file.path(LOGS, outfile)
 
 # driver_try(
-#     quarto_render("L1b.qmd",
+#     quarto_render("L2.qmd",
 #               execute_params = list(DATA_ROOT = ROOT,
 #                                     html_outfile = outfile,
 #                                     logfile = LOGFILE))
 # )
-# copy_output("L1b.html", outfile)
+# copy_output("L2.html", outfile)
 
 
 if(ERROR_OCCURRED) warning ("One or more errors occurred!")

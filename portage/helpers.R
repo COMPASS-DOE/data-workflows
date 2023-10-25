@@ -19,8 +19,8 @@ new_section <- function(name, logfile = LOGFILE, root = ROOT) {
     list_directories(list(file.path(root, "Raw/"),
                           file.path(root, "L0/"),
                           file.path(root, "L1_normalize/"),
-                          file.path(root, "L1a/"),
-                          file.path(root, "L1b")),
+                          file.path(root, "L1/"),
+                          file.path(root, "L2")),
                      list_files = TRUE, outfile = logfile)
 }
 
@@ -95,10 +95,10 @@ write_to_folders <- function(x, root_dir, data_level, site,
             if(data_level == "L1_normalize") {
                 folder <- file.path(root_dir, paste(site, y, m, sep = "_"))
                 filename <- paste0(paste(logger, table, y, m, sep = "_"), ".csv")
-            } else if(data_level == "L1a") {
+            } else if(data_level == "L1") {
                 folder <- file.path(root_dir, paste(site, y, m, sep = "_"))
                 filename <- paste0(paste(site, tr, data_level, sep = "_"), ".csv")
-            } else if(data_level == "L1b") {
+            } else if(data_level == "L1") {
                 folder <- file.path(root_dir, paste(site, y, sep = "_"))
                 filename <- paste0(paste(site, y, m, data_level, table, data_level, sep = "_"), ".csv")
             } else {
@@ -134,7 +134,7 @@ write_to_folders <- function(x, root_dir, data_level, site,
 
 
 # Reset the system by removing all intermediate files in L0, L1_normalize,
-# L1a, L1b, and Logs folders
+# L1, L2, and Logs folders
 reset <- function(root = here::here("portage/data")) {
     message("root is ", root)
     items <- list.files(file.path(root, "L0/"), pattern = "*.csv",
@@ -147,23 +147,23 @@ reset <- function(root = here::here("portage/data")) {
     message("Removing ", length(items), " files in L1_normalize")
     lapply(items, file.remove)
 
-    items <- list.files(file.path(root, "L1a/"), recursive = TRUE,
+    items <- list.files(file.path(root, "L1/"), recursive = TRUE,
                         include.dirs = FALSE, full.names = TRUE)
     items <- items[basename(items) != "README.md"]
-    message("Removing ", length(items), " files in L1a")
+    message("Removing ", length(items), " files in L1")
     lapply(items, file.remove)
-    items <- list.files(file.path(root, "L1a/"), recursive = TRUE,
+    items <- list.files(file.path(root, "L1/"), recursive = TRUE,
                         include.dirs = TRUE, full.names = TRUE)
     items <- items[basename(items) != "README.md"]
-    message("Removing ", length(items), " directories in L1a")
+    message("Removing ", length(items), " directories in L1")
     lapply(items, file.remove)
 
-    items <- list.files(file.path(root, "L1b/"), recursive = TRUE,
+    items <- list.files(file.path(root, "L2/"), recursive = TRUE,
                         include.dirs = FALSE, full.names = TRUE)
     items <- items[basename(items) != "README.md"]
-    message("Removing ", length(items), " files in L1b")
+    message("Removing ", length(items), " files in L2")
     lapply(items, file.remove)
-    items <- list.files(file.path(root, "L1a/"), recursive = TRUE,
+    items <- list.files(file.path(root, "L2/"), recursive = TRUE,
                         include.dirs = TRUE, full.names = TRUE)
     items <- items[basename(items) != "README.md"]
     message("Removing ", length(items), " directories in L1a")
@@ -181,7 +181,7 @@ reset <- function(root = here::here("portage/data")) {
 # Print a nicely-formatted directory tree and its files
 # Usage:
 # list_directories(list("portage/Raw/", "portage/L0/", "portage/L1_normalize/",
-#                       "portage/L1a/", "portage/L1b"))
+#                       "portage/L1/", "portage/L2"))
 list_directories <- function(dir_list, outfile = "", prefix = "",
                              pattern = NULL, list_files = TRUE) {
 

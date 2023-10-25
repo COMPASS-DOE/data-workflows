@@ -1,12 +1,12 @@
 ---
-title: "L1a"
+title: "L1"
 author: "COMPASS workflows team"
 title-block-banner: true
 params:
-  html_outfile: "L1a.html"
+  html_outfile: "L1.html"
   DATA_ROOT: "data_TEST/"
   L1_NORMALIZE: "L1_normalize/"
-  L1A: "L1a/"
+  L1: "L1/"
   debug: false
   remove_input_files: false
   logfile: ""
@@ -40,13 +40,13 @@ source("helpers.R")
 L1_NORMALIZE <- file.path(params$DATA_ROOT, params$L1_NORMALIZE)
 dirs_to_process <- scan_folders(L1_NORMALIZE)
 
-L1A <- file.path(params$DATA_ROOT, params$L1A)
+L1 <- file.path(params$DATA_ROOT, params$L1)
 
 ```
 
 I see `r length(dirs_to_process)` directories to process in `r L1_NORMALIZE`.
 
-Output directory is `r L1A`.
+Output directory is `r L1`.
 
 HTML outfile is "`r params$html_outfile`".
 
@@ -91,19 +91,19 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     
     write_to_folders(dat, 
                      root_dir = out_dir, 
-                     data_level = "L1a",
+                     data_level = "L1",
                      site = dat$Site[1])
     
     return(smry)
 }
 
-log_info("About to L1a", logfile = params$logfile)
+log_info("About to L1", logfile = params$logfile)
 tryCatch({
 out <- lapply(names(dirs_to_process), f, 
-              dirs_to_process = dirs_to_process, out_dir = L1A)
+              dirs_to_process = dirs_to_process, out_dir = L1)
 },
 error = function(e) {
-    log_warning("L1a: an error occurred!", logfile = params$logfile)
+    log_warning("L1: an error occurred!", logfile = params$logfile)
     log_info(as.character(e), logfile = params$logfile)
     stop(e)
 })
