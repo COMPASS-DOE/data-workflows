@@ -63,10 +63,10 @@ read_csv_group <- function(files, col_types = NULL,
 # L1_normalize outputs
 #   Folders are site-year-month
 #   Filenames are logger-table-year-month
-# L1_a outputs
-#   Folders are site-year-month
+# L1 outputs
+#   Folders are site-year
 #   Filenames are site-year-month-data_level
-# L1_b outputs
+# L2 outputs
 #   Folders are site-year
 #   Filenames are site-year-month-table-data_level
 
@@ -89,18 +89,18 @@ write_to_folders <- function(x, root_dir, data_level, site,
             # Construct folder and file names
             start <- min(dat$TIMESTAMP)
             end <- max(dat$TIMESTAMP)
-            tr <- paste(format(start, format = "%Y%m%d"),
+            time_period <- paste(format(start, format = "%Y%m%d"),
                         format(end, format = "%Y%m%d"),
                         sep = "-")
             if(data_level == "L1_normalize") {
                 folder <- file.path(root_dir, paste(site, y, m, sep = "_"))
                 filename <- paste0(paste(logger, table, y, m, sep = "_"), ".csv")
             } else if(data_level == "L1") {
-                folder <- file.path(root_dir, paste(site, y, m, sep = "_"))
-                filename <- paste0(paste(site, tr, data_level, sep = "_"), ".csv")
-            } else if(data_level == "L1") {
                 folder <- file.path(root_dir, paste(site, y, sep = "_"))
-                filename <- paste0(paste(site, y, m, data_level, table, data_level, sep = "_"), ".csv")
+                filename <- paste0(paste(site, time_period, data_level, sep = "_"), ".csv")
+            } else if(data_level == "L2") {
+                folder <- file.path(root_dir, paste(site, y, sep = "_"))
+                filename <- paste0(paste(site, time_period, table, data_level, sep = "_"), ".csv")
             } else {
                 stop("Unkown data_level ", data_level)
             }
