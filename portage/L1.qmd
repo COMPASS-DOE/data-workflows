@@ -123,7 +123,7 @@ if(errors) {
 
 ## Metadata
 
-L1 metadata directory is `r params$L1_METADATA`.
+L1 metadata template directory is `r params$L1_METADATA`.
 
 ```{r metadata}
 
@@ -149,7 +149,11 @@ var_md_for_insert <- paste(sprintf("%-20s", c("research_name", var_md$research_n
                            sprintf("%-15s", c("Units", var_md$final_units)),
                            c("Description", var_md$description))
 
-# For each directory in L1...
+message("Main template has ", length(L1_metadata_template), " lines")
+message("Column metadata info has ", length(col_md_for_insert), " lines")
+message("Variable metadata info has ", length(var_md_for_insert), " lines")
+
+# Identify the main data directories in L1/, which are <site>_<year>
 data_dirs <- list.files(file.path(params$DATA_ROOT, params$L1), 
                         pattern = "^[a-zA-Z]+_[0-4]{4}$")
 
@@ -157,6 +161,7 @@ for(dd in data_dirs) {
     dd_full <- file.path(params$DATA_ROOT, params$L1, dd)
     message("Generating metadata for ", dd_full)
     
+    message("\tInserting timestamp and folder name")
     md <- gsub("[TIMESTAMP]", date(), L1_metadata_template, fixed = TRUE)
     md <- gsub("[FOLDER_NAME]", dd, md, fixed = TRUE)
     
@@ -184,12 +189,12 @@ for(dd in data_dirs) {
     md <- append(md, head(file_info, -1), after = file_info_pos)
     md <- md[-file_info_pos]
     
-    # Column metadata
+    # Insert column metadata
     col_info_pos <- grep("[COLUMN_INFO]", md, fixed = TRUE)
     md <- append(md, col_md_for_insert, after = col_info_pos)
     md <- md[-col_info_pos]
 
-    # Variable metadata
+    # Insert variable metadata
     var_info_pos <- grep("[VARIABLE_INFO]", md, fixed = TRUE)
     md <- append(md, var_md_for_insert, after = var_info_pos)
     md <- md[-var_info_pos]
@@ -202,17 +207,8 @@ for(dd in data_dirs) {
     stopifnot(file.exists(site_md_file))
     message("\tFound ", basename(site_md_file))
     site_md_for_insert <- readLines(site_md_file)
-    
-    # Optionally, there can be a <site>_<year>.txt metadata file, too, providing
-    # year-specific information
-    site_year_md_file <- file.path(params$DATA_ROOT, 
-                                   params$L1_METADATA, 
-                                   paste0(dd, ".txt"))
-    if(file.exists(site_year_md_file)) {
-        message("\tFound ", basename(site_year_md_file))
-        site_md_for_insert <- c(site_md_for_insert, readLines(site_year_md_file))
-    }
-    
+
+    # Insert site information    
     site_info_pos <- grep("[SITE_INFO]", md, fixed = TRUE)
     md <- append(md, site_md_for_insert, after = site_info_pos)
     md <- md[-site_info_pos]
@@ -222,11 +218,6 @@ for(dd in data_dirs) {
     message("\tWriting ", mdfn, "...")
     writeLines(md, file.path(params$DATA_ROOT, params$L1, dd, mdfn))
 }
-
-# Follow the steps in the google doc
-
-# Write the final template file
-
 ```
 
 ## Output summary
