@@ -87,6 +87,13 @@ f <- function(fn, new_dir) {
                              values_to = "value")
     message("\tPivoted data is ", nrow(dat_long), " x ", ncol(dat_long))
 
+    # Remove duplicates
+    dupes <- duplicated(dat_long)
+    if(any(dupes)) {
+        message("\rRemoving ", sum(dupes), " duplicate rows")
+        dat_long <- dat_long[!dupes,]
+    }
+    
     # Add a unique ID column
     # We use digest::digest() and the "md5" algorithm (first 10 characters);
     # originally tried the "crc32" algorithm but this generated duplicate IDs
@@ -95,10 +102,11 @@ f <- function(fn, new_dir) {
                           FUN = function(x) {
                               substr(digest::digest(x, algo = "md5"), 1, 16)
                           })
+    # Since we removed duplicate rows above, hashes should be unique
     if(any(duplicated(dat_long$ID))) {
         stop("Duplicate ID hashes!")
     }
-
+    
     # Construct the new filename: old filename + nrow + ncol + short hash
     # This is so we can distinguish datasets with identical raw filename but
     # differing data contents (can happen sometimes with dataloggers)
@@ -178,4 +186,3 @@ knitr::kable(out_df)
 ```{r reproducibility}
 sessionInfo()
 ```
-

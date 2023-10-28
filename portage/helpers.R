@@ -84,7 +84,10 @@ write_to_folders <- function(x, root_dir, data_level, site,
 
             # Isolate the data to write
             dat <- x[y == years & m == months,]
-            stopifnot(nrow(dat) > 0) # this shouldn't happen
+            if(!nrow(dat)) {
+                message("No data for ", y, "_", m, " - skipping")
+                next
+            }
 
             # Construct folder and file names
             start <- min(dat$TIMESTAMP)
