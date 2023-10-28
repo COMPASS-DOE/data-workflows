@@ -66,7 +66,7 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     # everything can be stacked into a single data frame
     dat_raw <- read_csv_group(d,
                               remove_input_files = params$remove_input_files, 
-                              col_types = "ccTccccccccl")
+                              col_types = "ccTcccccccci")
     errors <<- errors + attr(dat_raw, "errors")
     
     # File-based summary
@@ -83,9 +83,9 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     lefts <- intersect(c("Site", "Plot"), colnames(dat))
     rights <- setdiff(colnames(dat), lefts)
     dat <- dat[c(lefts, rights)]
-    # Remove Logger, Table, and loggernet_variable if present
+    # Remove unneeded columns if present
     dat <- dat[setdiff(colnames(dat), 
-                       c("Logger", "Table", "loggernet_variable"))]
+                       c("Logger", "Table", "value_raw", "units", "loggernet_variable"))]
     # And finally, sort
     dat <- dat[order(dat$Site, dat$TIMESTAMP, dat$design_link),]
     
@@ -174,7 +174,9 @@ for(dd in data_dirs) {
         # Ensure that the file headers match our column metadata
         file_headers <- colnames(read.csv(f, nrows = 0))
         if(!identical(sort(col_md$Column), sort(file_headers))) {
-            stop("File ", f, " headers don't match metadata in L1_column_metadata.csv")
+            stop("File ", basename(f), 
+                 " headers don't match column metadata: ",
+                 setdiff(col_md$Column, file_headers))
         }
         fdata <- readLines(f) # just for a quick line count
         file_info <- c(file_info, 

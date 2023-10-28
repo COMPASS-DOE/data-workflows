@@ -1,5 +1,5 @@
 sensor,variable,research_name,sensor_units,final_units,conversion,low_bound,high_bound,description
-Datalogger,Volage,voltage,V,V,x * 1,NA,NA,NA
+Datalogger,Volage,voltage,V,V,x * 1,11,13,Battery voltage
 Sapflow,NA,sapflow_2.5,?,?,x * 1,NA,NA,NA
 Sapflow,NA,sapflow_5,?,?,x * 1,NA,NA,NA
 Teros,VWC,soil_vwc_10cm,m3/m3,m3/m3,(3.879*10^-4) * x - 0.6956,0,1,calibration equation for mineral soil VWC

@@ -113,6 +113,10 @@ write_to_folders <- function(x, root_dir, data_level, site,
                 }
             }
 
+            # Before writing, convert timestamp to character to ensure that observations
+            # at midnight have seconds written correctly
+            dat$TIMESTAMP <- format(dat$TIMESTAMP, "%Y-%m-%d %H:%M:%S")
+
             # Write data
             if(!quiet) message("Writing ", nrow(dat), "/", nrow(x), " rows of data to ",
                                basename(folder), "/", filename)
