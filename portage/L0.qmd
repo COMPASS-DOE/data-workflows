@@ -183,6 +183,9 @@ knitr::kable(out_df)
 
 ## Reproducibility
 
+Git commit `r GIT_COMMIT`.
+
 ```{r reproducibility}
 sessionInfo()
 ```
+

@@ -4,6 +4,8 @@ library(lubridate)
 library(readr)
 library(dplyr)
 
+GIT_COMMIT <- substr(system("git rev-parse HEAD", intern = TRUE), 1, 6)
+
 # Small helper functions to make the various steps obvious in the log
 if(!exists("LOGFILE")) LOGFILE <- ""
 log_info <- function(msg, logfile = LOGFILE) {
