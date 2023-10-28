@@ -61,14 +61,14 @@ read_csv_group <- function(files, col_types = NULL,
 
 # File data into sub-folders based on what level data it is:
 # L1_normalize outputs
-#   Folders are site-year-month
-#   Filenames are logger-table-year-month
+#   Folders are site_year_month
+#   Filenames are Site_logger_table_year_month
 # L1 outputs
-#   Folders are site-year
-#   Filenames are site-year-month-data_level
+#   Folders are site_year
+#   Filenames are site_timeperiod_L1
 # L2 outputs
-#   Folders are site-year
-#   Filenames are site-year-month-table-data_level
+#   Folders are site_year
+#   Filenames are site_timeperiod_table_L2
 
 # The data (x) should be a data frame with a posixct 'TIMESTAMP' column
 # This is used to split the data for sorting into <yyyy>_<mm> folders

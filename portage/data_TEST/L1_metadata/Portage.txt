@@ -1,0 +1,7 @@
+Portage is a lovely place but has too many bugs.
+
+Contacts for Portage data streams:
+Sapflux: Stephanie Pennington
+TEROS: Peter Regier
+Dataloggers: Roy Rich
+

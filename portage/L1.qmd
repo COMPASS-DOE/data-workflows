@@ -7,6 +7,7 @@ params:
   DATA_ROOT: "data_TEST/"
   L1_NORMALIZE: "L1_normalize/"
   L1: "L1/"
+  L1_METADATA: "L1_metadata/"
   debug: false
   remove_input_files: false
   logfile: ""
@@ -75,7 +76,6 @@ f <- function(dir_name, dirs_to_process, out_dir) {
                        Rows = nrow(dat_raw))
     
     # Remove duplicate rows (e.g. from multiple datalogger downloads)
-    # With the unique ID generation in L0.qmd, this should never happen?
     dat <- distinct(dat_raw)
     message("\tRemoved ", nrow(dat_raw) - nrow(dat), " duplicate rows")
     
@@ -119,6 +119,114 @@ if(errors) {
     log_warning(paste("File read/write error(s)", params$html_outfile), 
                 logfile = params$logfile)
 }
+```
+
+## Metadata
+
+L1 metadata directory is `r params$L1_METADATA`.
+
+```{r metadata}
+
+# Get the L1 template file
+template_file <- file.path(params$DATA_ROOT,
+                           params$L1_METADATA, 
+                           "L1_metadata_template.txt")
+stopifnot(file.exists(template_file))
+L1_metadata_template <- readLines(template_file)
+
+# Get the column metadata file
+col_md <- read.csv(file.path(params$DATA_ROOT,
+                             params$L1_METADATA,
+                             "L1_metadata_columns.csv"))
+col_md_for_insert <- paste(sprintf("%-15s", col_md$Column), col_md$Description)
+
+# Get the variable metadata
+var_md <- read.csv(file.path(params$DATA_ROOT,
+                             params$L1_METADATA,
+                             "L1_metadata_vars.csv"))
+var_md_for_insert <- paste(sprintf("%-20s", c("research_name", var_md$research_name)),
+                           sprintf("%-12s", c("Sensor", var_md$sensor)),
+                           sprintf("%-15s", c("Units", var_md$final_units)),
+                           c("Description", var_md$description))
+
+# For each directory in L1...
+data_dirs <- list.files(file.path(params$DATA_ROOT, params$L1), 
+                        pattern = "^[a-zA-Z]+_[0-4]{4}$")
+
+for(dd in data_dirs) {
+    dd_full <- file.path(params$DATA_ROOT, params$L1, dd)
+    message("Generating metadata for ", dd_full)
+    
+    md <- gsub("[TIMESTAMP]", date(), L1_metadata_template, fixed = TRUE)
+    md <- gsub("[FOLDER_NAME]", dd, md, fixed = TRUE)
+    
+    # File info
+    files <- list.files(path = dd_full, pattern = "csv$", full.names = TRUE)
+    message("\tFound ", length(files), " data files")
+    file_info <- c()
+    # Build up information about files...
+    for(f in files) {
+        # Ensure that the file headers match our column metadata
+        file_headers <- colnames(read.csv(f, nrows = 0))
+        if(!identical(sort(col_md$Column), sort(file_headers))) {
+            stop("File ", f, " headers don't match metadata in L1_column_metadata.csv")
+        }
+        fdata <- readLines(f) # just for a quick line count
+        file_info <- c(file_info, 
+                       basename(f),
+                       paste("Rows:", length(fdata) - 1),
+                       paste("md5:", digest::digest(f, file = TRUE)),
+                       "")
+    }
+    # ...and insert into metadata
+    # We used the head(-1) to drop the final empty line, just to keep things pretty
+    file_info_pos <- grep("[FILE_INFO", md, fixed = TRUE)
+    md <- append(md, head(file_info, -1), after = file_info_pos)
+    md <- md[-file_info_pos]
+    
+    # Column metadata
+    col_info_pos <- grep("[COLUMN_INFO]", md, fixed = TRUE)
+    md <- append(md, col_md_for_insert, after = col_info_pos)
+    md <- md[-col_info_pos]
+
+    # Variable metadata
+    var_info_pos <- grep("[VARIABLE_INFO]", md, fixed = TRUE)
+    md <- append(md, var_md_for_insert, after = var_info_pos)
+    md <- md[-var_info_pos]
+    
+    # Site information
+    # Folders are <site>_<year>
+    # There MUST be a informational file named <site>.txt
+    site <- strsplit(dd, "_")[[1]][1]
+    site_md_file <- file.path(params$DATA_ROOT, params$L1_METADATA, paste0(site, ".txt"))
+    stopifnot(file.exists(site_md_file))
+    message("\tFound ", basename(site_md_file))
+    site_md_for_insert <- readLines(site_md_file)
+    
+    # Optionally, there can be a <site>_<year>.txt metadata file, too, providing
+    # year-specific information
+    site_year_md_file <- file.path(params$DATA_ROOT, 
+                                   params$L1_METADATA, 
+                                   paste0(dd, ".txt"))
+    if(file.exists(site_year_md_file)) {
+        message("\tFound ", basename(site_year_md_file))
+        site_md_for_insert <- c(site_md_for_insert, readLines(site_year_md_file))
+    }
+    
+    site_info_pos <- grep("[SITE_INFO]", md, fixed = TRUE)
+    md <- append(md, site_md_for_insert, after = site_info_pos)
+    md <- md[-site_info_pos]
+
+    # Write the final metadata file
+    mdfn <- paste0(dd, "_metadata.txt")
+    message("\tWriting ", mdfn, "...")
+    writeLines(md, file.path(params$DATA_ROOT, params$L1, dd, mdfn))
+}
+
+# Follow the steps in the google doc
+
+# Write the final template file
+
 ```
 
 ## Output summary

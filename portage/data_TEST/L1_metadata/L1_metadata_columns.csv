@@ -1,0 +1,10 @@
+Column,Description
+Site,Site name
+TIMESTAMP,Original datalogger timestamp
+design_link,xxx
+research_name,Measurement name
+value,Observed value
+units,xxx
+value_raw,xxx
+ID,xxx
+OOB,"Out of instrumental bounds flag (1/TRUE, 0/FALSE)"

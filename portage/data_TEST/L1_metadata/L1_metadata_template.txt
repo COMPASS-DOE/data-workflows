@@ -1,0 +1,28 @@
+L1 data documentation file
+[FOLDER_NAME]
+[TIMESTAMP]
+
+
+General information
+—----------------------------------
+L1 data are intended for QA/QC. If you are a rogue analyst, beware!
+
+
+Files in this folder:
+—----------------------------------
+[FILE_INFO]
+
+
+File columns:
+—----------------------------------
+[COLUMN_INFO]
+
+
+Variable definitions:
+—----------------------------------
+[VARIABLE_INFO]
+
+
+Site information:
+—----------------------------------
+[SITE_INFO]

@@ -8,7 +8,7 @@ params:
   L0: "L0/"
   L1_NORMALIZE: "L1_normalize/"
   DESIGN_TABLE: "design_table.csv"
-  METADATA_TABLE: "metadata_vars.csv"
+  METADATA_VARS_TABLE: "L1_metadata/L1_metadata_vars.csv"
   debug: false
   remove_input_files: false
   logfile: ""
@@ -55,9 +55,9 @@ dt$note <- NULL
 # extra rows added as needed:
 dt_ex <- compasstools::expand_df(dt)
 
-# Read the metadata table
-METADATA_TABLE <- file.path(params$DATA_ROOT, params$METADATA_TABLE)
-mt <- read_csv(METADATA_TABLE, col_types = "ccccccccddc")
+# Read the variable metadata table
+METADATA_VARS_TABLE <- file.path(params$DATA_ROOT, params$METADATA_VARS_TABLE)
+mt <- read_csv(METADATA_VARS_TABLE, col_types = "ccccccccddc")
 # ...and create the units table (everything must have an entry)
 mt %>% 
     filter(!is.na(research_name)) %>% 
@@ -84,7 +84,7 @@ Output directory is `r L1_NORMALIZE`.
 
 Design table "`r DESIGN_TABLE`" and has `r nrow(dt)` rows, `r nrow(dt_ex)` after expansion.
 
-Variable metadata table is "`r METADATA_TABLE`" and has `r nrow(mt)` rows.
+Variable metadata table is "`r METADATA_VARS_TABLE`" and has `r nrow(mt)` rows.
 
 Units table has `r nrow(ut)` rows; bounds table `r nrow(bt)`.
 
