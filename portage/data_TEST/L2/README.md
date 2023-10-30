@@ -1,3 +1,3 @@
-# L1b
+# L2
 
-This folder holds level 1b data ready for analysis.
+This folder holds COMPASS-FME Level 2 data ready for analysis.

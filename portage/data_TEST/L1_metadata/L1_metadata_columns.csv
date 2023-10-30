@@ -1,0 +1,8 @@
+Column,Description
+Site,Site name (character)
+TIMESTAMP,Original datalogger timestamp (EST) (POSIXct)
+design_link,Design name that links to experimental unit (character)
+research_name,Measurement name (character)
+value,Observed value (numeric)
+ID,Observation ID (hash) (character)
+OOB,"Out of instrumental bounds flag (1=TRUE, 0=FALSE) (integer)"

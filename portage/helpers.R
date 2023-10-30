@@ -4,6 +4,8 @@ library(lubridate)
 library(readr)
 library(dplyr)
 
+GIT_COMMIT <- substr(system("git rev-parse HEAD", intern = TRUE), 1, 6)
+
 # Small helper functions to make the various steps obvious in the log
 if(!exists("LOGFILE")) LOGFILE <- ""
 log_info <- function(msg, logfile = LOGFILE) {
@@ -61,14 +63,14 @@ read_csv_group <- function(files, col_types = NULL,
 
 # File data into sub-folders based on what level data it is:
 # L1_normalize outputs
-#   Folders are site-year-month
-#   Filenames are logger-table-year-month
-# L1_a outputs
-#   Folders are site-year-month
-#   Filenames are site-year-month-data_level
-# L1_b outputs
-#   Folders are site-year
-#   Filenames are site-year-month-table-data_level
+#   Folders are site_year_month
+#   Filenames are Site_logger_table_year_month
+# L1 outputs
+#   Folders are site_year
+#   Filenames are site_timeperiod_L1
+# L2 outputs
+#   Folders are site_year
+#   Filenames are site_timeperiod_table_L2
 
 # The data (x) should be a data frame with a posixct 'TIMESTAMP' column
 # This is used to split the data for sorting into <yyyy>_<mm> folders
@@ -84,23 +86,26 @@ write_to_folders <- function(x, root_dir, data_level, site,
 
             # Isolate the data to write
             dat <- x[y == years & m == months,]
-            stopifnot(nrow(dat) > 0) # this shouldn't happen
+            if(!nrow(dat)) {
+                message("No data for ", y, "_", m, " - skipping")
+                next
+            }
 
             # Construct folder and file names
             start <- min(dat$TIMESTAMP)
             end <- max(dat$TIMESTAMP)
-            tr <- paste(format(start, format = "%Y%m%d"),
+            time_period <- paste(format(start, format = "%Y%m%d"),
                         format(end, format = "%Y%m%d"),
                         sep = "-")
             if(data_level == "L1_normalize") {
                 folder <- file.path(root_dir, paste(site, y, m, sep = "_"))
                 filename <- paste0(paste(logger, table, y, m, sep = "_"), ".csv")
             } else if(data_level == "L1") {
-                folder <- file.path(root_dir, paste(site, y, m, sep = "_"))
-                filename <- paste0(paste(site, tr, data_level, sep = "_"), ".csv")
-            } else if(data_level == "L1") {
                 folder <- file.path(root_dir, paste(site, y, sep = "_"))
-                filename <- paste0(paste(site, y, m, data_level, table, data_level, sep = "_"), ".csv")
+                filename <- paste0(paste(site, time_period, data_level, sep = "_"), ".csv")
+            } else if(data_level == "L2") {
+                folder <- file.path(root_dir, paste(site, y, sep = "_"))
+                filename <- paste0(paste(site, time_period, table, data_level, sep = "_"), ".csv")
             } else {
                 stop("Unkown data_level ", data_level)
             }
@@ -111,6 +116,12 @@ write_to_folders <- function(x, root_dir, data_level, site,
                 if(!dir.create(folder)) {
                     stop("dir.create returned an error")
                 }
+            }
+
+            # Before writing, convert timestamp to character to ensure that observations
+            # at midnight have seconds written correctly
+            if(is.POSIXct(dat$TIMESTAMP)) {
+                dat$TIMESTAMP <- format(dat$TIMESTAMP, "%Y-%m-%d %H:%M:%S")
             }
 
             # Write data
