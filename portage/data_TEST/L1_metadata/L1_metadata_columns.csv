@@ -1,5 +1,5 @@
 Column,Description
-Site,Site name (character)
+Site,Site code (character)
 TIMESTAMP,Original datalogger timestamp (EST) (POSIXct)
 design_link,Design name that links to experimental unit (character)
 research_name,Measurement name (character)
