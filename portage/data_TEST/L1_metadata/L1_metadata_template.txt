@@ -8,6 +8,11 @@ General information
 L1 data are intended for QA/QC. If you are a rogue analyst, beware!
 
 
+Site information:
+—----------------------------------
+[SITE_INFO]
+
+
 Files in this folder:
 —----------------------------------
 [FILE_INFO]
@@ -21,8 +26,3 @@ File columns:
 Variable definitions:
 —----------------------------------
 [VARIABLE_INFO]
-
-
-Site information:
-—----------------------------------
-[SITE_INFO]
