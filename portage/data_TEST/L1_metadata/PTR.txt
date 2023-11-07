@@ -1,4 +1,4 @@
-Portage (PTR) is one of COMPASS-FME synoptic sites, and has three plots: 
+Portage River (PTR) is one of COMPASS-FME synoptic sites, and has three plots: 
 upland (located at XXX.XXXW, XXX.XXXN), transition (XXX.XXXW, XXX.XXXN),
 and wetland (XXX.XXXW, XXX.XXXN).
 

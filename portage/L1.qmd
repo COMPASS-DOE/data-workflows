@@ -79,20 +79,22 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     dat <- distinct(dat_raw)
     message("\tRemoved ", nrow(dat_raw) - nrow(dat), " duplicate rows")
     
-    # Make sure Site and Plot columns, if present, are on the left
-    lefts <- intersect(c("Site", "Plot"), colnames(dat))
+    # Make sure Plot (if present) and TIMESTAMP columns are on the left
+    lefts <- intersect(c("Plot", "TIMESTAMP"), colnames(dat))
     rights <- setdiff(colnames(dat), lefts)
     dat <- dat[c(lefts, rights)]
     # Remove unneeded columns if present
+    site <- dat$Site[1]
     dat <- dat[setdiff(colnames(dat), 
-                       c("Logger", "Table", "value_raw", "units", "loggernet_variable"))]
+                       c("Site", "Logger", "Table",
+                         "value_raw", "units", "loggernet_variable"))]
     # And finally, sort
-    dat <- dat[order(dat$Site, dat$TIMESTAMP, dat$design_link),]
+    dat <- dat[order(dat$TIMESTAMP, dat$design_link),]
     
     write_to_folders(dat, 
                      root_dir = out_dir, 
                      data_level = "L1",
-                     site = dat$Site[1])
+                     site = site)
     
     return(smry)
 }
@@ -175,8 +177,11 @@ for(dd in data_dirs) {
         file_headers <- colnames(read.csv(f, nrows = 0))
         if(!identical(sort(col_md$Column), sort(file_headers))) {
             stop("File ", basename(f), 
-                 " headers don't match column metadata: ",
-                 setdiff(col_md$Column, file_headers))
+                 " headers don't match column metadata.",
+                 "\nColumns in metadata but not in data: ",
+                 paste(setdiff(col_md$Column, file_headers), collapse = ", "),
+                 "\nColumns in data but not in metdata: ",
+                 paste(setdiff(file_headers, col_md$Column), collapse = ", "))
         }
         fdata <- readLines(f) # just for a quick line count
         file_info <- c(file_info, 
