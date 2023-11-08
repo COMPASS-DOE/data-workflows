@@ -9,3 +9,6 @@ Contacts for Portage data streams:
 Sapflux: Stephanie Pennington stephanie.pennington@pnnl.gov
 TEROS: Peter Regier peter.regier@pnnl.gov
 Dataloggers: Roy Rich richr@si.edu
+
+Key publications:
+XXX
