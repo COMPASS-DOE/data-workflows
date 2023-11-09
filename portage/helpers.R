@@ -99,7 +99,11 @@ write_to_folders <- function(x, root_dir, data_level, site,
                         sep = "-")
             if(data_level == "L1_normalize") {
                 folder <- file.path(root_dir, paste(site, y, m, sep = "_"))
-                filename <- paste0(paste(logger, table, y, m, sep = "_"), ".csv")
+                # A given month's data is usually split across two datalogger
+                # files; add a short hash to end of filename to ensure we don't
+                # overwrite anything that's already there
+                short_hash <- substr(digest::digest(dat, algo = "md5"), 1, 4)
+                filename <- paste0(paste(logger, table, y, m, short_hash, sep = "_"), ".csv")
             } else if(data_level == "L1") {
                 folder <- file.path(root_dir, paste(site, y, sep = "_"))
                 filename <- paste0(paste(site, time_period, data_level, sep = "_"), ".csv")
@@ -153,7 +157,8 @@ reset <- function(root = here::here("portage/data")) {
     message("Removing ", length(items), " files in L0")
     lapply(items, file.remove)
 
-    items <- list.files(file.path(root, "L1_normalize/"), pattern = "*.csv",
+    items <- list.files(file.path(root, "L1_normalize/"), recursive = TRUE,
+                        pattern = "*.csv",
                         full.names = TRUE)
     message("Removing ", length(items), " files in L1_normalize")
     lapply(items, file.remove)
