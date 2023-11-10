@@ -200,6 +200,8 @@ for(dd in data_dirs) {
     col_info_pos <- grep("[COLUMN_INFO]", md, fixed = TRUE)
     md <- append(md, col_md_for_insert, after = col_info_pos)
     md <- md[-col_info_pos]
+    # The NA code is an in-line replacement
+    md <- gsub("[NA_CODE_L1]", NA_CODE_L1, md, fixed = TRUE)
 
     # Insert variable metadata
     var_info_pos <- grep("[VARIABLE_INFO]", md, fixed = TRUE)
