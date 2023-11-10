@@ -6,6 +6,9 @@ library(dplyr)
 
 GIT_COMMIT <- substr(system("git rev-parse HEAD", intern = TRUE), 1, 6)
 
+NA_CODE_L1 <- "NA"
+NA_CODE_L2 <- "-9999"
+
 # Small helper functions to make the various steps obvious in the log
 if(!exists("LOGFILE")) LOGFILE <- ""
 log_info <- function(msg, logfile = LOGFILE) {
@@ -104,12 +107,15 @@ write_to_folders <- function(x, root_dir, data_level, site,
                 # overwrite anything that's already there
                 short_hash <- substr(digest::digest(dat, algo = "md5"), 1, 4)
                 filename <- paste0(paste(logger, table, y, m, short_hash, sep = "_"), ".csv")
+                na <- NA_CODE_L1
             } else if(data_level == "L1") {
                 folder <- file.path(root_dir, paste(site, y, sep = "_"))
                 filename <- paste0(paste(site, time_period, data_level, sep = "_"), ".csv")
+                na <- NA_CODE_L1
             } else if(data_level == "L2") {
                 folder <- file.path(root_dir, paste(site, y, sep = "_"))
                 filename <- paste0(paste(site, time_period, table, data_level, sep = "_"), ".csv")
+                na <- NA_CODE_L2
             } else {
                 stop("Unkown data_level ", data_level)
             }
@@ -136,7 +142,7 @@ write_to_folders <- function(x, root_dir, data_level, site,
             if(file.exists(fn)) message("NOTE: overwriting existing file")
             # We were using readr::write_csv for this but it was
             # randomly crashing on GA (Error in `vroom write()`: ! bad value)
-            write.csv(dat, fn, row.names = FALSE)
+            write.csv(dat, fn, row.names = FALSE, na = na)
             if(!file.exists(fn)) {
                 stop("File ", fn, "was not written")
             }
