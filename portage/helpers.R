@@ -58,7 +58,7 @@ read_csv_group <- function(files, col_types = NULL,
         x
     }
     # Store the number of errors as an attribute of the data and return
-    dat <- bind_rows(lapply(files, readf))
+    dat <- do.call("rbind", lapply(files, readf))
     attr(dat, "errors") <- errors
     dat
 }

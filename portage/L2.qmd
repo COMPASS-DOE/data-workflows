@@ -30,7 +30,6 @@ This script
 #| include: false
 
 library(tidyr)
-library(dplyr)
 library(readr)
 library(lubridate)
 library(compasstools)
