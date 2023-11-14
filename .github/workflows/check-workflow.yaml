@@ -21,7 +21,6 @@ jobs:
         with:
           packages:
             any::quarto
-            any::dplyr
             any::tidyr
             any::readr
             any::lubridate
