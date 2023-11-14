@@ -135,9 +135,29 @@ f <- function(fn, out_dir, design_table) {
     }
     
     # Join with design table
-    dat <- left_join(dat, design_table,
-                     by = c("Logger", "Table", "loggernet_variable"),
-                     relationship = "many-to-one")
+    old_rows <- nrow(dat)
+    # Check that we have an design table entry for everything
+    ltlv <- paste(dat$Logger, dat$Table, dat$loggernet_variable)
+    present <- ltlv %in% paste(design_table$Logger, 
+                               design_table$Table,
+                               design_table$loggernet_variable)
+    if(!all(present)) {
+        stop("Some entries are missing in the design table!",
+             paste(ltlv[!present], collapse = ", "))
+    }
+    # Do the join
+    dat <- merge(dat, design_table,
+                 by = c("Logger", "Table", "loggernet_variable"),
+                 sort = FALSE)
+    # This is a left join, and should not have changed number of rows;
+    # i.e., there must be exactly one match for every loggernet variable
+    if(nrow(dat) > old_rows) {
+        counts <- aggregate(design_link ~ loggernet_variable, data = test, 
+                            FUN = function(x) length(unique(x)))
+        counts <- counts[counts$design_link > 1,]
+        stop("Some loggernet variables have more than one design_link: ",
+             paste(counts$loggernet_variable, collapse = ", "))
+    }
     
     # Summary information
     smry$no_design_links <- sum(is.na(dat$design_link))

@@ -2,7 +2,6 @@
 
 library(lubridate)
 library(readr)
-library(dplyr)
 
 GIT_COMMIT <- substr(system("git rev-parse HEAD", intern = TRUE), 1, 6)
 
