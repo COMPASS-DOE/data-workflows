@@ -5,9 +5,9 @@
 
 library(quarto)
 
-# Need to run this script from within portage directory
-if(basename(getwd()) != "portage") {
-    stop("Working directory needs to be portage/")
+# Need to run this script from within synoptic directory
+if(basename(getwd()) != "synoptic") {
+    stop("Working directory needs to be synoptic/")
 }
 if(!require("compasstools")) {
     stop("Need to remotes::install_github('COMPASS-DOE/compasstools')")

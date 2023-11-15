@@ -155,7 +155,7 @@ write_to_folders <- function(x, root_dir, data_level, site,
 
 # Reset the system by removing all intermediate files in L0, L1_normalize,
 # L1, L2, and Logs folders
-reset <- function(root = here::here("portage/data")) {
+reset <- function(root = here::here("synoptic/data_TEST")) {
     message("root is ", root)
     items <- list.files(file.path(root, "L0/"), pattern = "*.csv",
                         full.names = TRUE)
@@ -201,8 +201,8 @@ reset <- function(root = here::here("portage/data")) {
 
 # Print a nicely-formatted directory tree and its files
 # Usage:
-# list_directories(list("portage/Raw/", "portage/L0/", "portage/L1_normalize/",
-#                       "portage/L1/", "portage/L2"))
+# list_directories(list("synoptic/Raw/", "synoptic/L0/", "synoptic/L1_normalize/",
+#                       "synoptic/L1/", "synoptic/L2"))
 list_directories <- function(dir_list, outfile = "", prefix = "",
                              pattern = NULL, list_files = TRUE) {
 
