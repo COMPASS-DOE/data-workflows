@@ -3,7 +3,7 @@
 library(lubridate)
 library(readr)
 
-GIT_COMMIT <- substr(system("git rev-parse HEAD", intern = TRUE), 1, 6)
+GIT_COMMIT <- substr(system("git rev-parse HEAD", intern = TRUE), 1, 7)
 
 NA_CODE_L1 <- "NA"
 NA_CODE_L2 <- "-9999"
