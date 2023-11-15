@@ -38,7 +38,6 @@ This script
 #| include: false
 
 library(tidyr)
-library(dplyr)
 library(readr)
 library(compasstools)
 if(packageVersion("compasstools") < "0.2") {
@@ -59,16 +58,14 @@ dt_ex <- compasstools::expand_df(dt)
 METADATA_VARS_TABLE <- file.path(params$DATA_ROOT, params$METADATA_VARS_TABLE)
 mt <- read_csv(METADATA_VARS_TABLE, col_types = "ccccccccddc")
 # ...and create the units table (everything must have an entry)
-mt %>% 
-    filter(!is.na(research_name)) %>% 
-    select(research_name, conversion, new_unit = final_units) ->
-    ut
+ut <- mt[!is.na(mt$research_name),] # filter
+ut$new_unit = ut$final_units # rename
+ut <- ut[c("research_name", "conversion", "new_unit")] # select
 
 # Create the bounds table (not everything needs an entry)
-mt %>% 
-    filter(!is.na(research_name), !is.na(final_units)) %>% 
-    select(research_name, units = final_units, low_bound, high_bound) ->
-    bt
+bt <- mt[!is.na(mt$research_name) & !is.na(mt$final_units),] # filter
+bt$units = bt$final_units # rename
+bt <- bt[c("research_name", "units", "low_bound", "high_bound")] # select
 
 L0 <- file.path(params$DATA_ROOT, params$L0)
 files_to_process <- list.files(L0, pattern = "*.csv$", full.names = TRUE)
@@ -117,27 +114,29 @@ f <- function(fn, out_dir, design_table) {
     # ------------- Design table
     
     # Check for missing entries in the design table
-    dat %>% 
-        anti_join(design_table,
-                  by = c("Logger", "Table", "loggernet_variable")) %>% 
-        select(Logger, Table, loggernet_variable) %>% 
-        distinct() ->
-        missings
-    
-    if(nrow(missings)) {
-        missing_dls <- paste(missings$loggernet_variable, collapse = ", ")
-        missing_dls <- strwrap(missing_dls, width = 40)
-        message("\tERROR: missing design links: ", 
-                paste(missing_dls, collapse = "\n\t\t"))
-        smry$Note <- "Missing design link row(s)"
-        errors <<- errors + 1
-        return(smry)
+    ltlv <- unique(paste(dat$Logger, dat$Table, dat$loggernet_variable))
+    present <- ltlv %in% paste(design_table$Logger, 
+                               design_table$Table,
+                               design_table$loggernet_variable)
+    if(!all(present)) {
+        stop("Some entries are missing in the design table!",
+             paste(ltlv[!present], collapse = ", "))
     }
-    
+
     # Join with design table
-    dat <- left_join(dat, design_table,
-                     by = c("Logger", "Table", "loggernet_variable"),
-                     relationship = "many-to-one")
+    old_rows <- nrow(dat)
+    dat <- merge(dat, design_table,
+                 by = c("Logger", "Table", "loggernet_variable"),
+                 sort = FALSE)
+    # This is a left join, and should not have changed number of rows;
+    # i.e., there must be exactly one match for every loggernet variable
+    if(nrow(dat) > old_rows) {
+        counts <- aggregate(design_link ~ loggernet_variable, data = test, 
+                            FUN = function(x) length(unique(x)))
+        counts <- counts[counts$design_link > 1,]
+        stop("Some loggernet variables have more than one design_link: ",
+             paste(counts$loggernet_variable, collapse = ", "))
+    }
     
     # Summary information
     smry$no_design_links <- sum(is.na(dat$design_link))
@@ -169,22 +168,21 @@ f <- function(fn, out_dir, design_table) {
     # At this point everything in the value column should be numeric
     dat$value <- as.numeric(dat$value)
     dat <- compasstools::unit_conversion(dat, ut)
-    dat <- rename(dat, value_raw = value, value = value_conv)
-    dat$value_conv <- NULL
-    
+    nd <- names(dat)
+    names(dat)[nd == "value"] <- "value_raw"
+    names(dat)[nd == "value_conv"] <- "value"
+
     # ------------- Out-of-bounds flags
     
     message("\tAdding OOB flags")
-    dat %>% 
-        left_join(bt, by = c("research_name", "units")) %>% 
-        mutate(OOB = as.integer(value < low_bound | value > high_bound)) ->
-        dat
+    dat <- merge(dat, bt, by = c("research_name", "units"))
+    dat$OOB <- as.integer(with(dat, value < low_bound | value > high_bound))
     smry$`OOB%` <- round(sum(dat$OOB) / nrow(dat) * 100, 1)
     
     # Remove unneeded columns unless needed for debugging
     if(!params$debug) {
         message("\tDropping bounds columns")
-        dat <- select(dat, -low_bound, -high_bound)
+        dat$low_bound <- dat$high_bound <- NULL
     }
     
     write_to_folders(dat, 

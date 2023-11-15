@@ -2,7 +2,6 @@
 
 library(lubridate)
 library(readr)
-library(dplyr)
 
 GIT_COMMIT <- substr(system("git rev-parse HEAD", intern = TRUE), 1, 6)
 
@@ -59,7 +58,7 @@ read_csv_group <- function(files, col_types = NULL,
         x
     }
     # Store the number of errors as an attribute of the data and return
-    dat <- bind_rows(lapply(files, readf))
+    dat <- do.call("rbind", lapply(files, readf))
     attr(dat, "errors") <- errors
     dat
 }
@@ -142,7 +141,7 @@ write_to_folders <- function(x, root_dir, data_level, site,
             if(file.exists(fn)) message("NOTE: overwriting existing file")
             # We were using readr::write_csv for this but it was
             # randomly crashing on GA (Error in `vroom write()`: ! bad value)
-            write.csv(dat, fn, row.names = FALSE, na = na)
+            write.csv(dat, fn, row.names = FALSE, na = na, quote = FALSE)
             if(!file.exists(fn)) {
                 stop("File ", fn, "was not written")
             }
