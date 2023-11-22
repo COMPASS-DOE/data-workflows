@@ -24,6 +24,7 @@ jobs:
             any::tidyr
             any::readr
             any::lubridate
+            any::RSQLite
       - name: Install other needed packages
         run: |
           pak::pkg_install("COMPASS-DOE/compasstools")
