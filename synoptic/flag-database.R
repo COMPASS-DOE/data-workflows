@@ -11,7 +11,14 @@ library(DBI)
 # Each site gets its own table, which is created if necessary
 fdb_add_flags <- function(site, flag_data, fdb = FDB) {
     if(site %in% dbListTables(fdb)) {
-        rows <- dbAppendTable(fdb, site, flag_data)
+        # We don't want to create identical rows
+        # The SQLite way to do this would be using UPDATE or REPLACE, but
+        # given our small data volumes, it seems simpler to use R's duplicated()
+        old_data <- dbReadTable(fdb, site)
+        new_data <- rbind(old_data, flag_data)
+        new_data <- new_data[!duplicated(new_data),]
+        dbWriteTable(fdb, site, new_data, overwrite = TRUE)
+        rows <- nrow(new_data) - nrow(old_data)
     } else {
         message("Creating new site ", site)
         dbWriteTable(fdb, site, flag_data)
@@ -26,7 +33,7 @@ fdb_get_flags_site <- function(site, fdb = FDB) {
     if(site %in% dbListTables(fdb)) {
         dbReadTable(fdb, site)
     } else {
-        messsage("No flags for site ", site)
+        message("No flags for site ", site)
         NULL
     }
 }
@@ -67,6 +74,15 @@ fdb_add_flags("site1", test1, fdb = test_db)
 # Pull out data for an entire site (table)
 x <- fdb_get_flags_site("site1", fdb = test_db)
 stopifnot(identical(x, test1))
+
+# Adding duplicate data shouldn't add new entries
+fdb_add_flags("site1", test1, fdb = test_db)
+y <- fdb_get_flags_site("site1", fdb = test_db)
+stopifnot(identical(x, y))
+
+# No flags for a site should return NULL
+x <- fdb_get_flags_site("another_site", fdb = test_db)
+stopifnot(is.null(x))
 
 # Search by Site-ID
 x <- fdb_get_flags_ids("site1", ids = 1:2, fdb = test_db)
