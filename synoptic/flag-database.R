@@ -1,11 +1,11 @@
-
 # flag-database.R
+#
 # The synoptic data are subject to a variety of checks, both automated
 # and human. These result in "flags" noting potential problems:
-# measurements out of instrument range,
+# measurements out of instrument range, algorithmic outliers,
+# ones flagged by human QA/QC, etc.
 
 library(DBI)
-
 
 # Open the database, optionally initializing (erasing) it
 fdb_open <- function(root, init = FALSE) {
