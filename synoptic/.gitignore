@@ -2,4 +2,4 @@
 *.html
 
 # The flag database
-*.sqlite
+**/*.sqlite

@@ -1,11 +1,20 @@
 
-# The flag database
+# flag-database.R
+# The synoptic data are subject to a variety of checks, both automated
+# and human. These result in "flags" noting potential problems:
+# measurements out of instrument range,
 
 library(DBI)
 
-#FDB <- dbConnect(RSQLite::SQLite(), "flag-db.sqlite")
-#dbDisconnect(FDB)
 
+# Open the database, optionally initializing (erasing) it
+fdb_open <- function(root, init = FALSE) {
+    fn <- file.path(root, "flag-db.sqlite")
+    if(init && file.exists(fn)) {
+        file.remove(fn)
+    }
+    FDB <<- dbConnect(RSQLite::SQLite(), fn)
+}
 
 # Add flag data to the database
 # Each site gets its own table, which is created if necessary
@@ -62,6 +71,10 @@ fdb_delete_ids <- function(site, ids, fdb = FDB) {
     dbClearResult(res)
 }
 
+# Close the connection
+fdb_cleanup <- function(fdb = FDB) {
+    dbDisconnect(fdb)
+}
 
 
 # ============= Test code =============
@@ -93,4 +106,6 @@ fdb_delete_ids("site1", ids = 1, fdb = test_db)
 x <- fdb_get_flags_site("site1", fdb = test_db)
 stopifnot(!1 %in% x$ID)
 
-dbDisconnect(test_db)
+# Clean up
+fdb_cleanup(fdb = test_db)
+
