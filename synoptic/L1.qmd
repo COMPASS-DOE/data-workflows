@@ -38,6 +38,10 @@ if(packageVersion("compasstools") < "0.2") {
 
 source("helpers.R")
 
+# Open the fLag database
+source("flag-database.R")
+fdb_open(params$DATA_ROOT, init = TRUE)
+
 L1_NORMALIZE <- file.path(params$DATA_ROOT, params$L1_NORMALIZE)
 dirs_to_process <- scan_folders(L1_NORMALIZE)
 
@@ -54,8 +58,6 @@ HTML outfile is "`r params$html_outfile`".
 ## Processing
 
 ```{r processing}
-errors <- 0
-
 f <- function(dir_name, dirs_to_process, out_dir) {
     message(Sys.time(), " Processing ", basename(dir_name))
     d <- dirs_to_process[[dir_name]]
@@ -67,8 +69,7 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     dat_raw <- read_csv_group(d,
                               remove_input_files = params$remove_input_files, 
                               col_types = "cccccTdcccdi")
-    errors <<- errors + attr(dat_raw, "errors")
-    
+
     # File-based summary
     message("\tTotal data: ", nrow(dat_raw), " rows, ", ncol(dat_raw), " columns")
     smry <- data.frame(Dir = dir_name, 
@@ -96,6 +97,15 @@ f <- function(dir_name, dirs_to_process, out_dir) {
                      data_level = "L1",
                      site = site)
     
+    # Add any OOB flags to the flag database
+    flg <- dat[!is.na(dat$OOB) & dat$OOB == 1, "ID"]
+    if(nrow(flg)) {
+        flg$Flag_type <- "OOB"
+        flg$Remark <- basename(dir_name)
+        message("Sending ", nrow(flg), " flags to database")
+        fdb_add_flags(site, flg)
+    }
+    
     return(smry)
 }
 
@@ -109,18 +119,6 @@ error = function(e) {
     log_info(as.character(e), logfile = params$logfile)
     stop(e)
 })
-```
-
-## File summary
-
-```{r summary}
-#| echo: false
-#| output: asis
-if(errors) {
-    cat("### WARNING: ", errors, " file read/write error(s)\n")
-    log_warning(paste("File read/write error(s)", params$html_outfile), 
-                logfile = params$logfile)
-}
 ```
 
 ## Metadata
@@ -201,7 +199,7 @@ for(dd in data_dirs) {
     md <- append(md, col_md_for_insert, after = col_info_pos)
     md <- md[-col_info_pos]
     # The NA code is an in-line replacement
-    md <- gsub("[NA_CODE_L1]", NA_CODE_L1, md, fixed = TRUE)
+    md <- gsub("[NA_STRING_L1]", NA_STRING_L1, md, fixed = TRUE)
 
     # Insert variable metadata
     var_info_pos <- grep("[VARIABLE_INFO]", md, fixed = TRUE)
@@ -234,6 +232,12 @@ for(dd in data_dirs) {
 ```{r output_summary_table}
 out_df <- do.call("rbind", out)
 knitr::kable(out_df)
+```
+
+## Clean up
+
+```{r cleanup}
+fdb_cleanup() # Close flags database
 ```
 
 ## Reproducibility
