@@ -145,7 +145,7 @@ write_to_folders <- function(x, root_dir, data_level, site,
                                basename(folder), "/", filename)
 
             fn <- file.path(folder, filename)
-            if(file.exists(fn)) message("NOTE: overwriting existing file")
+            if(file.exists(fn)) message("\tNOTE: overwriting existing file")
             # We were using readr::write_csv for this but it was
             # randomly crashing on GA (Error in `vroom write()`: ! bad value)
             write.csv(dat, fn, row.names = FALSE, na = na_string)

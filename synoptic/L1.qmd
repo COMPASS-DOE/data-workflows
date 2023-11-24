@@ -102,7 +102,7 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     if(nrow(flg)) {
         flg$Flag_type <- "OOB"
         flg$Remark <- basename(dir_name)
-        message("\tSending ", nrow(flg), " flags to database")
+        message("Sending ", nrow(flg), " flags to database")
         fdb_add_flags(site, flg)
     }
     

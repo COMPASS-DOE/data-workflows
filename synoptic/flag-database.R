@@ -21,19 +21,18 @@ fdb_open <- function(root, init = FALSE) {
 fdb_add_flags <- function(site, flag_data, fdb = FDB) {
     if(site %in% dbListTables(fdb)) {
         # We don't want to create identical rows
-        # The SQLite way to do this would be using UPDATE or REPLACE, but
-        # given our small data volumes, it seems simpler to use R's duplicated()
+        # Given our small data volumes, seems simplest to use R's duplicated()
         old_data <- dbReadTable(fdb, site)
         new_data <- rbind(old_data, flag_data)
         new_data <- new_data[!duplicated(new_data),]
         dbWriteTable(fdb, site, new_data, overwrite = TRUE)
         rows <- nrow(new_data) - nrow(old_data)
     } else {
-        message("Creating new site ", site)
+        message("\tCreating new site ", site)
         dbWriteTable(fdb, site, flag_data)
         rows <- nrow(flag_data)
     }
-    message("Added ", rows, " rows")
+    message("\tAdded ", rows, " rows")
 }
 
 # Get flag data for a single site
