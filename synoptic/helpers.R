@@ -3,10 +3,11 @@
 library(lubridate)
 library(readr)
 
+# Constants used in this file and elsewhere in the system
 GIT_COMMIT <- substr(system("git rev-parse HEAD", intern = TRUE), 1, 7)
 
-NA_CODE_L1 <- "NA"
-NA_CODE_L2 <- "-9999"
+NA_STRING_L1 <- "NA"
+NA_STRING_L2 <- "-9999"
 
 # Small helper functions to make the various steps obvious in the log
 if(!exists("LOGFILE")) LOGFILE <- ""
@@ -44,22 +45,21 @@ copy_output <- function(from, to, overwrite = TRUE) {
 # is returned as an attribute of the output
 read_csv_group <- function(files, col_types = NULL,
                            remove_input_files = FALSE, quiet = FALSE, ...) {
-    errors <- 0
+    # Warnings are not allowed here, as this usually means a column format
+    # problem that we want to fix immediately
+    oldwarn <- options()$warn
+    options(warn = 2)
 
-    # Read in all files and bind data frames
-    readf <- function(fn) {
+    # File-reading function
+    readf <- function(fn, quiet, ...) {
         if(!quiet) message("\tReading ", basename(fn))
-        x <- try(read_csv(fn, col_types = col_types, ...))
-        if(!is.data.frame(x)) {
-            errors <- errors + 1
-            return(NULL)
-        }
+        x <- read_csv(fn, col_types = col_types, ...)
         if(remove_input_files) file.remove(fn)
         x
     }
-    # Store the number of errors as an attribute of the data and return
-    dat <- do.call("rbind", lapply(files, readf))
-    attr(dat, "errors") <- errors
+    # Read all files, bind data frames, and return
+    dat <- do.call("rbind", lapply(files, readf, quiet, ...))
+    options(warn = oldwarn)
     dat
 }
 
@@ -74,7 +74,7 @@ read_csv_group <- function(files, col_types = NULL,
 #   Folders are site_year
 #   Filenames are site_timeperiod_table_L2
 
-# The data (x) should be a data frame with a posixct 'TIMESTAMP' column
+# The data (x) should be a data frame with a POSIXct 'TIMESTAMP' column
 # This is used to split the data for sorting into <yyyy>_<mm> folders
 # Returns a list of filenames written (names) and number of data lines (values)
 write_to_folders <- function(x, root_dir, data_level, site,
@@ -84,7 +84,14 @@ write_to_folders <- function(x, root_dir, data_level, site,
 
     lines_written <- list()
     for(y in unique(years)) {
+        if(is.na(y)) {
+            stop(data_level, " invalid year ", y)
+        }
+
         for(m in unique(months)) {
+            if(is.na(m)) {
+                stop(data_level, " invalid month ", m)
+            }
 
             # Isolate the data to write
             dat <- x[y == years & m == months,]
@@ -106,15 +113,15 @@ write_to_folders <- function(x, root_dir, data_level, site,
                 # overwrite anything that's already there
                 short_hash <- substr(digest::digest(dat, algo = "md5"), 1, 4)
                 filename <- paste0(paste(logger, table, y, m, short_hash, sep = "_"), ".csv")
-                na <- NA_CODE_L1
+                na_string <- NA_STRING_L1
             } else if(data_level == "L1") {
                 folder <- file.path(root_dir, paste(site, y, sep = "_"))
                 filename <- paste0(paste(site, time_period, data_level, sep = "_"), ".csv")
-                na <- NA_CODE_L1
+                na_string <- NA_STRING_L1
             } else if(data_level == "L2") {
                 folder <- file.path(root_dir, paste(site, y, sep = "_"))
                 filename <- paste0(paste(site, time_period, table, data_level, sep = "_"), ".csv")
-                na <- NA_CODE_L2
+                na_string <- NA_STRING_L2
             } else {
                 stop("Unkown data_level ", data_level)
             }
@@ -141,7 +148,7 @@ write_to_folders <- function(x, root_dir, data_level, site,
             if(file.exists(fn)) message("NOTE: overwriting existing file")
             # We were using readr::write_csv for this but it was
             # randomly crashing on GA (Error in `vroom write()`: ! bad value)
-            write.csv(dat, fn, row.names = FALSE, na = na)
+            write.csv(dat, fn, row.names = FALSE, na = na_string)
             if(!file.exists(fn)) {
                 stop("File ", fn, "was not written")
             }
