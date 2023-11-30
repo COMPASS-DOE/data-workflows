@@ -1,0 +1,31 @@
+L1 data documentation file
+[FOLDER_NAME]
+[TIMESTAMP]
+
+
+General information
+—----------------------------------
+L1 data are close to raw data, although they have been units-transformed and 
+have a single out-of-instrument-bounds flag applied. True duplicates are removed 
+but otherwise these data are not filtered, and have not been subject to any algorithmic
+or human QA/QC. Any use of these data for science analyses should be done with care.
+
+
+Site information:
+—----------------------------------
+[SITE_INFO]
+
+
+Files in this folder:
+—----------------------------------
+[FILE_INFO]
+
+
+File columns:
+—----------------------------------
+[COLUMN_INFO]
+
+
+Variable definitions:
+—----------------------------------
+[VARIABLE_INFO]

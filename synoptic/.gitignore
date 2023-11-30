@@ -1,0 +1,5 @@
+*/libs/*
+*.html
+
+# The flag database
+**/*.sqlite

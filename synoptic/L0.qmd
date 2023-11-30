@@ -1,0 +1,191 @@
+---
+title: "Workflow: L0"
+author: "COMPASS workflows team"
+title-block-banner: true
+params:
+  html_outfile: "L0.html"
+  DATA_ROOT: "data_TEST/"
+  RAW: "Raw/"
+  RAW_DONE: "Raw_done/"
+  L0: "L0/"
+  remove_input_files: false
+  logfile: ""
+date: now
+date-format: "YYYY-MM-DD HH:mm:ssZ"
+format: 
+  html:
+    code-fold: true
+editor: visual
+---
+
+This script
+
+-   Reads in the raw data files one by one
+
+-   Extracts `Logger` and `Table` information from the header and adds them as columns
+
+-   Reshapes from wide to long; only `Logger`, `Table`, and `TIMESTAMP` don't get reshaped
+
+-   Adds a unique observation ID (using `digest::digest()` )
+
+-   Writes as CSV files with row/col/hash info in filename
+
+-   Moves the raw files to a Raw_done folder
+
+## Initializing
+
+```{r init}
+#| include: false
+
+RAW <- file.path(params$DATA_ROOT, params$RAW)
+RAW_DONE <- file.path(params$DATA_ROOT, params$RAW_DONE)
+L0 <- file.path(params$DATA_ROOT, params$L0)
+
+library(tidyr)
+library(readr)
+library(compasstools)
+if(packageVersion("compasstools") < "0.2") {
+    stop("Please update to latest version of compasstools!\n",
+         "devtools::install_github('COMPASS-DOE/compasstools')")
+}
+
+files_to_process <- list.files(RAW, pattern = "*.dat$", 
+                               full.names = TRUE, recursive = TRUE)
+
+source("helpers.R")
+```
+
+I see `r length(files_to_process)` files to process in `r RAW`.
+
+Output directory is `r L0`.
+
+Moving done files to `r RAW_DONE`.
+
+HTML outfile is `r params$html_outfile`.
+
+Logfile is `r params$logfile`.
+
+Working directory is `r getwd()`.
+
+## Processing
+
+```{r processing}
+overwrites <- 0
+errors <- 0
+
+f <- function(fn, new_dir) {
+
+    basefn <- basename(fn)
+    message(Sys.time(), " Processing ", basefn)
+    
+    dat <- read_datalogger_file(fn, col_types = cols(.default = col_character()))
+    message("\tOriginal data is ", nrow(dat), " x ", ncol(dat))
+    
+    # Pivot to long form. We need to do this now to calculate unique observation IDs
+    dat_long <- pivot_longer(dat, c(-Logger, -Table, -TIMESTAMP),
+                             names_to = "loggernet_variable",
+                             values_to = "value")
+    message("\tPivoted data is ", nrow(dat_long), " x ", ncol(dat_long))
+
+    # Remove duplicates
+    dupes <- duplicated(dat_long)
+    if(any(dupes)) {
+        message("\rRemoving ", sum(dupes), " duplicate rows")
+        dat_long <- dat_long[!dupes,]
+    }
+    
+    # Add a unique ID column
+    # We use digest::digest() and the "md5" algorithm (first 10 characters);
+    # originally tried the "crc32" algorithm but this generated duplicate IDs
+    # This is not *guaranteed* to be unique, but collisions are highly unlikely
+    dat_long$ID <- sapply(apply(dat_long, 1, paste, collapse = ""),
+                          FUN = function(x) {
+                              substr(digest::digest(x, algo = "md5"), 1, 16)
+                          })
+    # Since we removed duplicate rows above, hashes should be unique
+    if(any(duplicated(dat_long$ID))) {
+        stop("Duplicate ID hashes!")
+    }
+    
+    # Construct the new filename: old filename + nrow + ncol + short hash
+    # This is so we can distinguish datasets with identical raw filename but
+    # differing data contents (can happen sometimes with dataloggers)
+    stripped_fn <- gsub("\\.dat$", "", basefn)
+    short_hash <- substr(digest::digest(dat_long, algo = "md5"), 1, 4)
+    new_fn <- paste0(stripped_fn, "_", nrow(dat_long), "x", ncol(dat_long), "_", short_hash, ".csv")
+    
+    note <- ""
+    if(file.exists(file.path(new_dir, new_fn))) {
+        note <- "Overwriting existing file"
+        message("\t", note)
+        overwrites <<- overwrites + 1
+    }
+    
+    # Write the new file, checking to make sure successful
+    new_fqfn <- file.path(new_dir, new_fn)
+    message("\tWriting ", new_fqfn)
+    try(write.csv(dat_long, new_fqfn, row.names = FALSE))
+    if(!file.exists(new_fqfn)) {
+        note <- "Write error"
+        message("\t", note)
+        errors <<- errors + 1
+    } else {
+        # Move to 'Raw_done' folder
+        if(params$remove_input_files) {
+            message("\tArchiving raw input files")
+            file.copy(fn, file.path(params$raw_done, basefn), overwrite = FALSE)
+            file.remove(fn)
+        }
+    }
+    
+    # Return an informational data frame about file processed, dimensions, etc.
+    data.frame(File = basefn,
+               Orig_rows = nrow(dat),
+               Orig_columns = ncol(dat),
+               Rows = nrow(dat_long),
+               Columns = ncol(dat_long),
+               Hash = short_hash,
+               Note = note)
+}
+
+log_info("About to L0", logfile = params$logfile)
+tryCatch({
+    out <- lapply(files_to_process, f, new_dir = L0)
+},
+error = function(e) {
+    log_warning("L0: an error occurred!", logfile = params$logfile)
+    log_info(as.character(e), logfile = params$logfile)
+    stop(e)
+})
+```
+
+## Summary
+
+```{r summary}
+#| echo: false
+#| output: asis
+if(overwrites) {
+    cat("#### NOTE: ", overwrites, " file overwrite(s)\n")
+    log_warning(paste("File overwrite(s)", params$html_outfile), 
+                logfile = params$logfile)
+}
+if(errors) {
+    cat("#### WARNING: ", errors, " file read/write error(s)\n")
+    log_warning(paste("File read/write error(s)", params$html_outfile), 
+                logfile = params$logfile)
+}
+```
+
+```{r summary_table}
+out_df <- do.call("rbind", out)
+knitr::kable(out_df)
+```
+
+## Reproducibility
+
+Git commit `r GIT_COMMIT`.
+
+```{r reproducibility}
+sessionInfo()
+```
+

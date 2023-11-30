@@ -1,0 +1,7 @@
+Column,Description
+TIMESTAMP,Original datalogger timestamp (EST) (POSIXct)
+design_link,Design name that links to experimental unit (character)
+research_name,Measurement name (character)
+value,Observed value (numeric). The no-data value is '[NA_STRING_L1]'
+ID,Observation ID (character)
+OOB,"Out of instrumental bounds flag (1=TRUE, 0=FALSE) (logical)"

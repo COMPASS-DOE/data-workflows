@@ -1,0 +1,14 @@
+Portage River (PTR) is one of COMPASS-FME synoptic sites, and has three plots: 
+upland (located at XXX.XXXW, XXX.XXXN), transition (XXX.XXXW, XXX.XXXN),
+and wetland (XXX.XXXW, XXX.XXXN).
+
+Contacts for the Portage site:
+Matt Kovach matthew.kovach3@utoledo.edu
+
+Contacts for Portage data streams:
+Sapflux: Stephanie Pennington stephanie.pennington@pnnl.gov
+TEROS: Peter Regier peter.regier@pnnl.gov
+Dataloggers: Roy Rich richr@si.edu
+
+Key publications:
+XXX
