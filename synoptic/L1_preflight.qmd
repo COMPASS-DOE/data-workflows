@@ -1,0 +1,105 @@
+---
+title: "Workflow: L1_preflight"
+author: "COMPASS workflows team"
+title-block-banner: true
+params:
+  html_outfile: "L1_preflight.html"
+  DATA_ROOT: "data_TEST/"
+  DESIGN_TABLE: "design_table.csv"
+  logfile: ""
+date: now
+date-format: "YYYY-MM-DD HH:mm:ssZ"
+format: 
+  html:
+    code-fold: true
+    fig-width: 8
+    fig-height: 6
+editor: visual
+---
+
+## This script
+
+-   stuff
+
+## Initializing
+
+```{r init}
+library(readr)
+library(tidyr)
+library(tidygraph)
+library(ggraph)
+source("helpers.R")
+
+# Read the design table (everything must have an entry)
+DESIGN_TABLE <- file.path(params$DATA_ROOT, params$DESIGN_TABLE)
+dt <- read_csv(DESIGN_TABLE, col_types = "ccccccc")
+dt$note <- NULL
+# For compactness, the design table may have expansions. For example,
+# "DiffVoltA_Avg({1:8})" -> "DiffVoltA_Avg(1)", "DiffVoltA_Avg(2)", etc., with
+# extra rows added as needed:
+#dt_ex <- compasstools::expand_df(dt)
+
+```
+
+## Processing
+
+```{r processing}
+
+x <- subset(dt, !is.na(dt$design_link))
+x <- separate(x, Logger, into = c("C", "S","P","L"))
+
+for(plot in unique(x$P)) {
+    xplot <- subset(x, x$P == plot)
+    test <- data.frame(Site = xplot$Site, 
+                       Plot = xplot$P, 
+                       from = xplot$parent, 
+                       to = xplot$design_link)
+    
+    test <- subset(test, !is.na(test$from))
+    
+    test2 <- as_tbl_graph(test)
+    
+    p <- ggraph(test2, layout = "stress", circular = TRUE) + 
+        geom_edge_link(arrow = arrow(), 
+                       start_cap = circle(5, "mm"), 
+                       end_cap = circle(5, "mm")) + 
+        geom_node_point() + 
+        geom_node_label(aes(label = name), size = 3) + 
+        facet_wrap(~Plot)
+    print(p)
+    
+    p <- ggraph(test2, layout = "dendrogram", circular = TRUE) + 
+        geom_edge_link(arrow = arrow(), 
+                       start_cap = circle(5, "mm"), 
+                       end_cap = circle(5, "mm")) + 
+        geom_node_point() + 
+        geom_node_label(aes(label = name), size = 3) + 
+        facet_wrap(~Plot)
+    print(p)
+    
+    p <- ggraph(test2, layout = "dendrogram") + 
+        geom_edge_link(arrow = arrow(), 
+                       start_cap = circle(5, "mm"), 
+                       end_cap = circle(5, "mm")) + 
+        geom_node_point() + 
+        geom_node_label(aes(label = name), size = 3) + 
+        facet_wrap(~Plot)
+    print(p)
+    
+}
+
+```
+
+## Summary
+
+```{r summary}
+sessionInfo()
+```
+
+## Reproducibility
+
+Git commit `r GIT_COMMIT`.
+
+```{r reproducibility}
+sessionInfo()
+```
