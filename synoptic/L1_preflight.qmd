@@ -26,9 +26,10 @@ editor: visual
 ```{r init}
 library(readr)
 library(tidyr)
-library(tidygraph)
-library(ggraph)
-source("helpers.R")
+library(igraph)
+# library(ggraph)
+# library(tidygraph)
+#source("helpers.R")
 
 # Read the design table (everything must have an entry)
 DESIGN_TABLE <- file.path(params$DATA_ROOT, params$DESIGN_TABLE)
@@ -49,42 +50,47 @@ x <- subset(dt, !is.na(dt$design_link))
 x <- separate(x, Logger, into = c("C", "S","P","L"))
 
 for(plot in unique(x$P)) {
+    message(plot)
     xplot <- subset(x, x$P == plot)
-    test <- data.frame(Site = xplot$Site, 
-                       Plot = xplot$P, 
-                       from = xplot$parent, 
-                       to = xplot$design_link)
+    test <- data.frame(from = xplot$parent, 
+                       to = xplot$design_link,
+                       Site = xplot$Site, 
+                       Plot = xplot$P)
     
     test <- subset(test, !is.na(test$from))
     
-    test2 <- as_tbl_graph(test)
+    #test2 <- as_tbl_graph(test)
+    # igraph:
+    g <- graph_from_data_frame(test, directed = TRUE)
+    par(mar=c(0,0,0,0))
+    plot(g, layout = layout_nicely)
     
-    p <- ggraph(test2, layout = "stress", circular = TRUE) + 
-        geom_edge_link(arrow = arrow(), 
-                       start_cap = circle(5, "mm"), 
-                       end_cap = circle(5, "mm")) + 
-        geom_node_point() + 
-        geom_node_label(aes(label = name), size = 3) + 
-        facet_wrap(~Plot)
-    print(p)
-    
-    p <- ggraph(test2, layout = "dendrogram", circular = TRUE) + 
-        geom_edge_link(arrow = arrow(), 
-                       start_cap = circle(5, "mm"), 
-                       end_cap = circle(5, "mm")) + 
-        geom_node_point() + 
-        geom_node_label(aes(label = name), size = 3) + 
-        facet_wrap(~Plot)
-    print(p)
-    
-    p <- ggraph(test2, layout = "dendrogram") + 
-        geom_edge_link(arrow = arrow(), 
-                       start_cap = circle(5, "mm"), 
-                       end_cap = circle(5, "mm")) + 
-        geom_node_point() + 
-        geom_node_label(aes(label = name), size = 3) + 
-        facet_wrap(~Plot)
-    print(p)
+    # p <- ggraph(test2, layout = "stress", circular = TRUE) + 
+    #     geom_edge_link(arrow = arrow(), 
+    #                    start_cap = circle(5, "mm"), 
+    #                    end_cap = circle(5, "mm")) + 
+    #     geom_node_point() + 
+    #     geom_node_label(aes(label = name), size = 3) + 
+    #     facet_wrap(~Plot)
+    # print(p)
+    # 
+    # p <- ggraph(test2, layout = "dendrogram", circular = TRUE) + 
+    #     geom_edge_link(arrow = arrow(), 
+    #                    start_cap = circle(5, "mm"), 
+    #                    end_cap = circle(5, "mm")) + 
+    #     geom_node_point() + 
+    #     geom_node_label(aes(label = name), size = 3) + 
+    #     facet_wrap(~Plot)
+    # print(p)
+    # 
+    # p <- ggraph(test2, layout = "dendrogram") + 
+    #     geom_edge_link(arrow = arrow(), 
+    #                    start_cap = circle(5, "mm"), 
+    #                    end_cap = circle(5, "mm")) + 
+    #     geom_node_point() + 
+    #     geom_node_label(aes(label = name), size = 3) + 
+    #     facet_wrap(~Plot)
+    # print(p)
     
 }
 
@@ -98,7 +104,7 @@ sessionInfo()
 
 ## Reproducibility
 
-Git commit `r GIT_COMMIT`.
+Git commit `GIT_COMMIT`.
 
 ```{r reproducibility}
 sessionInfo()

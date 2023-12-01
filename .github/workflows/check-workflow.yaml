@@ -4,7 +4,7 @@ on:
       - main
       - synoptic
 
-name: Test data workflow
+name: Synoptic workflow
 
 jobs:
   build_run_workflow:
@@ -25,6 +25,7 @@ jobs:
             any::readr
             any::lubridate
             any::RSQLite
+            any::igraph
       - name: Install other needed packages
         run: |
           pak::pkg_install("COMPASS-DOE/compasstools")

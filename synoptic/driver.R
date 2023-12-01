@@ -65,6 +65,24 @@ driver_try(
 copy_output("L0.html", outfile)
 
 
+# Preflight L1 data --------------------------------------------
+# Right now this just visualizes the design_link hierarchy (parent column)
+
+message("Running L1_preflight.qmd")
+new_section("Starting L1_preflight")
+
+outfile <- paste0("L1_preflight_", now_string(), ".html")
+outfile <- file.path(LOGS, outfile)
+
+driver_try(
+    quarto_render("L1_preflight.qmd",
+                  execute_params = list(DATA_ROOT = ROOT,
+                                        html_outfile = outfile,
+                                        logfile = LOGFILE))
+)
+copy_output("L1_preflight.html", outfile)
+
+
 # 'Normalize' L0 data -------------------------------------------
 # Reshaped to long form and matched with design_link info
 # This is an intermediate step, not exposed to data users
