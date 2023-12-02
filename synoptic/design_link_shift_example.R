@@ -24,51 +24,22 @@ x <- merge(test_data, test_dt)
 # Table+Loggernet_variable), timestamp, and valid_until timestamps to identify
 # which rows to keep (correct design_link assignment) and which to drop.
 valid_entries <- function(objects, times, valid_until) {
-    # If no non-NA valid_until entries, nothing will change
-    if(all(is.na(valid_until))) {
-        return(rep(TRUE, length(objects)))
-    }
-
-    # Identify entries where the time is after valid_until
-    # Most valid_until entries will likely be NA
-    past_valid_time <- !is.na(valid_until) & times > valid_until
-    # If nothing is past valid time, nothing changed, just drop NA rows
-    if(all(!past_valid_time)) {
-        return(!is.na(valid_until))
-    }
-
-    # Identify 'shift objects': they passed a time_valid
-    shift_objects <- unique(objects[past_valid_time])
-    # Identify 'shift happened' object/times
-    x <- data.frame(obj = objects, time = times, valid_until = valid_until,
-                    past_valid_time = past_valid_time)
-    y <- x[past_valid_time,]
-    y <- y[!duplicated(y),]
-    y$sh <- TRUE # mark 'shift happened'
+    # Any NA valid_until entries apply into the far future
+    valid_until[is.na(valid_until)] <- 99999 # max int basically
+    past_valid_time <- times > valid_until
+    x <- data.frame(obj = objects, time = times, vu = valid_until)
+    # Compute the minimum valid_until entry for each object and time that is
+    # not past the valid_until point; this is the 'controlling' value
+    y <- aggregate(vu ~ obj + time, data = x[!past_valid_time,], FUN = min)
+    names(y)[3] <- "controlling"
+    # Figure out controlling valid_until for each object/time
     z <- merge(x, y, all.x = TRUE)
-    z$sh[is.na(z$sh)] <- FALSE
-    shift_happened <- z$sh
+    # An NA controlling entry means there is none
+    z$controlling[is.na(z$controlling)] <- FALSE
 
-    # con <- aggregate(valid_until ~ obj + time, data = z[!past_valid_time,],
-    #                  FUN = min, na.rm = TRUE)
-    # names(con)[3] <- "controlling"
-    # z <- merge(z, con, all.x = TRUE)
-    # controlling_vu <- z$controlling
-
-    # Identify which entries to retain
-    retain <-
-        # objects that have no shift possibility
-        !objects %in% shift_objects |
-        # shift objects in which a shift happened
-        (objects %in% shift_objects & shift_happened) |
-        # shift objects but no shift happened and non-NA valid_until
-        (shift_objects & !shift_happened & !is.na(valid_until))
-    # Definitely want to drop entries that have exceeded valid_until, however
-    retain[past_valid_time] <- FALSE
-    retain
+    return(z$vu == z$controlling)
 }
-x <- merge(test_data, test_dt)
-debug(valid_entries)
+
 valid_entries(x$obj, x$time, x$valid_until)
 
 # No shifting objects
@@ -87,12 +58,16 @@ stopifnot(ret == c(TRUE, FALSE, FALSE, TRUE))
 ret <- valid_entries(objects = rep(1, 9),
                      times = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
                      valid_until = c(1, 2, NA, 1, 2, NA, 1, 2, NA))
-
+stopifnot(ret == c(TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, TRUE))
 # Two objects, one shifts
 ret <- valid_entries(objects = c(1, 1, 1, 2, 2, 2, 2, 2, 2),
                     times = c(1, 2, 3, 1, 1, 2, 2, 3, 3),
                     valid_until = c(NA, NA, NA, 2, NA, 2, NA, 2, NA))
 stopifnot(ret == c(TRUE, TRUE, TRUE, # obj 1
                    TRUE, FALSE, TRUE, FALSE, FALSE, TRUE)) # obj 2
-
+# There's a valid_until but no new entry
+ret <- valid_entries(objects = c(1, 1),
+                     times = c(1, 2),
+                     valid_until = c(1, 1))
+stopifnot(ret == c(TRUE, FALSE))
 
