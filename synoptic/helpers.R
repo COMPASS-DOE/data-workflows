@@ -265,20 +265,26 @@ list_directories <- function(dir_list, outfile = "", prefix = "",
 # Table+Loggernet_variable), timestamp, and valid_until timestamps to identify
 # which rows to keep (correct design_link assignment) and which to drop.
 valid_entries <- function(objects, times, valid_until) {
+    # Nothing to do if there are no valid_until entries
+    if(all(is.na(valid_until))) return(rep(TRUE, length(objects())))
+
     # Any NA valid_until entries apply into the far future
     valid_until[is.na(valid_until)] <- ymd_hms("2999-12-31 11:59:00")
     past_valid_time <- times > valid_until
+
     # Create a data frame to aggregate and then merge, below
     x <- data.frame(obj = objects, time = times, vu = valid_until)
     # Compute the minimum valid_until entry for each object and time that is
     # not past the valid_until point; this is the 'controlling' value
     y <- aggregate(vu ~ obj + time, data = x[!past_valid_time,], FUN = min)
     names(y)[3] <- "controlling"
+
     # Figure out controlling valid_until for each object/time
     z <- merge(x, y, all.x = TRUE)
     # An NA controlling entry means there is none
     valids <- z$vu == z$controlling
     valids[is.na(valids)] <- FALSE
+
     valids
 }
 

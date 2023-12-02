@@ -134,14 +134,14 @@ f <- function(fn, out_dir, design_table) {
     # old assignment becomes invalid and the new one takes over. Call valid_entries()
     # (in helpers.R) to figure out which mappings should apply.
     message("\tChecking for multiple-match design links...")
-    #browser()
     dat_retain <- valid_entries(objects = dat$loggernet_variable,
                                 times = ymd_hms(dat$TIMESTAMP, tz = "EST"),
                                 valid_until = dat$valid_until)
     message("\tDropping ", sum(!dat_retain), " out-of-date design links")
     dat <- dat[dat_retain,]
+    dat$valid_until <- NULL
     
-    # i.e., there must be exactly one match for every loggernet variable
+    # At this point, there should be exactly one match for every loggernet variable
     if(nrow(dat) > old_rows) {
         counts <- aggregate(design_link ~ loggernet_variable, data = test, 
                             FUN = function(x) length(unique(x)))
