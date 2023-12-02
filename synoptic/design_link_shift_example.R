@@ -19,6 +19,7 @@ valid_entries <- function(objects, times, valid_until) {
     # Any NA valid_until entries apply into the far future
     valid_until[is.na(valid_until)] <- 99999 # max int basically
     past_valid_time <- times > valid_until
+    # Create a data frame to aggregate and then merge, below
     x <- data.frame(obj = objects, time = times, vu = valid_until)
     # Compute the minimum valid_until entry for each object and time that is
     # not past the valid_until point; this is the 'controlling' value
