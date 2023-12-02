@@ -8,18 +8,18 @@ test_dt <- data.frame(obj = c(1,2,2),
                       dl = c("A", "B", "C"),
                       valid_until = c(NA, 2, NA))
 
-shifting_objects <- test_dt[!is.na(test_dt$valid_until),]$obj
-
 x <- merge(test_data, test_dt)
 
 # Identify entries where the time is after valid_until
 x$past_valid_time <- !is.na(x$valid_until) & x$time > x$valid_until
 # Identify objects and times where a shift occurs
+# A "shift" is an observation (object + time) where we change design links
 pastvalids <- x[x$past_valid_time, c("obj", "time")]
 pastvalids$shift_happened <- TRUE
 x <- merge(x, pastvalids, all.x = TRUE)
 x$shift_happened[is.na(x$shift_happened)] <- FALSE
 # Identify shift objects
+shifting_objects <- test_dt[!is.na(test_dt$valid_until),]$obj
 x$shift_object <- x$obj %in% shifting_objects
 
 # Whew! Now we can
