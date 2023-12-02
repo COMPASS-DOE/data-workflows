@@ -1,14 +1,6 @@
 # Preparing for the design_link table to have a "valid_until" column
 # that we can handle EFFICIENTLY
 
-# Two objects (sensors) at time points 1:3
-test_data <- data.frame(obj = c(1,1,1,2,2,2), time = c(1,2,3,1,2,3))
-# Object 2 changes its design link after time 2
-test_dt <- data.frame(obj = c(1,2,2),
-                      dl = c("A", "B", "C"),
-                      valid_until = c(NA, 2, NA))
-
-x <- merge(test_data, test_dt)
 
 # The design links might not be stable over time; for example, if a tree
 # dies, its sensor might get reassigned to a new tree. In this case the
@@ -40,7 +32,21 @@ valid_entries <- function(objects, times, valid_until) {
     return(z$vu == z$controlling)
 }
 
+# Sample data. We have two objects (sensors) at time points 1:3
+test_data <- data.frame(obj = c(1, 1, 1, 2, 2, 2), time = c(1, 2, 3, 1, 2, 3))
+# Object 2 changes its design link after time 2
+test_dt <- data.frame(obj = c(1,2,2),
+                      dl = c("A", "B", "C"),
+                      valid_until = c(NA, 2, NA))
+# Merge the 'data' with the 'design link table'
+x <- merge(test_data, test_dt)
+# Call valid_entries. It figures out that all the object 1 entries should be
+# retained, but 1 of 2 entries in each timestep should be dropped for object 2.
+# This is because there are two design_table entries for it (see above); the
+# first ends at time point 2, and the second is indefinite after that.
 valid_entries(x$obj, x$time, x$valid_until)
+
+# Test code
 
 # No shifting objects
 ret <- valid_entries(c(1, 1, 1), c(1, 2, 3), c(NA, NA, NA))
@@ -59,7 +65,7 @@ ret <- valid_entries(objects = rep(1, 9),
                      times = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
                      valid_until = c(1, 2, NA, 1, 2, NA, 1, 2, NA))
 stopifnot(ret == c(TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, TRUE))
-# Two objects, one shifts
+# Two objects, only one shifts
 ret <- valid_entries(objects = c(1, 1, 1, 2, 2, 2, 2, 2, 2),
                     times = c(1, 2, 3, 1, 1, 2, 2, 3, 3),
                     valid_until = c(NA, NA, NA, 2, NA, 2, NA, 2, NA))
