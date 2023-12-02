@@ -6,18 +6,19 @@
 # dies, its sensor might get reassigned to a new tree. In this case the
 # design_link table will have two entries, one for the old assignment and
 # one for the new. We know which one to use by the "valid_until" column,
-# which give a end date for a design link. Most entries will be NA.
+# which give a end date for a design link--or, most commonly, it will be
+# empty (NA) indicating that there is no end date.
 #
 # So, when the design_link table is merged with a data table, if a reassignment
 # has occurred, some data rows will get repeated with the different possible
 # design links.
 #
-# This function uses the object name (group identifier -- typically, Logger+
+# This function uses the object (i.e. group identifier; typically, Logger+
 # Table+Loggernet_variable), timestamp, and valid_until timestamps to identify
 # which rows to keep (correct design_link assignment) and which to drop.
 valid_entries <- function(objects, times, valid_until) {
     # Any NA valid_until entries apply into the far future
-    valid_until[is.na(valid_until)] <- 99999 # max int basically
+    valid_until[is.na(valid_until)] <- 2932896 # this is 12/31/9999
     past_valid_time <- times > valid_until
     # Create a data frame to aggregate and then merge, below
     x <- data.frame(obj = objects, time = times, vu = valid_until)
