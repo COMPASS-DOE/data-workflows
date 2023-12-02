@@ -47,7 +47,7 @@ if(packageVersion("compasstools") < "0.2") {
 
 # Read the design table (everything must have an entry)
 DESIGN_TABLE <- file.path(params$DATA_ROOT, params$DESIGN_TABLE)
-dt <- read_csv(DESIGN_TABLE, col_types = "ccccccc")
+dt <- read_csv(DESIGN_TABLE, col_types = "cccccDcc")
 dt$note <- NULL
 # For compactness, the design table may have expansions. For example,
 # "DiffVoltA_Avg({1:8})" -> "DiffVoltA_Avg(1)", "DiffVoltA_Avg(2)", etc., with
@@ -56,7 +56,7 @@ dt_ex <- compasstools::expand_df(dt)
 
 # Read the variable metadata table
 METADATA_VARS_TABLE <- file.path(params$DATA_ROOT, params$METADATA_VARS_TABLE)
-mt <- read_csv(METADATA_VARS_TABLE, col_types = "ccccccccddc")
+mt <- read_csv(METADATA_VARS_TABLE, col_types = "ccccccddc")
 # ...and create the units table (everything must have an entry)
 ut <- mt[!is.na(mt$research_name),] # filter
 ut$new_unit = ut$final_units # rename
@@ -128,8 +128,20 @@ f <- function(fn, out_dir, design_table) {
     dat <- merge(dat, design_table,
                  by = c("Logger", "Table", "loggernet_variable"),
                  sort = FALSE)
-    # This is a left join, and should not have changed number of rows;
-    # i.e., there must be exactly one match for every loggernet variable
+    # This is a left join, and normally should not have changed the number of rows
+    # The exception would be if a sensor has been reassigned; in that case it will have
+    # >1 entry in the design table, with the "valid_until" column controlling when the
+    # old assignment becomes invalid and the new one takes over. Call valid_entries()
+    # (in helpers.R) to figure out which mappings should apply.
+    message("\tChecking for multiple-match design links...")
+    dat_retain <- valid_entries(objects = dat$loggernet_variable,
+                                times = ymd_hms(dat$TIMESTAMP, tz = "EST"),
+                                valid_until = dat$valid_until)
+    message("\tDropping ", sum(!dat_retain), " out-of-date design links")
+    dat <- dat[dat_retain,]
+    dat$valid_until <- NULL
+    
+    # At this point, there should be exactly one match for every loggernet variable
     if(nrow(dat) > old_rows) {
         counts <- aggregate(design_link ~ loggernet_variable, data = test, 
                             FUN = function(x) length(unique(x)))
