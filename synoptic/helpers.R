@@ -266,7 +266,7 @@ list_directories <- function(dir_list, outfile = "", prefix = "",
 # which rows to keep (correct design_link assignment) and which to drop.
 valid_entries <- function(objects, times, valid_until) {
     # Any NA valid_until entries apply into the far future
-    valid_until[is.na(valid_until)] <- 2932896 # this is 12/31/9999
+    valid_until[is.na(valid_until)] <- ymd_hms("2999-12-31 11:59:00")
     past_valid_time <- times > valid_until
     # Create a data frame to aggregate and then merge, below
     x <- data.frame(obj = objects, time = times, vu = valid_until)
@@ -277,9 +277,9 @@ valid_entries <- function(objects, times, valid_until) {
     # Figure out controlling valid_until for each object/time
     z <- merge(x, y, all.x = TRUE)
     # An NA controlling entry means there is none
-    z$controlling[is.na(z$controlling)] <- FALSE
-
-    return(z$vu == z$controlling)
+    valids <- z$vu == z$controlling
+    valids[is.na(valids)] <- FALSE
+    valids
 }
 
 # Sample data. We have two objects (sensors) at time points 1:3
