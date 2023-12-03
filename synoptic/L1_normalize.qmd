@@ -130,16 +130,16 @@ f <- function(fn, out_dir, design_table) {
                  sort = FALSE)
     # This is a left join, and normally should not have changed the number of rows
     # The exception would be if a sensor has been reassigned; in that case it will have
-    # >1 entry in the design table, with the "valid_until" column controlling when the
+    # >1 entry in the design table, with the "valid_through" column controlling when the
     # old assignment becomes invalid and the new one takes over. Call valid_entries()
     # (in helpers.R) to figure out which mappings should apply.
     message("\tChecking for multiple-match design links...")
     dat_retain <- valid_entries(objects = dat$loggernet_variable,
                                 times = ymd_hms(dat$TIMESTAMP, tz = "EST"),
-                                valid_until = dat$valid_until)
+                                valid_through = dat$valid_through)
     message("\tDropping ", sum(!dat_retain), " out-of-date design links")
     dat <- dat[dat_retain,]
-    dat$valid_until <- NULL
+    dat$valid_through <- NULL
     
     # At this point, there should be exactly one match for every loggernet variable
     if(nrow(dat) > old_rows) {
