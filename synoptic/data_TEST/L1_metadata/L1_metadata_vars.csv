@@ -9,7 +9,7 @@ Teros,VWC,soil_vwc_30cm,m3/m3,m3/m3,(3.879*10^-4) * x - 0.6956,0,1,calibration e
 Teros,TSOIL,soil_temp_30cm,degC,degC,x * 1,-40,60,NA
 Teros,EC,soil_EC_30cm,dS/m,uS/cm,x * 100000,0,20000,NA
 AquaTroll,Temperature600,gw_temperature,degC,degC,x * 1,-5,50,"temperature, water"
-AquaTroll,Specific_Conductivity600,NA,μS/cm,μS/cm,x * 1,0,350000,NA
+AquaTroll,Specific_Conductivity600,gw_conductivity,μS/cm,μS/cm,x * 1,0,350000,NA
 AquaTroll,Salinity600,gw_salinity,PSU,PSU,x * 1,0,350,salinity
 AquaTroll,Water_Density600,gw_density,g/cm3,g/cm3,x * 1,NA,NA,water_density
 AquaTroll,pH600,gw_ph,unitless,unitless,x * 1,0,14,"ph, water"
