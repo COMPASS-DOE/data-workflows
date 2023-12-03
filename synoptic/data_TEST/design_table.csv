@@ -1,4 +1,4 @@
-Site,Logger,Table,loggernet_variable,design_link,valid_until,research_name,note
+Site,Logger,Table,loggernet_variable,design_link,valid_through,research_name,note
 PTR,Compass_PTR_UP_313,CheckTable,Format,,,,
 PTR,Compass_PTR_UP_313,CheckTable,RECORD,,,,
 PTR,Compass_PTR_UP_313,CheckTable,BattV,BattV-PTR-UP,,voltage,

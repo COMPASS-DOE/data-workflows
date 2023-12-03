@@ -14,7 +14,7 @@ Design table fields:
 | Table              | Datalogger table name      |
 | loggernet_variable | Datalogger variable name   |
 | design_link        | Design link (see below)    |
-| valid_until        | Expiry date of design link |
+| valid_through        | Expiry date of design link |
 | research_name      | Type of measurement        |
 | Note               | Note                       |
 
@@ -25,9 +25,9 @@ Design links tend to follow a pattern of {sensor}-{datum}-{site}-{plot}, e.g.
 `GW-Salinity-PTR-UP` (groundwater, salinity, Portage River, upland). The format
 is currently not enforced or consistent, however.
 
-The `valid_until` column is used when a sensor is reassigned, for example if a tree
+The `valid_through` column is used when a sensor is reassigned, for example if a tree
 dies and we reassign its sapflux sensor to a new tree, and encodes the last valid
 date for a given design link. In this case the loggernet variable has _two_ entries
-(rows): the original assignment, with a `valid_until` entry, and the new assignment,
-with a blank `valid_until` entry.
+(rows): the original assignment, with a YYYY-MM-DD `valid_through` entry, and the new assignment,
+with a blank `valid_through` entry.
 
