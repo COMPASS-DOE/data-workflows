@@ -25,6 +25,7 @@ jobs:
             any::readr
             any::lubridate
             any::RSQLite
+            any::ggplot2
       - name: Install other needed packages
         run: |
           pak::pkg_install("COMPASS-DOE/compasstools")

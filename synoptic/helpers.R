@@ -78,7 +78,7 @@ read_csv_group <- function(files, col_types = NULL,
 # This is used to split the data for sorting into <yyyy>_<mm> folders
 # Returns a list of filenames written (names) and number of data lines (values)
 write_to_folders <- function(x, root_dir, data_level, site,
-                             logger, table, quiet = FALSE) {
+                             logger, table, quiet = FALSE, write_plots = TRUE) {
     years <- year(x$TIMESTAMP)
     months <- sprintf("%02i", month(x$TIMESTAMP)) # add leading zero if needed
 
@@ -89,6 +89,8 @@ write_to_folders <- function(x, root_dir, data_level, site,
         }
 
         for(m in unique(months)) {
+            write_this_plot <- FALSE
+
             if(is.na(m)) {
                 stop(data_level, " invalid month ", m)
             }
@@ -118,6 +120,12 @@ write_to_folders <- function(x, root_dir, data_level, site,
                 folder <- file.path(root_dir, paste(site, y, sep = "_"))
                 filename <- paste0(paste(site, time_period, data_level, sep = "_"), ".csv")
                 na_string <- NA_STRING_L1
+                write_this_plot <- TRUE
+                p <- ggplot(x, aes(TIMESTAMP, value, group = design_link)) +
+                    geom_line() +
+                    facet_wrap(~research_name, scales = "free") +
+                    ggtitle(filename) +
+                    theme(axis.text = element_text(size = 6))
             } else if(data_level == "L2") {
                 folder <- file.path(root_dir, paste(site, y, sep = "_"))
                 filename <- paste0(paste(site, time_period, table, data_level, sep = "_"), ".csv")
@@ -151,6 +159,12 @@ write_to_folders <- function(x, root_dir, data_level, site,
             write.csv(dat, fn, row.names = FALSE, na = na_string)
             if(!file.exists(fn)) {
                 stop("File ", fn, "was not written")
+            }
+
+            # Write basic QA/QC plot
+            if(write_plots && write_this_plot) {
+                fn_p <- gsub("csv$", "pdf", fn)
+                ggsave(fn_p, plot = p, width = 10, height = 8)
             }
 
             lines_written[[fn]] <- nrow(dat)
