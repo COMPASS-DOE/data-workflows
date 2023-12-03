@@ -4,7 +4,7 @@ on:
       - main
       - synoptic
 
-name: Test data workflow
+name: Synoptic workflow
 
 jobs:
   build_run_workflow:
