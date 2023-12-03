@@ -25,6 +25,7 @@ jobs:
             any::readr
             any::lubridate
             any::RSQLite
+            any::ggplot2
             any::igraph
       - name: Install other needed packages
         run: |
