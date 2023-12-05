@@ -135,7 +135,9 @@ L1 metadata template directory is `r params$L1_METADATA`.
 template_file <- file.path(params$DATA_ROOT,
                            params$L1_METADATA, 
                            "L1_metadata_template.txt")
-stopifnot(file.exists(template_file))
+if(!file.exists(template_file)) {
+    stop("Couldn't find file ", basenme(template_file), " in ", params$L1_METADATA)
+}
 L1_metadata_template <- readLines(template_file)
 
 # Get the column metadata file
@@ -216,7 +218,9 @@ for(dd in data_dirs) {
     # There MUST be a informational file named <site>.txt
     site <- strsplit(dd, "_")[[1]][1]
     site_md_file <- file.path(params$DATA_ROOT, params$L1_METADATA, paste0(site, ".txt"))
-    stopifnot(file.exists(site_md_file))
+    if(!file.exists(site_md_file)) {
+        stop("Couldn't find file ", site_md_file, " in ", params$L1_METADATA)
+    }
     message("\tFound ", basename(site_md_file))
     site_md_for_insert <- readLines(site_md_file)
 
