@@ -31,3 +31,7 @@ date for a given design link. In this case the loggernet variable has _two_ entr
 (rows): the original assignment, with a YYYY-MM-DD `valid_through` entry, and the new assignment,
 with a blank `valid_through` entry.
 
+The TEMPEST TEROS assignments are based on 
+https://docs.google.com/spreadsheets/d/1IFHNaE4Tr45rjDNR7MBg7i2Z2ewIPyAhl6q2vCB_Tbw/edit#gid=0
+as of 2023-12-11.
+
