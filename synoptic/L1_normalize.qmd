@@ -53,6 +53,11 @@ dt$note <- NULL
 # "DiffVoltA_Avg({1:8})" -> "DiffVoltA_Avg(1)", "DiffVoltA_Avg(2)", etc., with
 # extra rows added as needed:
 dt_ex <- compasstools::expand_df(dt)
+links <- na.omit(dt_ex$design_link)
+if(any(duplicated(links))) {
+    stop("There are duplicated design links: ", 
+         paste(unique(links[duplicated(links)]), collapse = ", "))
+}
 
 # Read the variable metadata table
 METADATA_VARS_TABLE <- file.path(params$DATA_ROOT, params$METADATA_VARS_TABLE)
@@ -143,10 +148,11 @@ f <- function(fn, out_dir, design_table) {
     
     # At this point, there should be exactly one match for every loggernet variable
     if(nrow(dat) > old_rows) {
-        counts <- aggregate(design_link ~ loggernet_variable, data = test, 
+        browser()
+        counts <- aggregate(design_link ~ loggernet_variable, data = dat, 
                             FUN = function(x) length(unique(x)))
         counts <- counts[counts$design_link > 1,]
-        stop("Some loggernet variables have more than one design_link: ",
+        stop("Some loggernet variables in ", fn, " have more than one design_link: ",
              paste(counts$loggernet_variable, collapse = ", "))
     }
     
