@@ -14,7 +14,7 @@ Design table fields:
 | Table              | Datalogger table name      |
 | loggernet_variable | Datalogger variable name   |
 | design_link        | Design link (see below)    |
-| valid_through        | Expiry date of design link |
+| valid_through      | Expiry date of design link |
 | research_name      | Type of measurement        |
 | Note               | Note                       |
 
@@ -31,7 +31,8 @@ date for a given design link. In this case the loggernet variable has _two_ entr
 (rows): the original assignment, with a YYYY-MM-DD `valid_through` entry, and the new assignment,
 with a blank `valid_through` entry.
 
-The TEMPEST TEROS assignments are based on 
-https://docs.google.com/spreadsheets/d/1IFHNaE4Tr45rjDNR7MBg7i2Z2ewIPyAhl6q2vCB_Tbw/edit#gid=0
-as of 2023-12-11.
+The TEMPEST sapflow assignments are based on
+COMPASS -> COMPASS FME -> ARCHIVE _ Pilot Project -> COMPASS FME Task 2 -> TEMPEST -> Sensor Networks & Infrastructure -> Monitoring Documents -> TEMPEST Sap Flow Monitoring
 
+The Synoptic Sap Flow Monitoring, TEROS Monitoring, and Aquatroll Monitoring documents live here:
+COMPASS -> COMPASS FME -> ARCHIVE _ Pilot Project -> COMPASS FME Task 1 -> 1.2 Synoptic -> Sensor Maintenance
