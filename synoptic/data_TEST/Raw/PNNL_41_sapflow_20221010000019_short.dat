@@ -1,0 +1,10 @@
+"TOA5","PNNL_41","CR1000","86619","CR1000.Std.31.03","CPU:Tempest_v6HR.CR1","5511","sapflow"
+"TIMESTAMP","RECORD","Statname","BattV_Avg","DiffVolt_Avg(1)","DiffVolt_Avg(2)","DiffVolt_Avg(3)","DiffVolt_Avg(4)","DiffVolt_Avg(5)","DiffVolt_Avg(6)","DiffVolt_Avg(7)","DiffVolt_Avg(8)","DiffVolt_Avg(9)","DiffVolt_Avg(10)","DiffVolt_Avg(11)","DiffVolt_Avg(12)","DiffVolt_Avg(13)","DiffVolt_Avg(14)","DiffVolt(1)","DiffVolt(2)","DiffVolt(3)","DiffVolt(4)","DiffVolt(5)","DiffVolt(6)","DiffVolt(7)","DiffVolt(8)","DiffVolt(9)","DiffVolt(10)","DiffVolt(11)","DiffVolt(12)","DiffVolt(13)","DiffVolt(14)"
+"TS","RN","","Volts","mV","mV","mV","mV","mV","mV","mV","mV","mV","mV","mV","mV","mV","mV","mV","mV","mV","mV","mV","mV","mV","mV","mV","mV","mV","mV","mV","mV"
+"","","Smp","Avg","Avg","Avg","Avg","Avg","Avg","Avg","Avg","Avg","Avg","Avg","Avg","Avg","Avg","Avg","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp"
+"2022-09-10 00:00:00",36551,"NAN",13.32,0.589,0.546,0.504,0.674,0.526,0.587,"NAN","NAN",0,0,0,0,0,0,0.589,0.546,0.504,0.673,0.526,0.588,"NAN","NAN",0,0,0,0,0,0
+"2022-09-10 00:15:00",36552,"NAN",13.32,0.59,0.546,0.504,0.673,0.525,0.588,"NAN","NAN",0,0,0,0,0,0,0.59,0.547,0.503,0.673,0.525,0.588,"NAN","NAN",0,0,0,0,0,0
+"2022-09-10 00:30:00",36553,"NAN",13.33,0.591,0.546,0.504,0.673,0.526,0.588,"NAN","NAN",0,0,0,0,0,0,0.591,0.547,0.505,0.673,0.526,0.588,"NAN","NAN",0,0,0,0,0,0
+"2022-09-10 00:45:00",36554,"NAN",13.33,0.591,0.546,0.504,0.673,0.526,0.588,"NAN","NAN",0,0,0,0,0,0,0.592,0.546,0.505,0.672,0.526,0.588,"NAN","NAN",0,0,0,0,0,0
+"2022-09-10 01:00:00",36555,"NAN",13.33,0.592,0.546,0.504,0.673,0.526,0.588,"NAN","NAN",0,0,0,0,0,0,0.593,0.546,0.503,0.673,0.526,0.587,"NAN","NAN",0,0,0,0,0,0
+"2022-09-10 01:15:00",36556,"NAN",13.33,0.592,0.545,0.504,0.673,0.526,0.588,"NAN","NAN",0,0,0,0,0,0,0.593,0.546,0.505,0.672,0.527,0.588,"NAN","NAN",0,0,0,0,0,0
