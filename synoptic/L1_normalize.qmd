@@ -148,10 +148,11 @@ f <- function(fn, out_dir, design_table) {
     
     # At this point, there should be exactly one match for every loggernet variable
     if(nrow(dat) > old_rows) {
+        browser()
         counts <- aggregate(design_link ~ loggernet_variable, data = dat, 
                             FUN = function(x) length(unique(x)))
         counts <- counts[counts$design_link > 1,]
-        stop("Some loggernet variables have more than one design_link: ",
+        stop("Some loggernet variables in ", fn, " have more than one design_link: ",
              paste(counts$loggernet_variable, collapse = ", "))
     }
     
