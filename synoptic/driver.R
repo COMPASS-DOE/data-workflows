@@ -1,7 +1,7 @@
 # Driver script for data workflow
 #
 # This calls the quarto (*.qmd) files that handle data processing for
-# each step (raw data to L0, L0 to L1, etc).
+# each step (raw data to L0, L0 to L1_normalize, etc).
 
 library(quarto)
 

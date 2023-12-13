@@ -1,0 +1,10 @@
+"TOA5","Compass_MSM_Buoy","CR1000X","29515","CR1000X.Std.06.02","CPU:COMPASS_v3.4.CR1X","43155","CheckTable"
+"TIMESTAMP","RECORD","BattV","SolarV","Batt_CHECK","Solar_CHECK","Flag(1)","Flag(2)","Flag(3)","Flag(4)","Flag(5)","Flag(6)","Flag(7)","Flag(8)","Flag(9)","Flag(10)","Flag(11)","Flag(12)","Flag(13)","Flag(14)","Statname","PB"
+"TS","RN","Volts","Volts","","","","","","","","","","","","","","","","","",""
+"","","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp"
+"2023-10-05 01:15:00",3629,12.95,-0.11,"OKAY","LOW",0,0,0,0,0,0,0,0,0,-1,0,0,0,0,"Compass_MSM_407_BuoyBob",407
+"2023-10-05 01:30:00",3630,12.95,-0.116,"OKAY","LOW",0,0,0,0,0,0,0,0,0,-1,0,0,0,0,"Compass_MSM_407_BuoyBob",407
+"2023-10-05 01:45:00",3631,12.94,-0.089,"OKAY","LOW",0,0,0,0,0,0,0,0,0,-1,0,0,0,0,"Compass_MSM_407_BuoyBob",407
+"2023-10-05 02:00:00",3632,12.93,-0.13,"OKAY","LOW",0,0,0,0,0,0,0,0,0,-1,0,0,0,0,"Compass_MSM_407_BuoyBob",407
+"2023-10-05 02:15:00",3633,12.93,-0.114,"OKAY","LOW",0,0,0,0,0,0,0,0,0,-1,0,0,0,0,"Compass_MSM_407_BuoyBob",407
+"2023-10-05 02:30:00",3634,12.92,-0.069,"OKAY","LOW",0,0,0,0,0,0,0,0,0,-1,0,0,0,0,"Compass_MSM_407_BuoyBob",407
