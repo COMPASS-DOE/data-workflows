@@ -21,9 +21,8 @@ Design table fields:
 The table can have empty lines; this can be visually useful, for example to 
 separate information about different tables.
 
-Design links tend to follow a pattern of {sensor}-{datum}-{site}-{plot}, e.g.
-`GW-Salinity-PTR-UP` (groundwater, salinity, Portage River, upland). The format
-is currently not enforced or consistent, however.
+Design links follow a pattern of {what}-{site}-{plot}-{which}, e.g.
+`GW_BattV-TMP-F-200B` (groundwater battery voltage, TEMPEST, Freshwater plot, the 200B AquaTroll).
 
 The `valid_through` column is used when a sensor is reassigned, for example if a tree
 dies and we reassign its sapflux sensor to a new tree, and encodes the last valid
