@@ -1,0 +1,10 @@
+"TOA5","COMPASS_GCW_TR_432","CR1000","86619","CR1000.Std.31.03","CPU:COMPASS_v3.2GCW.CR1","37062","SapflowB"
+"TIMESTAMP","RECORD","PB","Statname","BattV_Avg","DiffVoltB_Avg(1)","DiffVoltB_Avg(2)","DiffVoltB_Avg(3)","DiffVoltB_Avg(4)","DiffVoltB_Avg(5)","DiffVoltB_Avg(6)","DiffVoltB_Avg(7)","DiffVoltB_Avg(8)","DiffVoltB_Avg(9)","DiffVoltB_Avg(10)","DiffVoltB_Avg(11)","DiffVoltB_Avg(12)"
+"TS","RN","","","Volts","mV","mV","mV","mV","mV","mV","mV","mV","mV","mV","mV","mV"
+"","","Smp","Smp","Avg","Avg","Avg","Avg","Avg","Avg","Avg","Avg","Avg","Avg","Avg","Avg","Avg"
+"2023-07-07 00:00:00",26426,432,"Compass_GCW_TR_432 ",13.73,0.568,0.546,0.513,0.675,0.491,0.599,"NAN","NAN",0,0,0,0
+"2023-07-07 00:15:00",26427,432,"Compass_GCW_TR_432 ",13.73,0.569,0.546,0.513,0.675,0.491,0.599,"NAN","NAN",0,0,0,0
+"2023-07-07 00:30:00",26428,432,"Compass_GCW_TR_432 ",13.72,0.569,0.546,0.514,0.675,0.491,0.6,"NAN","NAN",0,0,0,0
+"2023-07-07 00:45:00",26429,432,"Compass_GCW_TR_432 ",13.73,0.57,0.546,0.514,0.675,0.491,0.6,"NAN","NAN",0,0,0,0
+"2023-07-07 01:00:00",26430,432,"Compass_GCW_TR_432 ",13.73,0.57,0.546,0.514,0.675,0.49,0.6,"NAN","NAN",0,0,0,0
+"2023-07-07 01:15:00",26431,432,"Compass_GCW_TR_432 ",13.72,0.57,0.546,0.514,0.675,0.491,0.6,"NAN","NAN",0,0,0,0
