@@ -1,0 +1,10 @@
+"TOA5","Compass_SWH_TR_422","CR1000X","39602","CR1000X.Std.06.01","CPU:COMPASS_v3.3.CR1X","53163","CheckTable"
+"TIMESTAMP","RECORD","BattV","SolarV","Batt_CHECK","Solar_CHECK","Flag(1)","Flag(2)","Flag(3)","Flag(4)","Flag(5)","Flag(6)","Flag(7)","Flag(8)","Flag(9)","Flag(10)","Flag(11)","Flag(12)","Flag(13)","Flag(14)","Statname","PB"
+"TS","RN","Volts","Volts","","","","","","","","","","","","","","","","","",""
+"","","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp","Smp"
+"2023-04-08 00:15:00",1396,12,25.41,"OKAY","OKAY",0,0,-1,0,-1,0,0,-1,0,0,0,0,0,0,"COMPASS_SWH_TR",422
+"2023-04-08 00:30:00",1397,12.01,25.43,"OKAY","OKAY",0,0,-1,0,-1,0,0,-1,0,0,0,0,0,0,"COMPASS_SWH_TR",422
+"2023-04-08 00:45:00",1398,12,25.4,"OKAY","OKAY",0,0,-1,0,-1,0,0,-1,0,0,0,0,0,0,"COMPASS_SWH_TR",422
+"2023-04-08 01:00:00",1399,12.01,25.43,"OKAY","OKAY",0,0,-1,0,-1,0,0,-1,0,0,0,0,0,0,"COMPASS_SWH_TR",422
+"2023-04-08 01:15:00",1400,12.01,25.43,"OKAY","OKAY",0,0,-1,0,-1,0,0,-1,0,0,0,0,0,0,"COMPASS_SWH_TR",422
+"2023-04-08 01:30:00",1401,12.01,25.43,"OKAY","OKAY",0,0,-1,0,-1,0,0,-1,0,0,0,0,0,0,"COMPASS_SWH_TR",422
