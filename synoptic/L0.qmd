@@ -80,57 +80,61 @@ f <- function(fn, new_dir) {
     
     dat <- read_datalogger_file(fn, col_types = cols(.default = col_character()))
     message("\tOriginal data is ", nrow(dat), " x ", ncol(dat))
-    
-    # Pivot to long form. We need to do this now to calculate unique observation IDs
-    dat_long <- pivot_longer(dat, c(-Logger, -Table, -TIMESTAMP),
-                             names_to = "loggernet_variable",
-                             values_to = "value")
-    message("\tPivoted data is ", nrow(dat_long), " x ", ncol(dat_long))
-
-    # Remove duplicates
-    dupes <- duplicated(dat_long)
-    if(any(dupes)) {
-        message("\rRemoving ", sum(dupes), " duplicate rows")
-        dat_long <- dat_long[!dupes,]
-    }
-    
-    # Add a unique ID column
-    # We use digest::digest() and the "md5" algorithm (first 10 characters);
-    # originally tried the "crc32" algorithm but this generated duplicate IDs
-    # This is not *guaranteed* to be unique, but collisions are highly unlikely
-    dat_long$ID <- sapply(apply(dat_long, 1, paste, collapse = ""),
-                          FUN = function(x) {
-                              substr(digest::digest(x, algo = "md5"), 1, 16)
-                          })
-    # Since we removed duplicate rows above, hashes should be unique
-    if(any(duplicated(dat_long$ID))) {
-        stop("Duplicate ID hashes!")
-    }
-    
-    # Construct the new filename: old filename + nrow + ncol + short hash
-    # This is so we can distinguish datasets with identical raw filename but
-    # differing data contents (can happen sometimes with dataloggers)
-    stripped_fn <- gsub("\\.dat$", "", basefn)
-    short_hash <- substr(digest::digest(dat_long, algo = "md5"), 1, 4)
-    new_fn <- paste0(stripped_fn, "_", nrow(dat_long), "x", ncol(dat_long), "_", short_hash, ".csv")
-    
     note <- ""
-    if(file.exists(file.path(new_dir, new_fn))) {
-        note <- "Overwriting existing file"
-        message("\t", note)
-        overwrites <<- overwrites + 1
-    }
-    
-    # Write the new file, checking to make sure successful
-    new_fqfn <- file.path(new_dir, new_fn)
-    message("\tWriting ", new_fqfn)
-    try(write.csv(dat_long, new_fqfn, row.names = FALSE))
-    if(!file.exists(new_fqfn)) {
-        note <- "Write error"
-        message("\t", note)
-        errors <<- errors + 1
+    long_rows <- long_cols <- short_hash <- NA
+
+    # Roy: "I generally have a filter that checks and throws out data with very few lines 
+    # as they are usually garbage, I have my input check for <4 lines after header" 
+    if(nrow(dat) < 4) {
+        message("\tRaw data file is very short and likely garbage; skipping")
+        note <- "Too short; skipped"
     } else {
-        # Move to 'Raw_done' folder
+        # Pivot to long form. We need to do this now to calculate unique observation IDs
+        dat_long <- pivot_longer(dat, c(-Logger, -Table, -TIMESTAMP),
+                                 names_to = "loggernet_variable",
+                                 values_to = "value")
+        long_rows <- nrow(dat_long)
+        long_cols <- ncol(dat_long)
+        message("\tPivoted data is ", long_rows, " x ", long_cols)
+        
+        # Remove duplicates
+        dupes <- duplicated(dat_long)
+        if(any(dupes)) {
+            message("\rRemoving ", sum(dupes), " duplicate rows")
+            dat_long <- dat_long[!dupes,]
+        }
+        
+        # Add a unique ID column
+        # We use digest::digest() and the "md5" algorithm (first 10 characters);
+        # originally tried the "crc32" algorithm but this generated duplicate IDs
+        # This is not *guaranteed* to be unique, but collisions are highly unlikely
+        dat_long$ID <- sapply(apply(dat_long, 1, paste, collapse = ""),
+                              FUN = function(x) {
+                                  substr(digest::digest(x, algo = "md5"), 1, 16)
+                              })
+        # Since we removed duplicate rows above, hashes should be unique
+        if(any(duplicated(dat_long$ID))) {
+            stop("Duplicate ID hashes!")
+        }
+        
+        # Construct the new filename: old filename + nrow + ncol + short hash
+        # This is so we can distinguish datasets with identical raw filename but
+        # differing data contents (can happen sometimes with dataloggers)
+        stripped_fn <- gsub("\\.dat$", "", basefn)
+        short_hash <- substr(digest::digest(dat_long, algo = "md5"), 1, 4)
+        new_fn <- paste0(stripped_fn, "_", long_rows, "x", long_cols, "_", short_hash, ".csv")
+        
+        if(file.exists(file.path(new_dir, new_fn))) {
+            note <- "Overwriting existing file"
+            message("\t", note)
+            overwrites <<- overwrites + 1
+        }
+        
+        # Write the new file...
+        new_fqfn <- file.path(new_dir, new_fn)
+        message("\tWriting ", new_fqfn)
+        write.csv(dat_long, new_fqfn, row.names = FALSE)
+        # ...and move to 'Raw_done' folder
         if(params$remove_input_files) {
             message("\tArchiving raw input files")
             file.copy(fn, file.path(params$raw_done, basefn), overwrite = FALSE)
@@ -142,8 +146,8 @@ f <- function(fn, new_dir) {
     data.frame(File = basefn,
                Orig_rows = nrow(dat),
                Orig_columns = ncol(dat),
-               Rows = nrow(dat_long),
-               Columns = ncol(dat_long),
+               Rows = long_rows,
+               Columns = long_cols,
                Hash = short_hash,
                Note = note)
 }
@@ -188,4 +192,3 @@ Git commit `r GIT_COMMIT`.
 ```{r reproducibility}
 sessionInfo()
 ```
-
