@@ -6,6 +6,10 @@ library(readr)
 # Constants used in this file and elsewhere in the system
 GIT_COMMIT <- substr(system("git rev-parse HEAD", intern = TRUE), 1, 7)
 
+# A date way far in the future, used by valid_entries()
+MAX_DATE <- ymd_hms("2999-12-31 11:59:00")
+
+# Data NA (not available) strings to use on writing
 NA_STRING_L1 <- "NA"
 NA_STRING_L2 <- "-9999"
 
@@ -283,7 +287,7 @@ valid_entries <- function(objects, times, valid_through) {
     if(all(is.na(valid_through))) return(rep(TRUE, length(objects())))
 
     # Any NA valid_through entries apply into the far future
-    valid_through[is.na(valid_through)] <- ymd_hms("2999-12-31 11:59:00")
+    valid_through[is.na(valid_through)] <- MAX_DATE
     past_valid_time <- times > valid_through
 
     # Create a data frame to aggregate and then merge, below
