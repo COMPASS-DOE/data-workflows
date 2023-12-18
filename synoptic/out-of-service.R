@@ -2,16 +2,30 @@
 
 library(readr)
 library(lubridate)
-
-# A date way far in the future, used by oos()
-MAX_DATE <- ymd_hms("2999-12-31 11:59:00")
+library(tidyr)
 
 
-troll <- read_csv("data_TEST/out-of-service/troll_maintenance.csv")
+troll <- read.csv("data_TEST/out-of-service/troll_maintenance.csv")
 
-troll$Date_pulled <- mdy(troll$Date_pulled)
-troll$Date_replaced <- mdy(troll$Date_replaced)
-troll$Date_replaced[is.na(troll$Date_replaced)] <- MAX_DATE
+# If no time_pulled given, assume 6 AM
+tp <- troll$Time_pulled
+tp[is.na(tp) | tp == ""] <- "06:00"
+
+# If no time_replaced given, assume 6 PM
+tr <- troll$Time_replaced
+tr[is.na(tr) | tr == ""] <- "18:00"
+
+# If no date_replaced given, assume ongoing
+dr <- troll$Date_replaced
+dr[is.na(dr) | dr == ""] <- "12/31/2999"
+
+# Calculate out of service windows
+troll$oos_begin <- mdy(troll$Date_pulled, tz = "EST") + hm(tp)
+troll$oos_end <- mdy(dr, tz = "EST") + hm(tr)
+# Per Peter R., we throw out all data for 24 hours after replacement
+troll$oos_end <- troll$oos_end + 60 * 60 * 24
+
+
 
 troll_oos <- troll
 
@@ -24,8 +38,27 @@ troll_oos <- troll
 
 # We will hardcode things for AquaTroll, etc.?
 
-oos <- function(timestamps, design_links, oos_table) {
+# Probably we will read in Aquatroll oos file in L1_normalize,
+# do what we need to do to compute begin_oos and end_oos timestamps,
+# and then pass in to this function?
 
+oos <- function(data_design_links, data_ts,
+                oos_sites, oos_plots, oos_dl_pattern,
+                oos_out_ts, oos_in_ts) {
+
+    # The oos_table has
+    #   sensor, sites (vector), plots (vector),
+    #   which_sensor (optional vector),
+    #   oos_begin (vector), oos_end (vector)
+
+    # For trolls, we need site + plot + dates is all
+    # Troll o.o.s. knocks out entire group of sensors on it
+
+    # Read troll d.f.
+    # Missing times get 12:00
+    # Missing Date_replaced get MAX_DATE
+    # Date_replaced + 1 day (per)
+    #
     # loop through troll d.f.
     timestamps <- ymd_hms(c("2022-03-06 12:34:56", "2022-03-07 12:34:45", "2022-03-08 12:34:45", "2022-03-09 12:34:45"))
     sensor <- "GW"
