@@ -1,8 +1,6 @@
 # out-of-service.R
 
-library(readr)
 library(lubridate)
-library(tidyr)
 
 
 troll <- read.csv("data_TEST/out-of-service/troll_maintenance.csv")
@@ -58,7 +56,8 @@ oos <- function(oos_df, data_df) {
         if(any(oos)) {
             # There are timestamp matches, so check other (optional)
             # conditions in the oos_df; they must match exactly
-            # For example, if there's a "Site" column it must
+            # For example, if there's a "Site" entry in oos_df then only
+            # data_df entries with the same Site qualify to be o.o.s
             for(f in non_ts_fields) {
                 oos <- oos & data_df[,f] == oos_df[,f][i]
             }
