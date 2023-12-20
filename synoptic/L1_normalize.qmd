@@ -9,6 +9,7 @@ params:
   L1_NORMALIZE: "L1_normalize/"
   DESIGN_TABLE: "design_table.csv"
   METADATA_VARS_TABLE: "L1_metadata/L1_metadata_vars.csv"
+  OOS: "out-of-service/"
   debug: false
   remove_input_files: false
   logfile: ""
@@ -28,7 +29,9 @@ This script
 
 -   Performs unit conversion (every research name must have an entry)
 
--   Performs bounds checking (adding flags) for each `research_name` variable
+-   Performs bounds checking (adding a `F_OOB` flag) for each `research_name` variable
+
+-   Integrated out-of-service records into a `F_OOS` flag
 
 -   Writes into <year><month><site> folders
 
@@ -37,6 +40,7 @@ This script
 ```{r init}
 #| include: false
 
+library(lubridate)
 library(tidyr)
 library(readr)
 library(compasstools)
@@ -78,6 +82,12 @@ files_to_process <- list.files(L0, pattern = "*.csv$", full.names = TRUE)
 L1_NORMALIZE <- file.path(params$DATA_ROOT, params$L1_NORMALIZE)
 
 source("helpers.R")
+source("out-of-service.R")
+
+# Read the Aquatroll out-of-service table
+troll <- read_csv(file.path(params$DATA_ROOT, params$OOS,
+                            "troll_maintenance.csv"), col_types = "cccccccc")
+oos_troll <- prep_troll_oos_table(troll) # in helpers.R
 ```
 
 I see `r length(files_to_process)` files to process in `r L0`.
@@ -90,6 +100,8 @@ Variable metadata table is "`r METADATA_VARS_TABLE`" and has `r nrow(mt)` rows.
 
 Units table has `r nrow(ut)` rows; bounds table `r nrow(bt)`.
 
+Troll out-of-service table has `r nrow(oos_troll)` rows.
+
 HTML outfile is "`r params$html_outfile`".
 
 ## Processing
@@ -101,21 +113,17 @@ errors <- 0
 f <- function(fn, out_dir, design_table) {
     message(Sys.time(), " Processing ", basename(fn))
     
+    # The row of the summary data frame, displayed at the end of processing, for this data file
     smry <- data.frame(File = basename(fn), 
                        no_design_links = NA_integer_,
                        `OOB%` = NA_real_,
+                       `OOS%` = NA_real_,
                        Note = "",
                        check.names = FALSE)
-    dat <- try(read_csv(fn, 
-                        # don't want timestamp parsed to a datetime at this point
-                        col_types = list(TIMESTAMP = col_character())))
-    if(!is.data.frame(dat)) {
-        smry$Note <- "Read error" 
-        message("\t", Note)
-        errors <<- errors + 1
-        return(smry)
-    }
-    
+    dat <- read_csv(fn, 
+                    # don't want timestamp parsed to a datetime at this point
+                    col_types = list(TIMESTAMP = col_character()))
+
     # ------------- Design table
     
     # Check for missing entries in the design table
@@ -148,7 +156,6 @@ f <- function(fn, out_dir, design_table) {
     
     # At this point, there should be exactly one match for every loggernet variable
     if(nrow(dat) > old_rows) {
-        browser()
         counts <- aggregate(design_link ~ loggernet_variable, data = dat, 
                             FUN = function(x) length(unique(x)))
         counts <- counts[counts$design_link > 1,]
@@ -194,15 +201,30 @@ f <- function(fn, out_dir, design_table) {
     
     message("\tAdding OOB flags")
     dat <- merge(dat, bt, by = c("research_name", "units"))
-    dat$OOB <- as.integer(with(dat, value < low_bound | value > high_bound))
-    smry$`OOB%` <- round(sum(dat$OOB) / nrow(dat) * 100, 1)
-    
+    dat$F_OOB <- as.integer(with(dat, value < low_bound | value > high_bound))
+    smry$`OOB%` <- round(sum(dat$F_OOB) / nrow(dat) * 100, 1)
     # Remove unneeded columns unless needed for debugging
     if(!params$debug) {
         message("\tDropping bounds columns")
         dat$low_bound <- dat$high_bound <- NULL
     }
     
+    # ------------- Out-of-service flags
+
+    message("\tAdding OOS flags")
+    x <- separate(dat, design_link, sep = "-", 
+                  into = c("What", "Site", "Location", "Sensor"))
+    # It turns out that the out of service check is SUPER expensive (50% of driver runtime)
+    # Since right now it's only applicable to Aquatroll, so check for this and skip if possible
+    if(grepl("WaterLevel", dat$Table[1])) {
+        dat$F_OOS <- as.integer(oos(oos_troll, x))
+    } else {
+        dat$F_OOS <- 0L
+    }
+    smry$`OOS%` <- round(sum(dat$F_OOS) / nrow(dat) * 100, 1)
+
+    # ------------- Write output files and clean up
+
     write_to_folders(dat, 
                      root_dir = out_dir, 
                      data_level = "L1_normalize",
