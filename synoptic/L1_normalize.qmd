@@ -116,6 +116,7 @@ f <- function(fn, out_dir, design_table) {
     smry <- data.frame(File = basename(fn), 
                        no_design_links = NA_integer_,
                        `OOB%` = NA_real_,
+                       `OOS%` = NA_real_,
                        Note = "",
                        check.names = FALSE)
     dat <- try(read_csv(fn, 
