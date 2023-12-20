@@ -215,7 +215,7 @@ f <- function(fn, out_dir, design_table) {
     x <- separate(dat, design_link, sep = "-", 
                   into = c("What", "Site", "Location", "Sensor"))
     # It turns out that the out of service check is SUPER expensive (50% of driver runtime)
-    # Since right now it's only applicable to Aquatroll, check for this and skip if possible
+    # Since right now it's only applicable to Aquatroll, so check for this and skip if possible
     if(grepl("WaterLevel", dat$Table[1])) {
         dat$F_OOS <- as.integer(oos(oos_troll, x))
     } else {

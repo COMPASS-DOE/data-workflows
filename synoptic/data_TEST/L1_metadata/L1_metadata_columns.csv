@@ -4,5 +4,5 @@ design_link,Design name that links to experimental unit (character)
 research_name,Measurement name (character)
 value,Observed value (numeric). The no-data value is '[NA_STRING_L1]'
 ID,Observation ID (character)
-F_OOB,"Flag: Out of instrumental bounds (1=TRUE, 0=FALSE) (logical)"
-F_OOS,"Flag: Out of service according to records (1=TRUE, 0=FALSE) (logical)"
+F_OOB,Flag: Out of instrumental bounds (1=TRUE) (logical)
+F_OOS,Flag: Out of service according to records (1=TRUE) (logical)
