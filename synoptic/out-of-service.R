@@ -60,7 +60,7 @@ oos <- function(oos_df, data_df) {
         # First quickly check: is there any overlap in timestamps?
         timestamp_overlap <- min_ts <= oos_df$oos_end[i] &&
             max_ts >= oos_df$oos_begin[i]
-        message("timestamp_overlap = ", timestamp_overlap)
+   #     message("timestamp_overlap = ", timestamp_overlap)
         if(timestamp_overlap) {
             oos <- data_df$TIMESTAMP >= oos_df$oos_begin[i] &
                 data_df$TIMESTAMP <= oos_df$oos_end[i]
@@ -70,7 +70,7 @@ oos <- function(oos_df, data_df) {
             # data_df entries with the same Site qualify to be o.o.s
             for(f in non_ts_fields) {
                 matches <- data_df[,f] == oos_df[i,f]
-                message("f = ", f, " ", oos_df[i,f], ", matches = ", sum(matches))
+ #               message("f = ", f, " ", oos_df[i,f], ", matches = ", sum(matches))
                 oos <- oos & matches
             }
 
@@ -87,31 +87,31 @@ oos <- function(oos_df, data_df) {
 data_df <- data.frame(TIMESTAMP = 1:3, x = letters[1:3], y = 4:6)
 
 # No other conditions beyond time window
-# oos_df <- data.frame(oos_begin = 1, oos_end = 1)
-# stopifnot(oos(oos_df, data_df) == c(TRUE, FALSE, FALSE))
-# oos_df <- data.frame(oos_begin = 4, oos_end = 5)
-# stopifnot(oos(oos_df, data_df) == c(FALSE, FALSE, FALSE))
-# oos_df <- data.frame(oos_begin = 0, oos_end = 2)
-# stopifnot(oos(oos_df, data_df) == c(TRUE, TRUE, FALSE))
-# oos_df <- data.frame(oos_begin = 0, oos_end = 3)
-# stopifnot(oos(oos_df, data_df) == c(TRUE, TRUE, TRUE))
+oos_df <- data.frame(oos_begin = 1, oos_end = 1)
+stopifnot(oos(oos_df, data_df) == c(TRUE, FALSE, FALSE))
+oos_df <- data.frame(oos_begin = 4, oos_end = 5)
+stopifnot(oos(oos_df, data_df) == c(FALSE, FALSE, FALSE))
+oos_df <- data.frame(oos_begin = 0, oos_end = 2)
+stopifnot(oos(oos_df, data_df) == c(TRUE, TRUE, FALSE))
+oos_df <- data.frame(oos_begin = 0, oos_end = 3)
+stopifnot(oos(oos_df, data_df) == c(TRUE, TRUE, TRUE))
 
 # x condition - doesn't match even though timestamp does
-# oos_df <- data.frame(oos_begin = 1, oos_end = 1, x = "b")
-# stopifnot(oos(oos_df, data_df) == c(FALSE, FALSE, FALSE))
-# # x condition - matches and timestamp does
-# oos_df <- data.frame(oos_begin = 1, oos_end = 1, x = "a")
-# stopifnot(oos(oos_df, data_df) == c(TRUE, FALSE, FALSE))
-# # x condition - some match, some don't
-# oos_df <- data.frame(oos_begin = 1, oos_end = 2, x = "b")
-# stopifnot(oos(oos_df, data_df) == c(FALSE, TRUE, FALSE))
-# # x and y condition
-# oos_df <- data.frame(oos_begin = 1, oos_end = 2, x = "b", y = 5)
-# stopifnot(oos(oos_df, data_df) == c(FALSE, TRUE, FALSE))
-# oos_df <- data.frame(oos_begin = 1, oos_end = 2, x = "a", y = 5)
-# stopifnot(oos(oos_df, data_df) == c(FALSE, FALSE, FALSE))
-#
-# # Error thrown if condition column(s) not present
-# oos_df <- data.frame(oos_begin = 1, oos_end = 2, z = 1)
-# out <- try(oos(oos_df, data_df), silent = TRUE)
-# stopifnot(class(out) == "try-error")
+oos_df <- data.frame(oos_begin = 1, oos_end = 1, x = "b")
+stopifnot(oos(oos_df, data_df) == c(FALSE, FALSE, FALSE))
+# x condition - matches and timestamp does
+oos_df <- data.frame(oos_begin = 1, oos_end = 1, x = "a")
+stopifnot(oos(oos_df, data_df) == c(TRUE, FALSE, FALSE))
+# x condition - some match, some don't
+oos_df <- data.frame(oos_begin = 1, oos_end = 2, x = "b")
+stopifnot(oos(oos_df, data_df) == c(FALSE, TRUE, FALSE))
+# x and y condition
+oos_df <- data.frame(oos_begin = 1, oos_end = 2, x = "b", y = 5)
+stopifnot(oos(oos_df, data_df) == c(FALSE, TRUE, FALSE))
+oos_df <- data.frame(oos_begin = 1, oos_end = 2, x = "a", y = 5)
+stopifnot(oos(oos_df, data_df) == c(FALSE, FALSE, FALSE))
+
+# Error thrown if condition column(s) not present
+oos_df <- data.frame(oos_begin = 1, oos_end = 2, z = 1)
+out <- try(oos(oos_df, data_df), silent = TRUE)
+stopifnot(class(out) == "try-error")
