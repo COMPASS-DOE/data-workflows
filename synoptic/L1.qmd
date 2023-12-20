@@ -71,7 +71,7 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     # everything can be stacked into a single data frame
     dat_raw <- read_csv_group(d,
                               remove_input_files = params$remove_input_files, 
-                              col_types = "cccccTdcccdi")
+                              col_types = "cccccTdcccdii")
 
     # File-based summary
     message("\tTotal data: ", nrow(dat_raw), " rows, ", ncol(dat_raw), " columns")
@@ -102,7 +102,7 @@ f <- function(dir_name, dirs_to_process, out_dir) {
                      write_plots = params$write_plots)
     
     # Add any OOB flags to the flag database
-    flg <- dat[!is.na(dat$OOB) & dat$OOB == 1, "ID"]
+    flg <- dat[!is.na(dat$F_OOB) & dat$F_OOB == 1, "ID"]
     if(nrow(flg)) {
         flg$Flag_type <- "OOB"
         flg$Remark <- basename(dir_name)

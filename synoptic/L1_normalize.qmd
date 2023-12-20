@@ -29,7 +29,9 @@ This script
 
 -   Performs unit conversion (every research name must have an entry)
 
--   Performs bounds checking (adding flags) for each `research_name` variable
+-   Performs bounds checking (adding a `F_OOB` flag) for each `research_name` variable
+
+-   Integrated out-of-service records into a `F_OOS` flag
 
 -   Writes into <year><month><site> folders
 
@@ -158,7 +160,6 @@ f <- function(fn, out_dir, design_table) {
     
     # At this point, there should be exactly one match for every loggernet variable
     if(nrow(dat) > old_rows) {
-        browser()
         counts <- aggregate(design_link ~ loggernet_variable, data = dat, 
                             FUN = function(x) length(unique(x)))
         counts <- counts[counts$design_link > 1,]
@@ -205,15 +206,14 @@ f <- function(fn, out_dir, design_table) {
     message("\tAdding OOB flags")
     dat <- merge(dat, bt, by = c("research_name", "units"))
     dat$F_OOB <- as.integer(with(dat, value < low_bound | value > high_bound))
-    smry$`OOB%` <- round(sum(dat$OOB) / nrow(dat) * 100, 1)
+    smry$`OOB%` <- round(sum(dat$F_OOB) / nrow(dat) * 100, 1)
     
     # ------------- Out-of-service flags
 
     message("\tAdding OOS flags")
     x <- separate(dat, design_link, sep = "-", 
                   into = c("What", "Site", "Location", "Sensor"))
-    browser()
-    
+    dat$F_OOS <- as.integer(oos(oos_troll, x))
     
     # Remove unneeded columns unless needed for debugging
     if(!params$debug) {
