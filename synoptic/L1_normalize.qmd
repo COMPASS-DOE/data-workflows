@@ -113,22 +113,17 @@ errors <- 0
 f <- function(fn, out_dir, design_table) {
     message(Sys.time(), " Processing ", basename(fn))
     
+    # The row of the summary data frame, displayed at the end of processing, for this data file
     smry <- data.frame(File = basename(fn), 
                        no_design_links = NA_integer_,
                        `OOB%` = NA_real_,
                        `OOS%` = NA_real_,
                        Note = "",
                        check.names = FALSE)
-    dat <- try(read_csv(fn, 
-                        # don't want timestamp parsed to a datetime at this point
-                        col_types = list(TIMESTAMP = col_character())))
-    if(!is.data.frame(dat)) {
-        smry$Note <- "Read error" 
-        message("\t", Note)
-        errors <<- errors + 1
-        return(smry)
-    }
-    
+    dat <- read_csv(fn, 
+                    # don't want timestamp parsed to a datetime at this point
+                    col_types = list(TIMESTAMP = col_character()))
+
     # ------------- Design table
     
     # Check for missing entries in the design table
@@ -208,21 +203,28 @@ f <- function(fn, out_dir, design_table) {
     dat <- merge(dat, bt, by = c("research_name", "units"))
     dat$F_OOB <- as.integer(with(dat, value < low_bound | value > high_bound))
     smry$`OOB%` <- round(sum(dat$F_OOB) / nrow(dat) * 100, 1)
-    
-    # ------------- Out-of-service flags
-
-    message("\tAdding OOS flags")
-    x <- separate(dat, design_link, sep = "-", 
-                  into = c("What", "Site", "Location", "Sensor"))
-    dat$F_OOS <- as.integer(oos(oos_troll, x))
-    smry$`OOS%` <- round(sum(dat$F_OOS) / nrow(dat) * 100, 1)
-
     # Remove unneeded columns unless needed for debugging
     if(!params$debug) {
         message("\tDropping bounds columns")
         dat$low_bound <- dat$high_bound <- NULL
     }
     
+    # ------------- Out-of-service flags
+
+    message("\tAdding OOS flags")
+    x <- separate(dat, design_link, sep = "-", 
+                  into = c("What", "Site", "Location", "Sensor"))
+    # It turns out that the out of service check is SUPER expensive (50% of driver runtime)
+    # Since right now it's only applicable to Aquatroll, check for this and skip if possible
+    if(grepl("WaterLevel", dat$Table[1])) {
+        dat$F_OOS <- as.integer(oos(oos_troll, x))
+    } else {
+        dat$F_OOS <- 0L
+    }
+    smry$`OOS%` <- round(sum(dat$F_OOS) / nrow(dat) * 100, 1)
+
+    # ------------- Write output files and clean up
+
     write_to_folders(dat, 
                      root_dir = out_dir, 
                      data_level = "L1_normalize",

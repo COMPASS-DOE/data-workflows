@@ -76,6 +76,8 @@ oos <- function(oos_df, data_df) {
 
             # The out-of-service flags for this row of the oos_df table
             # are OR'd with the overall flags that will be returned below
+            # I.e., if ANY of the oos entries triggers TRUE, then the
+            # datum is marked as out of service
             oos_final <- oos_final | oos
         }
     }
