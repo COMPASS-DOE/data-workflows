@@ -351,3 +351,26 @@ ret <- valid_entries(objects = c(1, 1),
                      valid_through = c(1, 1))
 stopifnot(ret == c(TRUE, FALSE))
 
+
+
+prep_troll_oos_table <- function(troll) {
+    # If no time_pulled given, assume 6 AM
+    tp <- troll$Time_pulled
+    tp[is.na(tp) | tp == ""] <- "06:00"
+
+    # If no time_replaced given, assume 6 PM
+    tr <- troll$Time_replaced
+    tr[is.na(tr) | tr == ""] <- "18:00"
+
+    # If no date_replaced given, assume ongoing
+    dr <- troll$Date_replaced
+    dr[is.na(dr) | dr == ""] <- "12/31/2999"
+
+    # Calculate out of service windows
+    troll$oos_begin <- mdy(troll$Date_pulled, tz = "EST") + hm(tp)
+    troll$oos_end <- mdy(dr, tz = "EST") + hm(tr)
+    # Per Peter R., we throw out all data for 24 hours after replacement
+    troll$oos_end <- troll$oos_end + 60 * 60 * 24
+
+    troll[c("Site", "Location", "Troll", "oos_begin", "oos_end")]
+}

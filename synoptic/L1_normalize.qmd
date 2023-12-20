@@ -9,6 +9,7 @@ params:
   L1_NORMALIZE: "L1_normalize/"
   DESIGN_TABLE: "design_table.csv"
   METADATA_VARS_TABLE: "L1_metadata/L1_metadata_vars.csv"
+  OOS: "out-of-service/"
   debug: false
   remove_input_files: false
   logfile: ""
@@ -37,6 +38,7 @@ This script
 ```{r init}
 #| include: false
 
+library(lubridate)
 library(tidyr)
 library(readr)
 library(compasstools)
@@ -78,6 +80,11 @@ files_to_process <- list.files(L0, pattern = "*.csv$", full.names = TRUE)
 L1_NORMALIZE <- file.path(params$DATA_ROOT, params$L1_NORMALIZE)
 
 source("helpers.R")
+
+# Read the Aquatroll out-of-service table
+troll <- read_csv(file.path(params$DATA_ROOT, params$OOS,
+                            "troll_maintenance.csv"), col_types = "cccccccc")
+oos_troll <- prep_troll_oos_table(troll) # in helpers.R
 ```
 
 I see `r length(files_to_process)` files to process in `r L0`.
@@ -89,6 +96,8 @@ Design table "`r DESIGN_TABLE`" and has `r nrow(dt)` rows, `r nrow(dt_ex)` after
 Variable metadata table is "`r METADATA_VARS_TABLE`" and has `r nrow(mt)` rows.
 
 Units table has `r nrow(ut)` rows; bounds table `r nrow(bt)`.
+
+Troll out-of-service table has `r nrow(oos_troll)` rows.
 
 HTML outfile is "`r params$html_outfile`".
 
