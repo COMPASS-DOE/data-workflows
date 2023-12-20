@@ -214,7 +214,8 @@ f <- function(fn, out_dir, design_table) {
     x <- separate(dat, design_link, sep = "-", 
                   into = c("What", "Site", "Location", "Sensor"))
     dat$F_OOS <- as.integer(oos(oos_troll, x))
-    
+    smry$`OOS%` <- round(sum(dat$F_OOS) / nrow(dat) * 100, 1)
+
     # Remove unneeded columns unless needed for debugging
     if(!params$debug) {
         message("\tDropping bounds columns")
