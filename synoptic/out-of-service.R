@@ -3,30 +3,32 @@
 library(lubridate)
 
 
-troll <- read.csv("data_TEST/out-of-service/troll_maintenance.csv")
+# We read in a version of the Aquatroll Calibration/Removal Log
+# (in Monitoring Documents on the COMPASS Google Drive) and restructure it
+# into a form ready for out-of-service calculations in L1_normalize.qmd
+prep_troll_oos_table <- function(troll) {
+    # If no time_pulled given, assume 6 AM
+    tp <- troll$Time_pulled
+    tp[is.na(tp) | tp == ""] <- "06:00"
 
-# ===========================================================
-# This code will be in L1_normalize?
+    # If no time_replaced given, assume 6 PM
+    tr <- troll$Time_replaced
+    tr[is.na(tr) | tr == ""] <- "18:00"
 
-# If no time_pulled given, assume 6 AM
-tp <- troll$Time_pulled
-tp[is.na(tp) | tp == ""] <- "06:00"
+    # If no date_replaced given, assume ongoing
+    dr <- troll$Date_replaced
+    dr[is.na(dr) | dr == ""] <- "12/31/2999"
 
-# If no time_replaced given, assume 6 PM
-tr <- troll$Time_replaced
-tr[is.na(tr) | tr == ""] <- "18:00"
+    # Calculate out of service windows
+    troll$oos_begin <- mdy(troll$Date_pulled, tz = "EST") + hm(tp)
+    troll$oos_end <- mdy(dr, tz = "EST") + hm(tr)
+    # Per Peter R., we throw out all data for 24 hours after replacement
+    troll$oos_end <- troll$oos_end + 60 * 60 * 24
 
-# If no date_replaced given, assume ongoing
-dr <- troll$Date_replaced
-dr[is.na(dr) | dr == ""] <- "12/31/2999"
-
-# Calculate out of service windows
-troll$oos_begin <- mdy(troll$Date_pulled, tz = "EST") + hm(tp)
-troll$oos_end <- mdy(dr, tz = "EST") + hm(tr)
-# Per Peter R., we throw out all data for 24 hours after replacement
-troll$oos_end <- troll$oos_end + 60 * 60 * 24
-# ===========================================================
-
+    troll$Sensor <- troll$Troll
+    troll$What <- "GW_BattV"
+    troll[c("Site", "Location", "Sensor", "oos_begin", "oos_end")]
+}
 
 
 # We pass an oos_df data frame to oos()
@@ -37,8 +39,8 @@ troll$oos_end <- troll$oos_end + 60 * 60 * 24
 
 # The second thing we pass is the observation data frame
 
-# This function returns a logical vector that becomes F_OOS
-
+# This function returns a logical vector, of the same length as the data_df
+# input, that becomes F_OOS
 oos <- function(oos_df, data_df) {
 
     # Make sure that any 'extra' condition columns (in addition to the
