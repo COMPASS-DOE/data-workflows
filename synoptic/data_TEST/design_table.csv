@@ -1348,21 +1348,21 @@ OWC,Compass_OWC_UP_323,WaterLevel600A,RECORD,,,,
 OWC,Compass_OWC_UP_323,WaterLevel600A,PB,,,,
 OWC,Compass_OWC_UP_323,WaterLevel600A,Format,,,,
 OWC,Compass_OWC_UP_323,WaterLevel600A,Statname,,,,
-OWC,Compass_OWC_UP_323,WaterLevel600A,Aquatroll_IDA(1),GW_BattV-OWC-UP-600A,,voltage,
-OWC,Compass_OWC_UP_323,WaterLevel600A,Barometric_Pressure600A,GW_BPress-OWC-UP-600A,,gw_pressure,
-OWC,Compass_OWC_UP_323,WaterLevel600A,Temperature600A,GW_Temp-OWC-UP-600A,,gw_temperature,
+OWC,Compass_OWC_UP_323,WaterLevel600A,Aquatroll_IDA(1),GW_BattV-OWC-WTE-600A,,voltage,Troll located at WTE not UP
+OWC,Compass_OWC_UP_323,WaterLevel600A,Barometric_Pressure600A,GW_BPress-OWC-WTE-600A,,gw_pressure,Troll located at WTE not UP
+OWC,Compass_OWC_UP_323,WaterLevel600A,Temperature600A,GW_Temp-OWC-WTE-600A,,gw_temperature,Troll located at WTE not UP
 OWC,Compass_OWC_UP_323,WaterLevel600A,Actual_Conductivity600A,,,,
 OWC,Compass_OWC_UP_323,WaterLevel600A,Specific_Conductivity600A,,,,
-OWC,Compass_OWC_UP_323,WaterLevel600A,Salinity600A,GW_Salinity-OWC-UP-600A,,gw_salinity,
+OWC,Compass_OWC_UP_323,WaterLevel600A,Salinity600A,GW_Salinity-OWC-WTE-600A,,gw_salinity,Troll located at WTE not UP
 OWC,Compass_OWC_UP_323,WaterLevel600A,TDS600A,,,,
-OWC,Compass_OWC_UP_323,WaterLevel600A,Water_Density600A,GW_Density-OWC-UP-600A,,gw_density,
+OWC,Compass_OWC_UP_323,WaterLevel600A,Water_Density600A,GW_Density-OWC-WTE-600A,,gw_density,Troll located at WTE not UP
 OWC,Compass_OWC_UP_323,WaterLevel600A,Resistivity600A,,,,
-OWC,Compass_OWC_UP_323,WaterLevel600A,pH600A,GW_ph-OWC-UP-600A,,gw_ph,
+OWC,Compass_OWC_UP_323,WaterLevel600A,pH600A,GW_ph-OWC-WTE-600A,,gw_ph,Troll located at WTE not UP
 OWC,Compass_OWC_UP_323,WaterLevel600A,pH_mV600A,,,,
-OWC,Compass_OWC_UP_323,WaterLevel600A,pH_ORP600A,GW_ORP-OWC-UP-600A,,gw_ph_orp,
-OWC,Compass_OWC_UP_323,WaterLevel600A,RDO_concen600A,GW_RDOconc-OWC-UP-600A,,gw_rdo_concentration,
+OWC,Compass_OWC_UP_323,WaterLevel600A,pH_ORP600A,GW_ORP-OWC-WTE-600A,,gw_ph_orp,Troll located at WTE not UP
+OWC,Compass_OWC_UP_323,WaterLevel600A,RDO_concen600A,GW_RDOconc-OWC-WTE-600A,,gw_rdo_concentration,Troll located at WTE not UP
 OWC,Compass_OWC_UP_323,WaterLevel600A,RDO_perc_sat600A,,,,
-OWC,Compass_OWC_UP_323,WaterLevel600A,RDO_part_Pressure600A,GW_Press-OWC-UP-600A,,gw_pressure,
+OWC,Compass_OWC_UP_323,WaterLevel600A,RDO_part_Pressure600A,GW_Press-OWC-WTE-600A,,gw_pressure,Troll located at WTE not UP
 OWC,Compass_OWC_UP_323,WaterLevel600A,Pressure600A,,,,
 OWC,Compass_OWC_UP_323,WaterLevel600A,Depth600A,,,,
 OWC,Compass_OWC_UP_323,WaterLevel600A,Voltage_Ext600A,,,,
@@ -1372,21 +1372,21 @@ OWC,Compass_OWC_UP_323,WaterLevel600B,RECORD,,,,
 OWC,Compass_OWC_UP_323,WaterLevel600B,PB,,,,
 OWC,Compass_OWC_UP_323,WaterLevel600B,Format,,,,
 OWC,Compass_OWC_UP_323,WaterLevel600B,Statname,,,,
-OWC,Compass_OWC_UP_323,WaterLevel600B,Aquatroll_IDB(1),GW_BattV-OWC-UP-600B,,voltage,
-OWC,Compass_OWC_UP_323,WaterLevel600B,Barometric_Pressure600B,GW_BPress-OWC-UP-600B,,gw_pressure,
-OWC,Compass_OWC_UP_323,WaterLevel600B,Temperature600B,GW_Temp-OWC-UP-600B,,gw_temperature,
+OWC,Compass_OWC_UP_323,WaterLevel600B,Aquatroll_IDB(1),GW_BattV-OWC-WTE-600B,,voltage,Troll located at WTE not UP
+OWC,Compass_OWC_UP_323,WaterLevel600B,Barometric_Pressure600B,GW_BPress-OWC-WTE-600B,,gw_pressure,Troll located at WTE not UP
+OWC,Compass_OWC_UP_323,WaterLevel600B,Temperature600B,GW_Temp-OWC-WTE-600B,,gw_temperature,Troll located at WTE not UP
 OWC,Compass_OWC_UP_323,WaterLevel600B,Actual_Conductivity600B,,,,
 OWC,Compass_OWC_UP_323,WaterLevel600B,Specific_Conductivity600B,,,,
-OWC,Compass_OWC_UP_323,WaterLevel600B,Salinity600B,GW_Salinity-OWC-UP-600B,,gw_salinity,
+OWC,Compass_OWC_UP_323,WaterLevel600B,Salinity600B,GW_Salinity-OWC-WTE-600B,,gw_salinity,Troll located at WTE not UP
 OWC,Compass_OWC_UP_323,WaterLevel600B,TDS600B,,,,
-OWC,Compass_OWC_UP_323,WaterLevel600B,Water_Density600B,GW_Density-OWC-UP-600B,,gw_density,
+OWC,Compass_OWC_UP_323,WaterLevel600B,Water_Density600B,GW_Density-OWC-WTE-600B,,gw_density,Troll located at WTE not UP
 OWC,Compass_OWC_UP_323,WaterLevel600B,Resistivity600B,,,,
-OWC,Compass_OWC_UP_323,WaterLevel600B,pH600B,GW_ph-OWC-UP-600B,,gw_ph,
+OWC,Compass_OWC_UP_323,WaterLevel600B,pH600B,GW_ph-OWC-WTE-600B,,gw_ph,Troll located at WTE not UP
 OWC,Compass_OWC_UP_323,WaterLevel600B,pH_mV600B,,,,
-OWC,Compass_OWC_UP_323,WaterLevel600B,pH_ORP600B,GW_ORP-OWC-UP-600B,,gw_ph_orp,
-OWC,Compass_OWC_UP_323,WaterLevel600B,RDO_concen600B,GW_RDOconc-OWC-UP-600B,,gw_rdo_concentration,
+OWC,Compass_OWC_UP_323,WaterLevel600B,pH_ORP600B,GW_ORP-OWC-WTE-600B,,gw_ph_orp,Troll located at WTE not UP
+OWC,Compass_OWC_UP_323,WaterLevel600B,RDO_concen600B,GW_RDOconc-OWC-WTE-600B,,gw_rdo_concentration,Troll located at WTE not UP
 OWC,Compass_OWC_UP_323,WaterLevel600B,RDO_perc_sat600B,,,,
-OWC,Compass_OWC_UP_323,WaterLevel600B,RDO_part_Pressure600B,GW_Press-OWC-UP-600B,,gw_pressure,
+OWC,Compass_OWC_UP_323,WaterLevel600B,RDO_part_Pressure600B,GW_Press-OWC-WTE-600B,,gw_pressure,Troll located at WTE not UP
 OWC,Compass_OWC_UP_323,WaterLevel600B,Pressure600B,,,,
 OWC,Compass_OWC_UP_323,WaterLevel600B,Depth600B,,,,
 OWC,Compass_OWC_UP_323,WaterLevel600B,Voltage_Ext600B,,,,
@@ -1396,21 +1396,21 @@ OWC,Compass_OWC_UP_323,WaterLevel600C,RECORD,,,,
 OWC,Compass_OWC_UP_323,WaterLevel600C,PB,,,,
 OWC,Compass_OWC_UP_323,WaterLevel600C,Format,,,,
 OWC,Compass_OWC_UP_323,WaterLevel600C,Statname,,,,
-OWC,Compass_OWC_UP_323,WaterLevel600C,Aquatroll_IDC(1),GW_BattV-OWC-UP-600C,,voltage,
-OWC,Compass_OWC_UP_323,WaterLevel600C,Barometric_Pressure600C,GW_BPress-OWC-UP-600C,,gw_pressure,
-OWC,Compass_OWC_UP_323,WaterLevel600C,Temperature600C,GW_Temp-OWC-UP-600C,,gw_temperature,
+OWC,Compass_OWC_UP_323,WaterLevel600C,Aquatroll_IDC(1),GW_BattV-OWC-WTE-600C,,voltage,Troll located at WTE not UP
+OWC,Compass_OWC_UP_323,WaterLevel600C,Barometric_Pressure600C,GW_BPress-OWC-WTE-600C,,gw_pressure,Troll located at WTE not UP
+OWC,Compass_OWC_UP_323,WaterLevel600C,Temperature600C,GW_Temp-OWC-WTE-600C,,gw_temperature,Troll located at WTE not UP
 OWC,Compass_OWC_UP_323,WaterLevel600C,Actual_Conductivity600C,,,,
 OWC,Compass_OWC_UP_323,WaterLevel600C,Specific_Conductivity600C,,,,
-OWC,Compass_OWC_UP_323,WaterLevel600C,Salinity600C,GW_Salinity-OWC-UP-600C,,gw_salinity,
+OWC,Compass_OWC_UP_323,WaterLevel600C,Salinity600C,GW_Salinity-OWC-WTE-600C,,gw_salinity,Troll located at WTE not UP
 OWC,Compass_OWC_UP_323,WaterLevel600C,TDS600C,,,,
-OWC,Compass_OWC_UP_323,WaterLevel600C,Water_Density600C,GW_Density-OWC-UP-600C,,gw_density,
+OWC,Compass_OWC_UP_323,WaterLevel600C,Water_Density600C,GW_Density-OWC-WTE-600C,,gw_density,Troll located at WTE not UP
 OWC,Compass_OWC_UP_323,WaterLevel600C,Resistivity600C,,,,
-OWC,Compass_OWC_UP_323,WaterLevel600C,pH600C,GW_ph-OWC-UP-600C,,gw_ph,
+OWC,Compass_OWC_UP_323,WaterLevel600C,pH600C,GW_ph-OWC-WTE-600C,,gw_ph,Troll located at WTE not UP
 OWC,Compass_OWC_UP_323,WaterLevel600C,pH_mV600C,,,,
-OWC,Compass_OWC_UP_323,WaterLevel600C,pH_ORP600C,GW_ORP-OWC-UP-600C,,gw_ph_orp,
-OWC,Compass_OWC_UP_323,WaterLevel600C,RDO_concen600C,GW_RDOconc-OWC-UP-600C,,gw_rdo_concentration,
+OWC,Compass_OWC_UP_323,WaterLevel600C,pH_ORP600C,GW_ORP-OWC-WTE-600C,,gw_ph_orp,Troll located at WTE not UP
+OWC,Compass_OWC_UP_323,WaterLevel600C,RDO_concen600C,GW_RDOconc-OWC-WTE-600C,,gw_rdo_concentration,Troll located at WTE not UP
 OWC,Compass_OWC_UP_323,WaterLevel600C,RDO_perc_sat600C,,,,
-OWC,Compass_OWC_UP_323,WaterLevel600C,RDO_part_Pressure600C,GW_Press-OWC-UP-600C,,gw_pressure,
+OWC,Compass_OWC_UP_323,WaterLevel600C,RDO_part_Pressure600C,GW_Press-OWC-WTE-600C,,gw_pressure,Troll located at WTE not UP
 OWC,Compass_OWC_UP_323,WaterLevel600C,Pressure600C,,,,
 OWC,Compass_OWC_UP_323,WaterLevel600C,Depth600C,,,,
 OWC,Compass_OWC_UP_323,WaterLevel600C,Voltage_Ext600C,,,,
