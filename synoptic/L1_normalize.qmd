@@ -80,6 +80,7 @@ files_to_process <- list.files(L0, pattern = "*.csv$", full.names = TRUE)
 L1_NORMALIZE <- file.path(params$DATA_ROOT, params$L1_NORMALIZE)
 
 source("helpers.R")
+source("out-of-service.R")
 
 # Read the Aquatroll out-of-service table
 troll <- read_csv(file.path(params$DATA_ROOT, params$OOS,
@@ -203,8 +204,16 @@ f <- function(fn, out_dir, design_table) {
     
     message("\tAdding OOB flags")
     dat <- merge(dat, bt, by = c("research_name", "units"))
-    dat$OOB <- as.integer(with(dat, value < low_bound | value > high_bound))
+    dat$F_OOB <- as.integer(with(dat, value < low_bound | value > high_bound))
     smry$`OOB%` <- round(sum(dat$OOB) / nrow(dat) * 100, 1)
+    
+    # ------------- Out-of-service flags
+
+    message("\tAdding OOS flags")
+    x <- separate(dat, design_link, sep = "-", 
+                  into = c("What", "Site", "Location", "Sensor"))
+    browser()
+    
     
     # Remove unneeded columns unless needed for debugging
     if(!params$debug) {

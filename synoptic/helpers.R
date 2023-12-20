@@ -352,7 +352,9 @@ ret <- valid_entries(objects = c(1, 1),
 stopifnot(ret == c(TRUE, FALSE))
 
 
-
+# We read in a version of the Aquatroll Calibration/Removal Log
+# (in Monitoring Documents on the COMPASS Google Drive) and restructure it
+# into a form ready for out-of-service calculations in L1_normalize.qmd
 prep_troll_oos_table <- function(troll) {
     # If no time_pulled given, assume 6 AM
     tp <- troll$Time_pulled
@@ -372,5 +374,7 @@ prep_troll_oos_table <- function(troll) {
     # Per Peter R., we throw out all data for 24 hours after replacement
     troll$oos_end <- troll$oos_end + 60 * 60 * 24
 
-    troll[c("Site", "Location", "Troll", "oos_begin", "oos_end")]
+    troll$Sensor <- troll$Troll
+    troll$What <- "GW_BattV"
+    troll[c("Site", "Location", "Sensor", "oos_begin", "oos_end")]
 }
