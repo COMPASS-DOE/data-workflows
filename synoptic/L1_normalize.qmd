@@ -49,6 +49,11 @@ if(packageVersion("compasstools") < "0.2") {
          "devtools::install_github('COMPASS-DOE/compasstools')")
 }
 
+# Warnings are not allowed here, as this usually means a column format
+# problem that we want to fix immediately
+oldwarn <- options()$warn
+options(warn = 2)
+
 # Read the design table (everything must have an entry)
 DESIGN_TABLE <- file.path(params$DATA_ROOT, params$DESIGN_TABLE)
 dt <- read_csv(DESIGN_TABLE, col_types = "cccccDcc")
@@ -88,6 +93,9 @@ source("out-of-service.R")
 troll <- read_csv(file.path(params$DATA_ROOT, params$OOS,
                             "troll_maintenance.csv"), col_types = "cccccccc")
 oos_troll <- prep_troll_oos_table(troll) # in helpers.R
+
+# Restore old warning setting
+options(warn = oldwarn)
 ```
 
 I see `r length(files_to_process)` files to process in `r L0`.

@@ -1,8 +1,8 @@
 Column,Description
-TIMESTAMP,Original datalogger timestamp (EST) (POSIXct)
+TIMESTAMP,Datalogger timestamp (EST) (POSIXct)
 design_link,Design name that links to experimental unit (character)
 research_name,Measurement name (character)
 value,Observed value (numeric). The no-data value is '[NA_STRING_L1]'
 ID,Observation ID (character)
-F_OOB,Flag: Out of instrumental bounds (1=TRUE) (logical)
-F_OOS,Flag: Out of service according to records (1=TRUE) (logical)
+F_OOB,Flag: Out of instrumental bounds (logical; 1=TRUE)
+F_OOS,Flag: Sensor listed as out of service (logical; 1=TRUE)

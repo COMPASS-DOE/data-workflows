@@ -306,48 +306,49 @@ valid_entries <- function(objects, times, valid_through) {
     valids
 }
 
-# Sample data. We have two objects (sensors) at time points 1:3
-test_data <- data.frame(obj = c(1, 1, 1, 2, 2, 2), time = c(1, 2, 3, 1, 2, 3))
-# Object 2 changes its design link after time 2
-test_dt <- data.frame(obj = c(1,2,2),
-                      dl = c("A", "B", "C"),
-                      valid_through = c(NA, 2, NA))
-# Merge the 'data' with the 'design link table'
-x <- merge(test_data, test_dt)
-# Call valid_entries. It figures out that all the object 1 entries should be
-# retained, but 1 of 2 entries in each timestep should be dropped for object 2.
-# This is because there are two design_table entries for it (see above); the
-# first ends at time point 2, and the second is indefinite after that.
-valid_entries(x$obj, x$time, x$valid_through)
+# Test code for valid_entries()
+test_valid_entries <- function() {
+    # Sample data. We have two objects (sensors) at time points 1:3
+    test_data <- data.frame(obj = c(1, 1, 1, 2, 2, 2), time = c(1, 2, 3, 1, 2, 3))
+    # Object 2 changes its design link after time 2
+    test_dt <- data.frame(obj = c(1,2,2),
+                          dl = c("A", "B", "C"),
+                          valid_through = c(NA, 2, NA))
+    # Merge the 'data' with the 'design link table'
+    x <- merge(test_data, test_dt)
+    # Call valid_entries. It figures out that all the object 1 entries should be
+    # retained, but 1 of 2 entries in each timestep should be dropped for object 2.
+    # This is because there are two design_table entries for it (see above); the
+    # first ends at time point 2, and the second is indefinite after that.
+    valid_entries(x$obj, x$time, x$valid_through)
 
-# Test code for valid_entries
-
-# No shifting objects
-ret <- valid_entries(c(1, 1, 1), c(1, 2, 3), c(NA, NA, NA))
-stopifnot(all(ret))
-# One object, shift time is never reached
-ret <- valid_entries(c(1, 1, 1, 1), c(1, 1, 2, 2), c(4, NA, 4, NA))
-stopifnot(ret == c(TRUE, FALSE, TRUE, FALSE))
-# One object, shift time is in the past
-ret <- valid_entries(c(1, 1, 1, 1), c(3, 3, 4, 4), c(2, NA, 2, NA))
-stopifnot(ret == c(FALSE, TRUE, FALSE, TRUE))
-# One object, shifts
-ret <- valid_entries(c(1, 1, 1, 1), c(2, 2, 3, 3), c(2, NA, 2, NA))
-stopifnot(ret == c(TRUE, FALSE, FALSE, TRUE))
-# One objects, shifts twice (valid_throughs at 1 and 2)
-ret <- valid_entries(objects = rep(1, 9),
-                     times = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
-                     valid_through = c(1, 2, NA, 1, 2, NA, 1, 2, NA))
-stopifnot(ret == c(TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, TRUE))
-# Two objects, only one shifts
-ret <- valid_entries(objects = c(1, 1, 1, 2, 2, 2, 2, 2, 2),
-                     times = c(1, 2, 3, 1, 1, 2, 2, 3, 3),
-                     valid_through = c(NA, NA, NA, 2, NA, 2, NA, 2, NA))
-stopifnot(ret == c(TRUE, TRUE, TRUE, # obj 1
-                   TRUE, FALSE, TRUE, FALSE, FALSE, TRUE)) # obj 2
-# There's a valid_through but no new entry
-ret <- valid_entries(objects = c(1, 1),
-                     times = c(1, 2),
-                     valid_through = c(1, 1))
-stopifnot(ret == c(TRUE, FALSE))
-
+    # No shifting objects
+    ret <- valid_entries(c(1, 1, 1), c(1, 2, 3), c(NA, NA, NA))
+    stopifnot(all(ret))
+    # One object, shift time is never reached
+    ret <- valid_entries(c(1, 1, 1, 1), c(1, 1, 2, 2), c(4, NA, 4, NA))
+    stopifnot(ret == c(TRUE, FALSE, TRUE, FALSE))
+    # One object, shift time is in the past
+    ret <- valid_entries(c(1, 1, 1, 1), c(3, 3, 4, 4), c(2, NA, 2, NA))
+    stopifnot(ret == c(FALSE, TRUE, FALSE, TRUE))
+    # One object, shifts
+    ret <- valid_entries(c(1, 1, 1, 1), c(2, 2, 3, 3), c(2, NA, 2, NA))
+    stopifnot(ret == c(TRUE, FALSE, FALSE, TRUE))
+    # One objects, shifts twice (valid_throughs at 1 and 2)
+    ret <- valid_entries(objects = rep(1, 9),
+                         times = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
+                         valid_through = c(1, 2, NA, 1, 2, NA, 1, 2, NA))
+    stopifnot(ret == c(TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, TRUE))
+    # Two objects, only one shifts
+    ret <- valid_entries(objects = c(1, 1, 1, 2, 2, 2, 2, 2, 2),
+                         times = c(1, 2, 3, 1, 1, 2, 2, 3, 3),
+                         valid_through = c(NA, NA, NA, 2, NA, 2, NA, 2, NA))
+    stopifnot(ret == c(TRUE, TRUE, TRUE, # obj 1
+                       TRUE, FALSE, TRUE, FALSE, FALSE, TRUE)) # obj 2
+    # There's a valid_through but no new entry
+    ret <- valid_entries(objects = c(1, 1),
+                         times = c(1, 2),
+                         valid_through = c(1, 1))
+    stopifnot(ret == c(TRUE, FALSE))
+}
+test_valid_entries()

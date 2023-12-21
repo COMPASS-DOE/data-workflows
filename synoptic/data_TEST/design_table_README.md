@@ -23,6 +23,7 @@ separate information about different tables.
 
 Design links follow a pattern of {what}-{site}-{plot}-{which}, e.g.
 `GW_BattV-TMP-F-200B` (groundwater battery voltage, TEMPEST, Freshwater plot, the 200B AquaTroll).
+The out-of-service check in `L1_normalize.qmd` depends on this format being followed.
 
 The `valid_through` column is used when a sensor is reassigned, for example if a tree
 dies and we reassign its sapflux sensor to a new tree, and encodes the last valid
@@ -30,8 +31,8 @@ date for a given design link. In this case the loggernet variable has _two_ entr
 (rows): the original assignment, with a YYYY-MM-DD `valid_through` entry, and the new assignment,
 with a blank `valid_through` entry.
 
-The TEMPEST sapflow assignments are based on
-COMPASS -> COMPASS FME -> ARCHIVE _ Pilot Project -> COMPASS FME Task 2 -> TEMPEST -> Sensor Networks & Infrastructure -> Monitoring Documents -> TEMPEST Sap Flow Monitoring
+The TEMPEST sapflow assignments are based on:
+COMPASS FME Task 2 -> TEMPEST -> Sensor Networks & Infrastructure -> Monitoring Documents -> TEMPEST Sap Flow Monitoring
 
 The Synoptic Sap Flow Monitoring, TEROS Monitoring, and Aquatroll Monitoring documents live here:
-COMPASS -> COMPASS FME -> ARCHIVE _ Pilot Project -> COMPASS FME Task 1 -> 1.2 Synoptic -> Sensor Maintenance
+COMPASS FME Task 1 -> 1.2 Synoptic -> Sensor Maintenance
