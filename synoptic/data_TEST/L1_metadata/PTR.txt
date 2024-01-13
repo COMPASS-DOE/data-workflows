@@ -1,14 +1,19 @@
-Portage River (PTR) is one of COMPASS-FME synoptic sites, and has three plots: 
-upland (located at XXX.XXXW, XXX.XXXN), transition (XXX.XXXW, XXX.XXXN),
-and wetland (XXX.XXXW, XXX.XXXN).
+Portage River (PTR) is one of COMPASS-FME synoptic sites located on the
+shoreline of the Portage River lacustuary of southwestern Lake Erie, at
+the confluence of the Portage and Little Portage rivers, 5.25 miles (8.5
+km) east of Oak Harbor, Ohio. This site is owned by the USFWS and
+managed as a part of the Ottawa National Wildlife Refuge complex. This
+site consists of three plots: upland (located at 41.5015N, 83.0461W),
+transition (41.5020N, 83.0456W), and wetland (41.5016N, 83.0444W). The
+site was established in December 2021.
 
-Contacts for the Portage site:
+Contacts for the Portage site: 
 Matt Kovach matthew.kovach3@utoledo.edu
 
-Contacts for Portage data streams:
-Sapflux: Stephanie Pennington stephanie.pennington@pnnl.gov
+Contacts for Portage data streams: 
+Sapflux: Stephanie Pennington stephanie.pennington@pnnl.gov 
 TEROS: Peter Regier peter.regier@pnnl.gov
 Dataloggers: Roy Rich richr@si.edu
 
-Key publications:
-XXX
+Key publications: 
+N/A as of yet 
