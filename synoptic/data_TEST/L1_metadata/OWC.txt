@@ -1,14 +1,19 @@
-Old Woman Creek (OWC) is one of COMPASS-FME synoptic sites, and has three plots: 
-upland (located at XXX.XXXW, XXX.XXXN), transition (XXX.XXXW, XXX.XXXN),
-and wetland (XXX.XXXW, XXX.XXXN).
+Old Woman Creek (OWC) is one of COMPASS-FME synoptic sites located
+within the Old Woman Creek lacustuary, 2.8 miles (4.5km) east of Huron,
+Ohio. This site is owned by the Ohio Department of Natural Resources
+(ODNR), managed by ODNR’s Division of Natural Areas & Preserves as Old
+Woman Creek National Estuarine Research Reserve. This site consists of
+four plots: upland (located at 41.3763N, 82.5070W), transition
+(41.3758N, 82.5063W), wetland transition edge (41.3760N, 82.5071W), and
+wetland (41.3761N, 82.5078W). The site was established in December 2021.
 
-Contacts for the Old Woman Creek site:
+Contacts for the Old Woman Creek site: 
 Matt Kovach matthew.kovach3@utoledo.edu
 
-Contacts for Old Woman Creek data streams:
+Contacts for Old Woman Creek data streams: 
 Sapflux: Stephanie Pennington stephanie.pennington@pnnl.gov
 TEROS: Peter Regier peter.regier@pnnl.gov
 Dataloggers: Roy Rich richr@si.edu
 
-Key publications:
-XXX
+Key publications: 
+N/A as of yet 

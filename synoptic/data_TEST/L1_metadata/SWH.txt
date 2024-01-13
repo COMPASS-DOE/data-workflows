@@ -1,14 +1,19 @@
-Sweet Hall (SWH) is one of COMPASS-FME synoptic sites, and has three plots: 
-upland (located at XXX.XXXW, XXX.XXXN), transition (XXX.XXXW, XXX.XXXN),
-and wetland (XXX.XXXW, XXX.XXXN).
+Sweet Hall Marsh (SWH) is one of the COMPASS-FME synoptic sites located
+in the tidal fresh Pamunkey River, one of the two tributaries of the
+York River in Virginia, USA. The COMPASS-FME consists of three plots:
+upland (located at 37.57069N, 76.8957W), transition (37.56883N,
+76.8964W), and wetland (37.56659N, 76.8970W). The synoptic site was
+established in June 2023. This site is also identified as a Chesapeake
+Bay National Research Reserve site.
 
-Contacts for the Sweet Hall site:
+Contacts for the Sweet Hall site: 
+Stephanie J. Wilson wilsonsj@si.edu 
 J. Patrick Megonigal megonialp@si.edu
 
-Contacts for Sweet Hall data streams:
-Sapflux: Stephanie Pennington stephanie.pennington@pnnl.gov
-TEROS: Peter Regier peter.regier@pnnl.gov
-Dataloggers: Roy Rich richr@si.edu
+Contacts for Sweet Hall data streams: 
+Sapflux: Stephanie Pennington stephanie.pennington@pnnl.gov 
+TEROS and Aquatroll: Peter Regier peter.regier@pnnl.gov / Stephanie Wilson wilsonsj@si.edu
+Dataloggers: Roy Rich richr@si.edu / Stephanie Wilson wilsonsj@si.edu
 
 Key publications:
-XXX
+N/A as of yet 

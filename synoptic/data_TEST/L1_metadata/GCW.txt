@@ -1,14 +1,20 @@
-??? (GCW) is one of COMPASS-FME synoptic sites, and has three plots: 
-upland (located at XXX.XXXW, XXX.XXXN), transition (XXX.XXXW, XXX.XXXN),
-and wetland (XXX.XXXW, XXX.XXXN).
+GCREeW (GCW) is one of COMPASS-FME synoptic sites, and has three plots:
+upland (located at 38.8741N, 76.5522W), transition (38.8745, 76.5515W),
+and wetland (38.8750N, 76.5500W). Note that this site overlaps spatially
+with the TEMPEST (TMP) plots, the upland portion of the transect
+overlaps with the TEMPEST experiment control plot. This transect spans a
+mid- to late-successional (~80 years old) temperate, deciduous coastal
+forest and a mesohaline marsh along the Rhode River in Edgewater, MD.
 
-Contacts for the ??? site:
-Matt Kovach matthew.kovach3@utoledo.edu
+Contacts for the GCReW Synoptic site: 
+Stephanie J. Wilson wilsonsj@si.edu
+Pat Megonigal megonigalp@si.edu
 
-Contacts for ??? data streams:
-Sapflux: Stephanie Pennington stephanie.pennington@pnnl.gov
-TEROS: Peter Regier peter.regier@pnnl.gov
-Dataloggers: Roy Rich richr@si.edu
+Contacts for data streams: 
+Overall: Stephanie Wilson wilsonsj@si.edu
+Sapflux: Stephanie Pennington stephanie.pennington@pnnl.gov TEROS and
+Aquatroll: Peter Regier peter.regier@pnnl.gov, Stephanie Wilson wilsonsj@si.edu 
+Dataloggers: Roy Rich richr@si.edu, Stephanie Wilson wilsonsj@si.edu
 
 Key publications:
-XXX
+N/A as of yet 

@@ -1,14 +1,15 @@
 Goodwin Island (GWI) is one of COMPASS-FME synoptic sites, and has three plots: 
-upland (located at XXX.XXXW, XXX.XXXN), transition (XXX.XXXW, XXX.XXXN),
-and wetland (XXX.XXXW, XXX.XXXN).
+upland (located at 37.2192N, 76.4087W), transition (37.2194N, 76.4092W),
+and wetland (37.2189N, 76.4101W). The site was established in June 2022.
 
 Contacts for the Goodwin Island site:
+Stephanie J. Wilson wilsonsj@si.edu
 J. Patrick Megonigal megonialp@si.edu
 
 Contacts for Goodwin Island data streams:
 Sapflux: Stephanie Pennington stephanie.pennington@pnnl.gov
-TEROS: Peter Regier peter.regier@pnnl.gov
-Dataloggers: Roy Rich richr@si.edu
+TEROS and Aquatroll: Peter Regier peter.regier@pnnl.gov, Stephanie Wilson wilsonsj@si.edu
+Dataloggers: Roy Rich richr@si.edu, Stephanie Wilson wilsonsj@si.edu
 
 Key publications:
-XXX
+N/A as of yet 
