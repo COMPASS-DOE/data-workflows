@@ -20,6 +20,7 @@ source("helpers.R")
 now_string <- function() format(Sys.time(), "%Y%m%d.%H%M")
 
 ROOT <- "./data_TEST"
+VERSION <- "???"
 
 # Log file ----------------------------------------------------
 
@@ -102,6 +103,7 @@ outfile <- file.path(LOGS, outfile)
 driver_try(
     quarto_render("L1.qmd",
               execute_params = list(DATA_ROOT = ROOT,
+                                    L1_VERSION = VERSION,
                                     html_outfile = outfile,
                                     logfile = LOGFILE))
 )

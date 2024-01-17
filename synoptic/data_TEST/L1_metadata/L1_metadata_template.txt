@@ -1,4 +1,5 @@
-COMPASS-FME L1 data documentation file
+COMPASS-FME Level 1 documentation file
+Data version [VERSION]
 [FOLDER_NAME]
 [TIMESTAMP]
 
