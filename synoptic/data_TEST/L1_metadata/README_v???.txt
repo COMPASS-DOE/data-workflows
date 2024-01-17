@@ -1,20 +1,22 @@
-COMPASS-FME Level 1 data version [VERSION]
+COMPASS-FME Level 1 data
+Version: [VERSION]
 Date: [DATESTAMP]
+Git commit: [GIT_COMMIT]
 
-# DESCRIPTION
-
+DESCRIPTION
+—----------------------------------
 Level 1 (L1) data are close to raw, although they have been units-transformed
 and have out-of-instrument-bounds and out-of-service flags added.
 Duplicates are removed but otherwise these data are not filtered,
-and have not been subject to any algorithmic or human QA/QC.
-Any use of L1 data for science analyses should be done with care.
+and have not been subject to any additional algorithmic or human QA/QC.
+Any use of L1 data for science analyses should be performed with care.
 
-# CONTACT
-
+CONTACT
+—----------------------------------
 Project: https://compass.pnnl.gov
 Data lead: Stephanie Pennington, stephanie.pennington@pnnl.gov
 
-# CHANGELOG
-
-Version ???
+CHANGELOG
+—----------------------------------
+Version ??? released YYYY-MM-DD
 * Release notes here
