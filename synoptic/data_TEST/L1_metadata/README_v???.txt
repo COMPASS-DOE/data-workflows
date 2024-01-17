@@ -16,6 +16,11 @@ CONTACT
 Project: https://compass.pnnl.gov
 Data lead: Stephanie Pennington, stephanie.pennington@pnnl.gov
 
+HOW TO CITE THESE DATA
+—----------------------------------
+Pennington, Rich, Cheng, and Bond-Lamberty (2024). COMPASS-FME Level 1 Sensor Data
+(version [VERSION]), downloaded YYYY-MM-DD, https://compass.pnnl.gov.
+
 CHANGELOG
 —----------------------------------
 Version ??? released YYYY-MM-DD
