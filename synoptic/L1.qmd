@@ -8,6 +8,7 @@ params:
   L1_NORMALIZE: "L1_normalize/"
   L1: "L1/"
   L1_METADATA: "L1_metadata/"
+  L1_VERSION: "???"
   debug: false
   remove_input_files: false
   write_plots: true
@@ -49,7 +50,6 @@ L1_NORMALIZE <- file.path(params$DATA_ROOT, params$L1_NORMALIZE)
 dirs_to_process <- scan_folders(L1_NORMALIZE)
 
 L1 <- file.path(params$DATA_ROOT, params$L1)
-
 ```
 
 I see `r length(dirs_to_process)` directories to process in `r L1_NORMALIZE`.
@@ -130,6 +130,17 @@ error = function(e) {
 L1 metadata template directory is `r params$L1_METADATA`.
 
 ```{r metadata}
+# Write the overall README
+readme_fn <- file.path(params$DATA_ROOT, params$L1_METADATA, 
+                       paste0("README_v", params$L1_VERSION, ".txt"))
+if(!file.exists(readme_fn)) stop("Couln't find ", readme_fn)
+readme <- readLines(readme_fn)
+readme <- gsub("[DATESTAMP]", format(Sys.time(), "%Y-%m-%d"), readme, fixed = TRUE)
+readme <- gsub("[VERSION]", params$L1_VERSION, readme, fixed = TRUE)
+readme <- gsub("[GIT_COMMIT]", GIT_COMMIT, readme, fixed = TRUE)
+readme_outfn <- file.path(L1, basename(readme_fn))
+message("Writing overall README ", readme_outfn, "...")
+writeLines(readme, readme_outfn)
 
 # Get the L1 template file
 template_file <- file.path(params$DATA_ROOT,
@@ -160,16 +171,22 @@ message("Main template has ", length(L1_metadata_template), " lines")
 message("Column metadata info has ", length(col_md_for_insert), " lines")
 message("Variable metadata info has ", length(var_md_for_insert), " lines")
 
-# Identify the main data directories in L1/, which are <site>_<year>
-data_dirs <- list.files(file.path(params$DATA_ROOT, params$L1), 
-                        pattern = "^[a-zA-Z]+_[0-4]{4}$")
+message("Inserting data version string")
+L1_metadata_template <- gsub("[VERSION]", params$L1_VERSION,
+                             L1_metadata_template, fixed = TRUE)
+
+# Identify the main data directories in L1/{version}/, which are <site>_<year>
+data_dirs <- list.files(L1, pattern = "^[a-zA-Z]+_[0-4]{4}$")
 
 for(dd in data_dirs) {
-    dd_full <- file.path(params$DATA_ROOT, params$L1, dd)
+    dd_full <- file.path(L1, dd)
     message("Generating metadata for ", dd_full)
     
+    message("\tInserting verion")
+    md <- gsub("[VERSION]", params$L1_VERSION, L1_metadata_template, fixed = TRUE)
+    
     message("\tInserting timestamp and folder name")
-    md <- gsub("[TIMESTAMP]", date(), L1_metadata_template, fixed = TRUE)
+    md <- gsub("[TIMESTAMP]", date(), md, fixed = TRUE)
     md <- gsub("[FOLDER_NAME]", dd, md, fixed = TRUE)
     
     # File info
@@ -232,7 +249,7 @@ for(dd in data_dirs) {
     # Write the final metadata file
     mdfn <- paste0(dd, "_metadata.txt")
     message("\tWriting ", mdfn, "...")
-    writeLines(md, file.path(params$DATA_ROOT, params$L1, dd, mdfn))
+    writeLines(md, file.path(L1, dd, mdfn))
 }
 ```
 
