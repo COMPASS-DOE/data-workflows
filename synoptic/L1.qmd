@@ -136,8 +136,9 @@ readme_fn <- file.path(params$DATA_ROOT, params$L1_METADATA,
 if(!file.exists(readme_fn)) stop("Couln't find ", readme_fn)
 readme <- readLines(readme_fn)
 readme <- gsub("[DATESTAMP]", format(Sys.time(), "%Y-%m-%d"), readme, fixed = TRUE)
+readme <- gsub("[VERSION]", params$L1_VERSION, readme, fixed = TRUE)
 readme_outfn <- file.path(L1, basename(readme_fn))
-message("Writing README ", readme_outfn, "...")
+message("Writing overall README ", readme_outfn, "...")
 writeLines(readme, readme_outfn)
 
 # Get the L1 template file
