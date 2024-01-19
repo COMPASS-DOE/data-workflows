@@ -1855,8 +1855,8 @@ TMP,PNNL_11,sapflow,RECORD,,,,
 TMP,PNNL_11,sapflow,Statname,,,,
 TMP,PNNL_11,sapflow,BattV_Avg,SF_BattV-TMP-C-11,,voltage,
 TMP,PNNL_11,sapflow,DiffVolt_Avg(1),SF-TMP-C-C7,,sapflow_2.5cm,
-TMP,PNNL_11,sapflow,DiffVolt_Avg(2),SF-TMP-C-C8,2022-06-03,sapflow_2.5cm,
-TMP,PNNL_11,sapflow,DiffVolt_Avg(2),SF-TMP-C-C19,,sapflow_2.5cm,
+TMP,PNNL_11,sapflow,DiffVolt_Avg(2),SF-TMP-C-C8,2022-06-03,sapflow_2.5cm,C8 (Tree 1436) died; reassigned to C19
+TMP,PNNL_11,sapflow,DiffVolt_Avg(2),SF-TMP-C-C19,,sapflow_2.5cm,C8 (Tree 1436) died; reassigned to C19
 TMP,PNNL_11,sapflow,DiffVolt_Avg({3:6}),"SF-TMP-C-{C10,C11,C16,C18}",,sapflow_2.5cm,
 TMP,PNNL_11,sapflow,DiffVolt_Avg(7),SF-TMP-C-C10D,,sapflow_5cm,
 TMP,PNNL_11,sapflow,DiffVolt_Avg({8:14}),,,,
