@@ -82,9 +82,11 @@ read_csv_group <- function(files, col_types = NULL,
 # This is used to split the data for sorting into <yyyy>_<mm> folders
 # Returns a list of filenames written (names) and number of data lines (values)
 write_to_folders <- function(x, root_dir, data_level, site,
-                             logger, table, quiet = FALSE, write_plots = TRUE) {
+                             logger, table, version = "???",
+                             quiet = FALSE, write_plots = TRUE) {
     years <- year(x$TIMESTAMP)
     months <- sprintf("%02i", month(x$TIMESTAMP)) # add leading zero if needed
+    vversion <- paste0("v", version)
 
     lines_written <- list()
     for(y in unique(years)) {
@@ -122,7 +124,7 @@ write_to_folders <- function(x, root_dir, data_level, site,
                 na_string <- NA_STRING_L1
             } else if(data_level == "L1") {
                 folder <- file.path(root_dir, paste(site, y, sep = "_"))
-                filename <- paste0(paste(site, time_period, data_level, sep = "_"), ".csv")
+                filename <- paste0(paste(site, time_period, data_level, vversion, sep = "_"), ".csv")
                 na_string <- NA_STRING_L1
                 write_this_plot <- TRUE
                 p <- ggplot(x, aes(TIMESTAMP, value, group = design_link)) +
@@ -132,7 +134,7 @@ write_to_folders <- function(x, root_dir, data_level, site,
                     theme(axis.text = element_text(size = 6))
             } else if(data_level == "L2") {
                 folder <- file.path(root_dir, paste(site, y, sep = "_"))
-                filename <- paste0(paste(site, time_period, table, data_level, sep = "_"), ".csv")
+                filename <- paste0(paste(site, time_period, table, data_level, vversion, sep = "_"), ".csv")
                 na_string <- NA_STRING_L2
             } else {
                 stop("Unkown data_level ", data_level)
