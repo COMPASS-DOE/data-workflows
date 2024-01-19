@@ -156,8 +156,9 @@ f <- function(fn, out_dir, design_table) {
     # (in helpers.R) to figure out which mappings should apply.
     message("\tChecking for multiple-match design links...")
     dat_retain <- valid_entries(objects = dat$loggernet_variable,
-                                times = ymd_hms(dat$TIMESTAMP, tz = "EST"),
+                                times = substr(dat$TIMESTAMP, 1, 10), # isolate YYYY-MM-DD
                                 valid_through = dat$valid_through)
+
     message("\tDropping ", sum(!dat_retain), " out-of-date design links")
     dat <- dat[dat_retain,]
     dat$valid_through <- NULL

@@ -291,7 +291,7 @@ valid_entries <- function(objects, times, valid_through) {
     past_valid_time <- times > valid_through
 
     # Create a data frame to aggregate and then merge, below
-    x <- data.frame(obj = objects, time = times, vu = valid_through)
+    x <- data.frame(num = seq_along(objects), obj = objects, time = times, vu = valid_through)
     # Compute the minimum valid_through entry for each object and time that is
     # not past the valid_through point; this is the 'controlling' value
     y <- aggregate(vu ~ obj + time, data = x[!past_valid_time,], FUN = min)
@@ -299,6 +299,7 @@ valid_entries <- function(objects, times, valid_through) {
 
     # Figure out controlling valid_through for each object/time
     z <- merge(x, y, all.x = TRUE)
+    z <- z[order(z$num),] # ensure in correct original order
     # An NA controlling entry means there is none
     valids <- z$vu == z$controlling
     valids[is.na(valids)] <- FALSE
