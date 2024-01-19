@@ -20,7 +20,7 @@ source("helpers.R")
 now_string <- function() format(Sys.time(), "%Y%m%d.%H%M")
 
 ROOT <- "./data_TEST"
-VERSION <- "???"
+VERSION <- "0.9"
 
 # Log file ----------------------------------------------------
 
