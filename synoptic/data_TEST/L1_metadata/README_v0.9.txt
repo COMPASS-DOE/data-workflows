@@ -24,5 +24,6 @@ Pennington, Rich, Cheng, and Bond-Lamberty (2024). COMPASS-FME Level 1 Sensor Da
 
 CHANGELOG
 —----------------------------------
-Version ??? released YYYY-MM-DD
-* Release notes here
+Version 0.9 released 2023-01-22
+* Preliminary release covering all synoptic site and TEMPEST data collected to date
+* Units and bounds (and thus OOB flags) are missing for many ClimaVue, AquaTROLL, and Sonde variables
