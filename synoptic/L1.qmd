@@ -99,6 +99,7 @@ f <- function(dir_name, dirs_to_process, out_dir) {
                      root_dir = out_dir, 
                      data_level = "L1",
                      site = site,
+                     version = params$L1_VERSION,
                      write_plots = params$write_plots)
     
     # Add any OOB flags to the flag database
@@ -251,7 +252,7 @@ for(dd in data_dirs) {
     md <- md[-site_info_pos]
 
     # Write the final metadata file
-    mdfn <- paste0(dd, "_metadata.txt")
+    mdfn <- paste0(dd, "_L1v", params$L1_VERSION, "_metadata.txt")
     message("\tWriting ", mdfn, "...")
     writeLines(md, file.path(L1, dd, mdfn))
 }
