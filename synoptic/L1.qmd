@@ -260,6 +260,8 @@ out_df <- do.call("rbind", out)
 knitr::kable(out_df)
 ```
 
+Total rows written: `r format(sum(out_df$Rows), big.mark = ",")`
+
 ## Clean up
 
 ```{r cleanup}
