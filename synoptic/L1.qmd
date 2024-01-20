@@ -73,15 +73,17 @@ f <- function(dir_name, dirs_to_process, out_dir) {
                               remove_input_files = params$remove_input_files, 
                               col_types = "cccccTdcccdii")
 
-    # File-based summary
     message("\tTotal data: ", nrow(dat_raw), " rows, ", ncol(dat_raw), " columns")
-    smry <- data.frame(Dir = dir_name, 
-                       Files = length(d), 
-                       Rows = nrow(dat_raw))
     
     # Remove duplicate rows (e.g. from multiple datalogger downloads)
     dat <- dat_raw[!duplicated(dat_raw), ]
     message("\tRemoved ", nrow(dat_raw) - nrow(dat), " duplicate rows")
+
+    # File-based summary
+    smry <- data.frame(Dir = dir_name, 
+                       Files = length(d), 
+                       Rows = nrow(dat),
+                       NA_rows = sum(is.na(dat$value)))
     
     # Make sure Plot (if present) and TIMESTAMP columns are on the left
     lefts <- intersect(c("Plot", "TIMESTAMP"), colnames(dat))
@@ -127,6 +129,7 @@ error = function(e) {
 
 out_df <- do.call("rbind", out)
 n_obs <- format(sum(out_df$Rows), big.mark = ",")
+n_na <- format(sum(out_df$NA_rows), big.mark = ",")
 ```
 
 ## Metadata
@@ -265,6 +268,8 @@ knitr::kable(out_df)
 ```
 
 Total rows written: `r n_obs`
+
+Total NA rows written: `r n_na`
 
 ## Clean up
 
