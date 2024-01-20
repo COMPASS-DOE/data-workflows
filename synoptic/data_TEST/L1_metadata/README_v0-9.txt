@@ -26,4 +26,6 @@ CHANGELOG
 —----------------------------------
 Version 0.9 released 2023-01-22
 * Preliminary release covering all synoptic site and TEMPEST data collected to date
-* Units and bounds (and thus OOB flags) are missing for many ClimaVue, AquaTROLL, and Sonde variables
+* Units and bounds (and thus OOB flags) are missing for some ClimaVue, AquaTROLL, and Sonde variables
+* Some research_name assignments for may incorrect for ClimaVue
+
