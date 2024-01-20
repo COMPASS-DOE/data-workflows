@@ -28,4 +28,5 @@ Version 0.9 released 2023-01-22
 * Preliminary release covering all synoptic site and TEMPEST data collected to date
 * Units and bounds (and thus OOB flags) are missing for some ClimaVue, AquaTROLL, and Sonde variables
 * Some research_name assignments for may incorrect for ClimaVue
-
+* Out-of-service is working only for AquaTROLL
+* No TEMPEST 1- or 5-minute data included
