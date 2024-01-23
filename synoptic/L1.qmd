@@ -255,7 +255,7 @@ for(dd in data_dirs) {
     md <- md[-site_info_pos]
 
     # Write the final metadata file
-    mdfn <- paste0(dd, "_L1v", params$L1_VERSION, "_metadata.txt")
+    mdfn <- paste0(dd, "_L1_v", params$L1_VERSION, "_metadata.txt")
     message("\tWriting ", mdfn, "...")
     writeLines(md, file.path(L1, dd, mdfn))
 }
