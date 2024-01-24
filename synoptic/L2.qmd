@@ -5,6 +5,7 @@ title-block-banner: true
 params:
   html_outfile: "L1b.html"
   DATA_ROOT: "data_TEST/"
+  METADATA_ROOT: "metadata/"
   L1A: "L1a/"
   L1B: "L1b/"
   timestamp_round: "15 minutes"

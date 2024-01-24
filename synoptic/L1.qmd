@@ -5,6 +5,7 @@ title-block-banner: true
 params:
   html_outfile: "L1.html"
   DATA_ROOT: "data_TEST/"
+  METADATA_ROOT: "metadata/"
   L1_NORMALIZE: "L1_normalize/"
   L1: "L1/"
   L1_METADATA: "L1_metadata/"
@@ -42,7 +43,7 @@ if(packageVersion("compasstools") < "0.2") {
 
 source("helpers.R")
 
-# Open the fLag database
+# Open the fLag database (in the data, not metadata, folder)
 source("flag-database.R")
 fdb_open(params$DATA_ROOT, init = TRUE)
 
@@ -138,7 +139,7 @@ L1 metadata template directory is `r params$L1_METADATA`.
 
 ```{r metadata}
 # Write the overall README
-readme_fn <- file.path(params$DATA_ROOT, params$L1_METADATA, 
+readme_fn <- file.path(params$METADATA_ROOT, params$L1_METADATA, 
                        paste0("README_v", params$L1_VERSION, ".txt"))
 if(!file.exists(readme_fn)) stop("Couln't find ", readme_fn)
 readme <- readLines(readme_fn)
@@ -151,7 +152,7 @@ message("Writing overall README ", readme_outfn, "...")
 writeLines(readme, readme_outfn)
 
 # Get the L1 template file
-template_file <- file.path(params$DATA_ROOT,
+template_file <- file.path(params$METADATA_ROOT,
                            params$L1_METADATA, 
                            "L1_metadata_template.txt")
 if(!file.exists(template_file)) {
@@ -160,13 +161,13 @@ if(!file.exists(template_file)) {
 L1_metadata_template <- readLines(template_file)
 
 # Get the column metadata file
-col_md <- read.csv(file.path(params$DATA_ROOT,
+col_md <- read.csv(file.path(params$METADATA_ROOT,
                              params$L1_METADATA,
                              "L1_metadata_columns.csv"))
 col_md_for_insert <- paste(sprintf("%-15s", col_md$Column), col_md$Description)
 
 # Get the variable metadata
-var_md <- read.csv(file.path(params$DATA_ROOT,
+var_md <- read.csv(file.path(params$METADATA_ROOT,
                              params$L1_METADATA,
                              "L1_metadata_vars.csv"))
 var_md_for_insert <- paste(sprintf("%-20s", c("research_name", var_md$research_name)),
@@ -242,7 +243,7 @@ for(dd in data_dirs) {
     # Folders are <site>_<year>
     # There MUST be a informational file named <site>.txt
     site <- strsplit(dd, "_")[[1]][1]
-    site_md_file <- file.path(params$DATA_ROOT, params$L1_METADATA, paste0(site, ".txt"))
+    site_md_file <- file.path(params$METADATA_ROOT, params$L1_METADATA, paste0(site, ".txt"))
     if(!file.exists(site_md_file)) {
         stop("Couldn't find file ", site_md_file, " in ", params$L1_METADATA)
     }
