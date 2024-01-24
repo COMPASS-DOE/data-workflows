@@ -5,6 +5,7 @@ title-block-banner: true
 params:
   html_outfile: "L1_normalize.html"
   DATA_ROOT: "data_TEST/"
+  METADATA_ROOT: "metadata/"
   L0: "L0/"
   L1_NORMALIZE: "L1_normalize/"
   DESIGN_TABLE: "design_table.csv"
@@ -55,7 +56,7 @@ oldwarn <- options()$warn
 options(warn = 2)
 
 # Read the design table (everything must have an entry)
-DESIGN_TABLE <- file.path(params$DATA_ROOT, params$DESIGN_TABLE)
+DESIGN_TABLE <- file.path(params$METADATA_ROOT, params$DESIGN_TABLE)
 dt <- read_csv(DESIGN_TABLE, col_types = "cccccDcc")
 dt$note <- NULL
 # For compactness, the design table may have expansions. For example,
@@ -69,7 +70,7 @@ if(any(duplicated(links))) {
 }
 
 # Read the variable metadata table
-METADATA_VARS_TABLE <- file.path(params$DATA_ROOT, params$METADATA_VARS_TABLE)
+METADATA_VARS_TABLE <- file.path(params$METADATA_ROOT, params$METADATA_VARS_TABLE)
 mt <- read_csv(METADATA_VARS_TABLE, col_types = "ccccccddc")
 # ...and create the units table (everything must have an entry)
 ut <- mt[!is.na(mt$research_name),] # filter
@@ -90,7 +91,7 @@ source("helpers.R")
 source("out-of-service.R")
 
 # Read the Aquatroll out-of-service table
-troll <- read_csv(file.path(params$DATA_ROOT, params$OOS,
+troll <- read_csv(file.path(params$METADATA_ROOT, params$OOS,
                             "troll_maintenance.csv"), col_types = "cccccccc")
 oos_troll <- prep_troll_oos_table(troll) # in helpers.R
 
