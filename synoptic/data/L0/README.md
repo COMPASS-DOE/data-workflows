@@ -1,3 +1,3 @@
 # L0
 
-This folder holds level 0 data processed from the `Raw/` folder.
+This folder holds COMPASS-FME Level 0 data processed from the `Raw/` folder.
