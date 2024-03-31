@@ -57,16 +57,21 @@ options(warn = 2)
 
 # Read the design table (everything must have an entry)
 DESIGN_TABLE <- file.path(params$METADATA_ROOT, params$DESIGN_TABLE)
-dt <- read_csv(DESIGN_TABLE, col_types = "cccccDcc")
+dt <- read_csv(DESIGN_TABLE, col_types = "ccccccccDcc")
 dt$note <- NULL
+dt <- dt[!is.na(dt$Logger),] # remove empty rows
+dt <- dt[!is.na(dt$research_name),] # remove empty research_name rows
+
 # For compactness, the design table may have expansions. For example,
-# "DiffVoltA_Avg({1:8})" -> "DiffVoltA_Avg(1)", "DiffVoltA_Avg(2)", etc., with
-# extra rows added as needed:
+# "DiffVoltA_Avg({1:8})" -> "DiffVoltA_Avg(1)", "DiffVoltA_Avg(2)", etc.
+# Expand these rows into their individual entries
 dt_ex <- compasstools::expand_df(dt)
-links <- na.omit(dt_ex$design_link)
-if(any(duplicated(links))) {
-    stop("There are duplicated design links: ", 
-         paste(unique(links[duplicated(links)]), collapse = ", "))
+
+# The Site-Plot-instrument-which-individual-research_name columns
+# should be unique
+chk <- dt_ex[c("Site", "Plot", "instrument", "which", "individual", "research_name")]
+if(any(duplicated(chk))) {
+    stop("There are duplicate mappings in the design table!")
 }
 
 # Read the variable metadata table
