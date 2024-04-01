@@ -286,7 +286,7 @@ list_directories <- function(dir_list, outfile = "", prefix = "",
 # which rows to keep (correct design_link assignment) and which to drop.
 valid_entries <- function(objects, times, valid_through) {
     # Nothing to do if there are no valid_through entries
-    if(all(is.na(valid_through))) return(rep(TRUE, length(objects())))
+    if(all(is.na(valid_through))) return(rep(TRUE, length(objects)))
 
     # Any NA valid_through entries apply into the far future
     valid_through[is.na(valid_through)] <- MAX_DATE

@@ -1,5 +1,6 @@
 table,variable,research_name,sensor_units,final_units,conversion,low_bound,high_bound,description
-Datalogger,Voltage,voltage,V,V,x * 1,11,13,Battery voltage of the data logger
+Datalogger,BattV,battery_voltage,V,V,x * 1,11,13,Battery voltage of the data logger
+Datalogger,SolarV,solar_voltage,V,V,x * 1,11,13,Solar voltage of the data logger
 Sapflow,DiffVolt_Avg,sapflow_2.5cm,mV,mV,x * 1,0,1,Raw sap flow at 2.5 cm depth
 Sapflow,DiffVolt_Avg,sapflow_5cm,mV,mV,x * 1,0,1,Raw sap flow at 5 cm depth
 TerosTable,VWC,soil_vwc_5cm,m3/m3,m3/m3,(3.879*10^-4) * x - 0.6956,0,0.7,Soil volumetric water content at 5 cm calibrated for mineral soil

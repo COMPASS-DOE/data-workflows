@@ -60,7 +60,6 @@ DESIGN_TABLE <- file.path(params$METADATA_ROOT, params$DESIGN_TABLE)
 dt <- read_csv(DESIGN_TABLE, col_types = "ccccccccDcc")
 dt$note <- NULL
 dt <- dt[!is.na(dt$Logger),] # remove empty rows
-dt <- dt[!is.na(dt$research_name),] # remove empty research_name rows
 
 # For compactness, the design table may have expansions. For example,
 # "DiffVoltA_Avg({1:8})" -> "DiffVoltA_Avg(1)", "DiffVoltA_Avg(2)", etc.
@@ -68,11 +67,14 @@ dt <- dt[!is.na(dt$research_name),] # remove empty research_name rows
 dt_ex <- compasstools::expand_df(dt)
 
 # The Site-Plot-instrument-which-individual-research_name columns
-# should be unique
-chk <- dt_ex[c("Site", "Plot", "instrument", "which", "individual", "research_name")]
+# should be unique (for rows with non-empty research_name entries)
+dt_ex$design_link <- with(dt_ex, 
+                          paste(Site, Plot, instrument, which, individual, research_name, sep = "-"))
+chk <- dt_ex[!is.na(dt_ex$research_name), "design_link"]
 if(any(duplicated(chk))) {
     stop("There are duplicate mappings in the design table!")
 }
+DESIGN_TABLE_ENTRIES <- with(dt_ex, paste(Logger, Table, loggernet_variable)) # save for later
 
 # Read the variable metadata table
 METADATA_VARS_TABLE <- file.path(params$METADATA_ROOT, params$METADATA_VARS_TABLE)
@@ -142,11 +144,9 @@ f <- function(fn, out_dir, design_table) {
     
     # Check for missing entries in the design table
     ltlv <- unique(paste(dat$Logger, dat$Table, dat$loggernet_variable))
-    present <- ltlv %in% paste(design_table$Logger, 
-                               design_table$Table,
-                               design_table$loggernet_variable)
+    present <- ltlv %in% DESIGN_TABLE_ENTRIES
     if(!all(present)) {
-        stop("Some entries are missing in the design table!",
+        stop("Some data file entries are missing in the design table!",
              paste(ltlv[!present], collapse = ", "))
     }
 
@@ -179,12 +179,13 @@ f <- function(fn, out_dir, design_table) {
     }
     
     # Summary information
-    smry$no_design_links <- sum(is.na(dat$design_link))
-    message("\tFiltering out ", smry$no_design_links, " empty design_link rows")
-    dat <- subset(dat, !is.na(dat$design_link))
+    smry$no_research_name <- sum(is.na(dat$research_name))
+    message("\tFiltering out ", smry$no_research_name, " empty no_research_name rows")
+    dat <- subset(dat, !is.na(dat$research_name))
     
     # If no rows left, note this fact and move on
     if(!nrow(dat)) {
+        message("\tNo design links left; nothing to process")
         smry$Note <- "No design links; nothing to process"
         return(smry)
     }
