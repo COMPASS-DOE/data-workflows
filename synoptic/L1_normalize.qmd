@@ -245,6 +245,23 @@ f <- function(fn, out_dir, design_table) {
                      site = dat$Site[1], 
                      logger = dat$Logger[1],
                      table = dat$Table[1])
+    
+    # The Chesapeake Bay synoptic site design overlaps with TEMPEST,
+    # and the latter's control ("C") plot functions as the former's
+    # upland plot. So if we're handling TMP C data, also write a copy
+    # as GCW UP. https://github.com/COMPASS-DOE/data-workflows/issues/116
+    if(dat$Site[1] == "TMP" && dat$Plot[1] == "C") {
+        dat$Site <- "GCW"
+        dat$Plot <- "UP"
+        message("\t--> DUPLICATING DATA TO GCW UP <--")
+        write_to_folders(dat, 
+                         root_dir = out_dir, 
+                         data_level = "L1_normalize",
+                         site = dat$Site[1], 
+                         logger = dat$Logger[1],
+                         table = dat$Table[1])
+    }
+
     rm(dat)
     
     if(params$remove_input_files) {
