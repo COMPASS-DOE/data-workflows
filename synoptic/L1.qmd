@@ -9,6 +9,7 @@ params:
   L1_NORMALIZE: "L1_normalize/"
   L1: "L1/"
   L1_METADATA: "L1_metadata/"
+  METADATA_VARS_TABLE: "L1_metadata/L1_metadata_variables.csv"
   L1_VERSION: "???"
   debug: false
   remove_input_files: false
@@ -72,7 +73,7 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     # everything can be stacked into a single data frame
     dat_raw <- read_csv_group(d,
                               remove_input_files = params$remove_input_files, 
-                              col_types = "cccccTdcccdii")
+                              col_types = "cccccTdcccccccdii")
 
     message("\tTotal data: ", nrow(dat_raw), " rows, ", ncol(dat_raw), " columns")
     
@@ -86,17 +87,17 @@ f <- function(dir_name, dirs_to_process, out_dir) {
                        Rows = nrow(dat),
                        NA_rows = sum(is.na(dat$value)))
     
-    # Make sure Plot (if present) and TIMESTAMP columns are on the left
+    # Make sure Plot and TIMESTAMP columns are on the left
     lefts <- intersect(c("Plot", "TIMESTAMP"), colnames(dat))
     rights <- setdiff(colnames(dat), lefts)
     dat <- dat[c(lefts, rights)]
     # Remove unneeded columns if present
     site <- dat$Site[1]
     dat <- dat[setdiff(colnames(dat), 
-                       c("Site", "Logger", "Table",
+                       c("Site", "Logger", "Table", "design_link",
                          "value_raw", "units", "loggernet_variable"))]
     # And finally, sort
-    dat <- dat[order(dat$TIMESTAMP, dat$design_link),]
+    dat <- dat[order(dat$TIMESTAMP),]
     
     write_to_folders(dat, 
                      root_dir = out_dir, 
@@ -167,9 +168,7 @@ col_md <- read.csv(file.path(params$METADATA_ROOT,
 col_md_for_insert <- paste(sprintf("%-15s", col_md$Column), col_md$Description)
 
 # Get the variable metadata
-var_md <- read.csv(file.path(params$METADATA_ROOT,
-                             params$L1_METADATA,
-                             "L1_metadata_variables.csv"))
+var_md <- read.csv(file.path(params$METADATA_ROOT, params$METADATA_VARS_TABLE))
 var_md_for_insert <- paste(sprintf("%-20s", c("research_name", var_md$research_name)),
                            sprintf("%-12s", c("Sensor", var_md$sensor)),
                            sprintf("%-10s", c("Units", var_md$final_units)),
@@ -212,7 +211,8 @@ for(dd in data_dirs) {
                  "\nColumns in metadata but not in data: ",
                  paste(setdiff(col_md$Column, file_headers), collapse = ", "),
                  "\nColumns in data but not in metdata: ",
-                 paste(setdiff(file_headers, col_md$Column), collapse = ", "))
+                 paste(setdiff(file_headers, col_md$Column), collapse = ", "),
+                 "\n--> Fix this by updating ", params$METADATA_VARS_TABLE)
         }
         fdata <- readLines(f) # just for a quick line count
         file_info <- c(file_info, 

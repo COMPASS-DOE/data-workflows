@@ -1,8 +1,11 @@
 Column,Description
+Plot,"Plot name within site (W=wetland, TR=transition, UP=upland, C=control, S=saltwater, F=freshwater)"
 TIMESTAMP,Datalogger timestamp (EST) (POSIXct)
-design_link,Design name that links to experimental unit (character)
 research_name,Measurement name (character)
 value,Observed value (numeric). The no-data value is '[NA_STRING_L1]'
+Instrument,Name of measurement instrument
+Which,Which instrument within plot
+Individual,"Individual sensor, tree, etc. being measured"
 ID,Observation ID (character)
 F_OOB,Flag: Out of instrumental bounds (logical; 1=TRUE)
 F_OOS,Flag: Sensor listed as out of service (logical; 1=TRUE)

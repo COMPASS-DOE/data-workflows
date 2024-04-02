@@ -127,7 +127,7 @@ write_to_folders <- function(x, root_dir, data_level, site,
                 filename <- paste0(paste(site, time_period, data_level, vversion, sep = "_"), ".csv")
                 na_string <- NA_STRING_L1
                 write_this_plot <- TRUE
-                p <- ggplot(x, aes(TIMESTAMP, value, group = design_link)) +
+                p <- ggplot(x, aes(TIMESTAMP, value, group = Individual)) +
                     geom_line() +
                     facet_wrap(~research_name, scales = "free") +
                     ggtitle(filename) +
