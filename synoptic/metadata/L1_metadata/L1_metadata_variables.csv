@@ -98,11 +98,11 @@ ClimaVue50_24hr,PAR_Tot_C_Tot,wx_par_tot24,mmol/m2,mmol/m2,x * 1,,,Sum of total 
 ClimaVue50_24hr,CVMeta,,,,,,,"Current configuration of ClimaVue sensors (serial number, etc). Format is a13CAMPBELLCLIM50xxxxxx-yyyyyyyyy, where a is the SDI-12 address, xxxxxx is the model, and yyyyyyyyy is the serial number."
 ExoTable,Conductivity,sonde_conductivity,,,x * 1,,,
 ExoTable,FDOM_QSU,sonde_fdom,QSU,QSU,x * 1,0,300,"Fluorescent dissolved organic matter concentration, Quinine Sulfate Units"
-ExoTable,FDOM_RFU,sonde_rfu,RFU,RFU,x * 1,0,100,"Fluorescent dissolved organic matter concentration, Relative Fluorescent Units"
+ExoTable,FDOM_RFU,sonde_fdom_rfu,RFU,RFU,x * 1,0,100,"Fluorescent dissolved organic matter concentration, Relative Fluorescent Units"
 ExoTable,NLF_conductivity,sonde_nlf_cond,,,x * 1,,,
 ExoTable,ODO_sat,sonde_odo_sat,%,%,x * 1,0,200,"Dissolved oxygen concentration, percent air saturation"
 ExoTable,ODO_local,sonde_odo_local,,,x * 1,,,
-ExoTable,ODO_MgL,sonde_odo,mg/L,mg/L,x * 1,0,50,"Dissolved oxygen concentration, milligrams per liter"
+ExoTable,ODO_MgL,sonde_odo_mgl,mg/L,mg/L,x * 1,0,50,"Dissolved oxygen concentration, milligrams per liter"
 ExoTable,Pressure_psia,sonde_pressure,psia,psia,x * 1,,,Water pressure
 ExoTable,Salinity_PPT,sonde_salinity,ppt,ppt,x * 1,,,Water salinity
 ExoTable,Specific_Conductivity_uScm,sonde_spcond,uS/cm,uS/cm,x * 1,0,100000,Water specific conductivity
@@ -113,7 +113,7 @@ ExoTable,Temp_C,sonde_temp,C,C,x * 1,-5,50,Water temperature
 ExoTable,Depth_m,sonde_depth,m,m,x * 1,0,10,Sonde depth
 ExoTable,Battery_v,sonde_battery,V,V,x * 1,,,Sonde battery voltage
 ExoTable,Cable_v,sonde_cable,V,V,x * 1,,,Sonde cable power
-ExoTable,Wiper_Current_ma,sonde_wiper,mA,mA,x * 1,,,Wiper brush current
+ExoTable,Wiper_Current_ma,sonde_wipercur,mA,mA,x * 1,,,Wiper brush current
 ExoTable,TSS_MgL,sonde_tss,mg/L,mg/L,x * 1,,,Total suspended solids concentration
 ExoTable,ORP_mv,sonde_orp,mV,mV,x * 1,-999,999,Water oxidation reduction potential
 ExoTable,TDS_mg_L,sonde_tds,mg/L,mg/L,x * 1,,,Total dissolved solids concentration

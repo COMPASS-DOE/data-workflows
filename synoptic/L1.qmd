@@ -169,7 +169,7 @@ col_md_for_insert <- paste(sprintf("%-15s", col_md$Column), col_md$Description)
 # Get the variable metadata
 var_md <- read.csv(file.path(params$METADATA_ROOT,
                              params$L1_METADATA,
-                             "L1_metadata_vars.csv"))
+                             "L1_metadata_variables.csv"))
 var_md_for_insert <- paste(sprintf("%-20s", c("research_name", var_md$research_name)),
                            sprintf("%-12s", c("Sensor", var_md$sensor)),
                            sprintf("%-10s", c("Units", var_md$final_units)),
