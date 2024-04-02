@@ -245,6 +245,7 @@ f <- function(fn, out_dir, design_table) {
                      site = dat$Site[1], 
                      logger = dat$Logger[1],
                      table = dat$Table[1])
+    rm(dat)
     
     if(params$remove_input_files) {
         message("\tRemoving input files")
