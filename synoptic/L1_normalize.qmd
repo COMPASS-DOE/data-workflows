@@ -92,7 +92,7 @@ source("out-of-service.R")
 
 # Read the Aquatroll out-of-service table
 troll <- read_csv(file.path(params$METADATA_ROOT, params$OOS,
-                            "troll_maintenance.csv"), col_types = "cccccccc")
+                            "troll_maintenance.csv"), col_types = "ccccccccc")
 oos_troll <- prep_troll_oos_table(troll) # in helpers.R
 
 # Restore old warning setting
