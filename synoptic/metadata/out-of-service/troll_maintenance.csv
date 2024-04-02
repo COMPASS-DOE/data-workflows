@@ -17,9 +17,9 @@ Date_pulled,Site,Location,Time_pulled,Date_replaced,Time_replaced,Troll,Sensor_S
 7/20/2022,CRC,TR,,7/20/2022,,B,848523,
 7/20/2022,CRC,UP,15:30,7/20/2022,,A,848069,
 7/20/2022,CRC,W,,7/20/2022,,C,848392,
-7/21/2022,OWC,TR,,7/31/2022,0:00,A,,From Fausto code - see #121
-7/21/2022,OWC,WTE,,7/31/2022,0:00,B,,From Fausto code - see #121
-7/21/2022,OWC,W,,7/31/2022,0:00,C,,From Fausto code - see #121
+7/21/2022,OWC,TR,8:00,7/31/2022,0:00,A,,From Fausto code - see #121
+7/21/2022,OWC,WTE,8:00,7/31/2022,0:00,B,,From Fausto code - see #121
+7/21/2022,OWC,W,8:00,7/31/2022,0:00,C,,From Fausto code - see #121
 7/21/2022,OWC,W,,7/21/2022,,C,847973,
 7/21/2022,OWC,WTE,,7/21/2022,,B,848022,
 7/21/2022,OWC,TR,,7/21/2022,,A,848067,
