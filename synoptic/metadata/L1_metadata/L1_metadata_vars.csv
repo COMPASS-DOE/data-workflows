@@ -19,7 +19,7 @@ WaterLevel,Barometric_Pressure600,gw_bar_pressure,,,x * 1,,,
 WaterLevel,Temperature600,gw_temperature,degC,degC,x * 1,-5,50,Groundwater temperature
 WaterLevel,Temperature_Int600,gw_temperature_int,degC,degC,x * 1,-5,50,
 WaterLevel,Actual_Conductivity600,gw_act_cond,μS/cm,μS/cm,x * 1,,,
-WaterLevel,Specific_Conductivity600,gw_conductivity,uS/cm,uS/cm,x * 1,0,350000,Groundwater specific conductivity
+WaterLevel,Specific_Conductivity600,gw_spec_cond,uS/cm,uS/cm,x * 1,0,350000,Groundwater specific conductivity
 WaterLevel,Salinity600,gw_salinity,PSU,PSU,x * 1,0,350,Groundwater salinity
 WaterLevel,TDS600,gw_tds,,,x * 1,,,
 WaterLevel,Water_Density600,gw_density,g/cm3,g/cm3,x * 1,0.98,1.05,Groundwater density
@@ -27,13 +27,13 @@ WaterLevel,Resistivity600,gw_resistivity,,,x * 1,,,
 WaterLevel,pH600,gw_ph,unitless,unitless,x * 1,0,14,Groundwater pH
 WaterLevel,pH_mV600,gw_ph_mv,mV,mV,x * 1,,,
 WaterLevel,pH_ORP600,gw_ph_orp,mV,mV,x * 1,-1400,1400,Groundwater oxidation-reduction potential
-WaterLevel,RDO_concen600,gw_rdo_concentration,mg/L,mg/L,x * 1,0,20,Groundwater dissolved oxygen concentration
+WaterLevel,RDO_concen600,gw_rdo_conc,mg/L,mg/L,x * 1,0,20,Groundwater dissolved oxygen concentration
 WaterLevel,RDO_perc_sat600,gw_perc_sat,%,%,x * 1,0,100,
 WaterLevel,RDO_part_Pressure600,gw_part_pressure,,,x * 1,,,
 WaterLevel,Pressure600,gw_pressure,psi,mbar,x * 68.948,-10,910,Vented pressure corrected for barometric pressure
 WaterLevel,Depth600,gw_depth,,,x * 1,,,
 WaterLevel,Voltage_Ext600A,gw_voltage_ext,V,V,x * 1,,,External battery voltage coming into the Aquatroll
-WaterLevel,Battery_Int600A,gw_battery_int,%,%,x * 1,0,100,Internal battery percentage
+WaterLevel,Battery_Int600A,gw_battery,%,%,x * 1,0,100,Internal battery percentage
 ClimaVue50_15min,SlrFD_W_Avg,wx_slr_fd15,MJ/m2,MJ/m2,x * 1,,,Average solar flux over 15 minute period
 ClimaVue50_15min,SlrTF_MJ_Tot,wx_slr_tf15,W/m2,W/m2,x * 1,,,Total solar flux in over minute period
 ClimaVue50_15min,Rain_mm_Tot,wx_rain15,mm,mm,x * 1,,,Total rain over 15 minute period

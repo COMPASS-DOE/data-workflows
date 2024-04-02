@@ -1,4 +1,4 @@
-Logger,Table,loggernet_variable,Site,Plot,instrument,which,individual,valid_through,research_name,note
+Logger,Table,loggernet_variable,Site,Plot,Instrument,Which,Individual,valid_through,research_name,note
 Compass_PTR_UP_313,CheckTable,Format,PTR,UP,Datalogger,313,,,,
 Compass_PTR_UP_313,CheckTable,RECORD,PTR,UP,Datalogger,313,,,,
 Compass_PTR_UP_313,CheckTable,BattV,PTR,UP,Datalogger,313,,,battery_voltage,

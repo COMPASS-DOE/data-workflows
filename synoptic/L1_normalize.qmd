@@ -68,8 +68,8 @@ dt_ex <- compasstools::expand_df(dt)
 
 # The Site-Plot-instrument-which-individual-research_name columns
 # should be unique (for rows with non-empty research_name entries)
-dt_ex$design_link <- with(dt_ex, 
-                          paste(Site, Plot, instrument, which, individual, research_name, sep = "-"))
+dt_ex$design_link <- with(dt_ex, paste(Site, Plot, Instrument, Which, 
+                                       Individual, research_name, sep = "-"))
 chk <- dt_ex[!is.na(dt_ex$research_name), "design_link"]
 if(any(duplicated(chk))) {
     stop("There are duplicate mappings in the design table!")
@@ -131,7 +131,7 @@ f <- function(fn, out_dir, design_table) {
     
     # The row of the summary data frame, displayed at the end of processing, for this data file
     smry <- data.frame(File = basename(fn), 
-                       no_design_links = NA_integer_,
+                       no_research_name = NA_integer_,
                        `OOB%` = NA_real_,
                        `OOS%` = NA_real_,
                        Note = "",
@@ -180,13 +180,13 @@ f <- function(fn, out_dir, design_table) {
     
     # Summary information
     smry$no_research_name <- sum(is.na(dat$research_name))
-    message("\tFiltering out ", smry$no_research_name, " empty no_research_name rows")
+    message("\tFiltering out ", smry$no_research_name, " empty research_name rows")
     dat <- subset(dat, !is.na(dat$research_name))
     
     # If no rows left, note this fact and move on
     if(!nrow(dat)) {
-        message("\tNo design links left; nothing to process")
-        smry$Note <- "No design links; nothing to process"
+        message("\tNo research_names left; nothing to process")
+        smry$Note <- "No research_names left; nothing to process"
         return(smry)
     }
     
@@ -227,13 +227,11 @@ f <- function(fn, out_dir, design_table) {
     
     # ------------- Out-of-service flags
 
-    message("\tAdding OOS flags")
-    x <- separate(dat, design_link, sep = "-", 
-                  into = c("What", "Site", "Location", "Sensor"))
     # It turns out that the out of service check is SUPER expensive (50% of driver runtime)
     # Since right now it's only applicable to Aquatroll, so check for this and skip if possible
     if(grepl("WaterLevel", dat$Table[1])) {
-        dat$F_OOS <- as.integer(oos(oos_troll, x))
+        dat$F_OOS <- as.integer(oos(oos_troll, dat))
+        message("\tAdding ", sum(dat$F_OOS), " OOS flags")
     } else {
         dat$F_OOS <- 0L
     }
