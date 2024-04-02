@@ -105,7 +105,6 @@ f <- function(dir_name, dirs_to_process, out_dir) {
                      site = site,
                      version = params$L1_VERSION,
                      write_plots = params$write_plots)
-    rm(dat)
     
     # Add any OOB flags to the flag database
     flg <- dat[!is.na(dat$F_OOB) & dat$F_OOB == 1, "ID"]
@@ -115,7 +114,8 @@ f <- function(dir_name, dirs_to_process, out_dir) {
         message("Sending ", nrow(flg), " flags to database")
         fdb_add_flags(site, flg)
     }
-    
+
+    rm(dat)
     return(smry)
 }
 

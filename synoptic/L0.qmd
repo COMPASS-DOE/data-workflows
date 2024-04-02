@@ -134,6 +134,7 @@ f <- function(fn, new_dir) {
         new_fqfn <- file.path(new_dir, new_fn)
         message("\tWriting ", new_fqfn)
         write.csv(dat_long, new_fqfn, row.names = FALSE)
+        rm(dat_long)
         # ...and move to 'Raw_done' folder
         if(params$remove_input_files) {
             message("\tArchiving raw input files")
@@ -192,3 +193,4 @@ Git commit `r GIT_COMMIT`.
 ```{r reproducibility}
 sessionInfo()
 ```
+
