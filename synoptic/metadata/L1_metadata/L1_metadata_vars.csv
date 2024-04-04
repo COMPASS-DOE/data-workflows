@@ -4,16 +4,16 @@ Sapflow,DiffVolt_Avg,sapflow_2.5cm,mV,mV,x * 1,0,1,Raw sap flow at 2.5 cm depth
 Sapflow,DiffVolt_Avg,sapflow_5cm,mV,mV,x * 1,0,1,Raw sap flow at 5 cm depth
 TerosTable,VWC,soil_vwc_5cm,m3/m3,m3/m3,(3.879*10^-4) * x - 0.6956,0,0.7,Soil volumetric water content at 5 cm calibrated for mineral soil
 TerosTable,TSOIL,soil_temp_5cm,degC,degC,x * 1,-40,60,Soil temperature at 5 cm
-TerosTable,EC,soil_EC_5cm,dS/m,uS/cm,x * 100000,0,20000,Soil electrical conductivity at 5 cm
+TerosTable,EC,soil_EC_5cm,uS/cm,uS/cm,x * 1,0,20000,Soil electrical conductivity at 5 cm
 TerosTable,VWC,soil_vwc_10cm,m3/m3,m3/m3,(3.879*10^-4) * x - 0.6956,0,0.7,Soil volumetric water content at 10 cm calibrated for mineral soil
 TerosTable,TSOIL,soil_temp_10cm,degC,degC,x * 1,-40,60,Soil temperature at 10 cm
-TerosTable,EC,soil_EC_10cm,dS/m,uS/cm,x * 100000,0,20000,Soil electrical conductivity at 10 cm
+TerosTable,EC,soil_EC_10cm,uS/cm,uS/cm,x * 1,0,20000,Soil electrical conductivity at 10 cm
 TerosTable,VWC,soil_vwc_15cm,m3/m3,m3/m3,(3.879*10^-4) * x - 0.6956,0,0.7,Soil volumetric water content at 15 cm calibrated for mineral soil
 TerosTable,TSOIL,soil_temp_15cm,degC,degC,x * 1,-40,60,Soil temperature at 15 cm
-TerosTable,EC,soil_EC_15cm,dS/m,uS/cm,x * 100000,0,20000,Soil electrical conductivity at 15 cm
+TerosTable,EC,soil_EC_15cm,uS/cm,uS/cm,x * 1,0,20000,Soil electrical conductivity at 15 cm
 TerosTable,VWC,soil_vwc_30cm,m3/m3,m3/m3,(3.879*10^-4) * x - 0.6956,0,0.7,Soil volumetric water content at 30 cm calibrated for mineral soil
 TerosTable,TSOIL,soil_temp_30cm,degC,degC,x * 1,-40,60,Soil temperature at 30 cm
-TerosTable,EC,soil_EC_30cm,dS/m,uS/cm,x * 100000,0,20000,Soil electrical conductivity at 30 cm
+TerosTable,EC,soil_EC_30cm,uS/cm,uS/cm,x * 1,0,20000,Soil electrical conductivity at 30 cm
 WaterLevel,Barometric_Pressure600,gw_bar_pressure,,,x * 1,,,
 WaterLevel,Temperature600,gw_temperature,degC,degC,x * 1,-5,50,Groundwater temperature
 WaterLevel,Temperature_Int600,gw_temperature_int,degC,degC,x * 1,-5,50,
