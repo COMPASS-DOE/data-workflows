@@ -25,19 +25,18 @@ prep_troll_oos_table <- function(troll) {
     # Per Peter R., we throw out all data for 24 hours after replacement
     troll$oos_end <- troll$oos_end + 60 * 60 * 24
 
-    troll$Sensor <- troll$Troll
+    # The L1 data have character, not PosixCT, timestamps, so for correct
+    # comparisons in oos() below need to have that be true here too
+    troll$oos_begin <- as.character(troll$oos_begin)
+    troll$oos_end <- as.character(troll$oos_end)
 
-    # If an Aquatroll is out of service, ALL of its data channels
-    # (Barometric_Pressure600A Temperature600A, etc.) should be flagged.
-    # But right now we don't have a way to do this, because the design link
-    # {what}-{site}-{plot}-{which} format doesn't allow it. So we flag the
-    # battery entry; once hierarchical flagging, is implemented, this should
-    # propagate to all the Aquatroll entries in L2 (but not L1).
-    troll$What <- "GW_BattV"
+    # Rename columns to match the design table entries
+    troll$Which <- troll$Troll
+    troll$Plot <- troll$Location
 
     # Return a data frame with the needed columns: the oos begin and end,
     # as well as the additional columns to match
-    troll[c("Site", "Location", "Sensor", "oos_begin", "oos_end")]
+    troll[c("Site", "Plot", "Which", "oos_begin", "oos_end")]
 }
 
 

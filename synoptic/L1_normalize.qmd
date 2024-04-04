@@ -9,7 +9,7 @@ params:
   L0: "L0/"
   L1_NORMALIZE: "L1_normalize/"
   DESIGN_TABLE: "design_table.csv"
-  METADATA_VARS_TABLE: "L1_metadata/L1_metadata_vars.csv"
+  METADATA_VARS_TABLE: "L1_metadata/L1_metadata_variables.csv"
   OOS: "out-of-service/"
   debug: false
   remove_input_files: false
@@ -57,17 +57,24 @@ options(warn = 2)
 
 # Read the design table (everything must have an entry)
 DESIGN_TABLE <- file.path(params$METADATA_ROOT, params$DESIGN_TABLE)
-dt <- read_csv(DESIGN_TABLE, col_types = "cccccDcc")
+dt <- read_csv(DESIGN_TABLE, col_types = "ccccccccDcc")
 dt$note <- NULL
+dt <- dt[!is.na(dt$Logger),] # remove empty rows
+
 # For compactness, the design table may have expansions. For example,
-# "DiffVoltA_Avg({1:8})" -> "DiffVoltA_Avg(1)", "DiffVoltA_Avg(2)", etc., with
-# extra rows added as needed:
+# "DiffVoltA_Avg({1:8})" -> "DiffVoltA_Avg(1)", "DiffVoltA_Avg(2)", etc.
+# Expand these rows into their individual entries
 dt_ex <- compasstools::expand_df(dt)
-links <- na.omit(dt_ex$design_link)
-if(any(duplicated(links))) {
-    stop("There are duplicated design links: ", 
-         paste(unique(links[duplicated(links)]), collapse = ", "))
+
+# The Site-Plot-instrument-which-individual-research_name columns
+# should be unique (for rows with non-empty research_name entries)
+dt_ex$design_link <- with(dt_ex, paste(Site, Plot, Instrument, Which, 
+                                       Individual, research_name, sep = "-"))
+chk <- dt_ex[!is.na(dt_ex$research_name), "design_link"]
+if(any(duplicated(chk))) {
+    stop("There are duplicate mappings in the design table!")
 }
+DESIGN_TABLE_ENTRIES <- with(dt_ex, paste(Logger, Table, loggernet_variable)) # save for later
 
 # Read the variable metadata table
 METADATA_VARS_TABLE <- file.path(params$METADATA_ROOT, params$METADATA_VARS_TABLE)
@@ -124,7 +131,7 @@ f <- function(fn, out_dir, design_table) {
     
     # The row of the summary data frame, displayed at the end of processing, for this data file
     smry <- data.frame(File = basename(fn), 
-                       no_design_links = NA_integer_,
+                       no_research_name = NA_integer_,
                        `OOB%` = NA_real_,
                        `OOS%` = NA_real_,
                        Note = "",
@@ -137,11 +144,9 @@ f <- function(fn, out_dir, design_table) {
     
     # Check for missing entries in the design table
     ltlv <- unique(paste(dat$Logger, dat$Table, dat$loggernet_variable))
-    present <- ltlv %in% paste(design_table$Logger, 
-                               design_table$Table,
-                               design_table$loggernet_variable)
+    present <- ltlv %in% DESIGN_TABLE_ENTRIES
     if(!all(present)) {
-        stop("Some entries are missing in the design table!",
+        stop("Some data file entries are missing in the design table!",
              paste(ltlv[!present], collapse = ", "))
     }
 
@@ -174,13 +179,14 @@ f <- function(fn, out_dir, design_table) {
     }
     
     # Summary information
-    smry$no_design_links <- sum(is.na(dat$design_link))
-    message("\tFiltering out ", smry$no_design_links, " empty design_link rows")
-    dat <- subset(dat, !is.na(dat$design_link))
+    smry$no_research_name <- sum(is.na(dat$research_name))
+    message("\tFiltering out ", smry$no_research_name, " empty research_name rows")
+    dat <- subset(dat, !is.na(dat$research_name))
     
     # If no rows left, note this fact and move on
     if(!nrow(dat)) {
-        smry$Note <- "No design links; nothing to process"
+        message("\tNo research_names left; nothing to process")
+        smry$Note <- "No research_names left; nothing to process"
         return(smry)
     }
     
@@ -221,13 +227,11 @@ f <- function(fn, out_dir, design_table) {
     
     # ------------- Out-of-service flags
 
-    message("\tAdding OOS flags")
-    x <- separate(dat, design_link, sep = "-", 
-                  into = c("What", "Site", "Location", "Sensor"))
     # It turns out that the out of service check is SUPER expensive (50% of driver runtime)
     # Since right now it's only applicable to Aquatroll, so check for this and skip if possible
     if(grepl("WaterLevel", dat$Table[1])) {
-        dat$F_OOS <- as.integer(oos(oos_troll, x))
+        dat$F_OOS <- as.integer(oos(oos_troll, dat))
+        message("\tAdding ", sum(dat$F_OOS), " OOS flags")
     } else {
         dat$F_OOS <- 0L
     }
@@ -241,6 +245,7 @@ f <- function(fn, out_dir, design_table) {
                      site = dat$Site[1], 
                      logger = dat$Logger[1],
                      table = dat$Table[1])
+    rm(dat)
     
     if(params$remove_input_files) {
         message("\tRemoving input files")

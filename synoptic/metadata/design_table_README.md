@@ -2,18 +2,21 @@
 
 The design table, `design_table.csv`, is the central piece of metadata
 in the entire COMPASS-FME data processing system, mapping datalogger data variables
-to 'design links' that encode the physical location and measurement type of that
-variable. It is read and used by `L1_normalize.qmd`.
+to metadata columns that encode the physical location, measurement type, and sometimes
+individual corresponding to that variable. It is read and used by `L1_normalize.qmd`.
 
 Design table fields:
 
 | Name               | Description                |
 | ------------------ | -------------------------- |
 | Site               | Site abbreviation          |
+| Plot               | Plot abbreviation          |
 | Logger             | Datalogger name            |
 | Table              | Datalogger table name      |
 | loggernet_variable | Datalogger variable name   |
-| design_link        | Design link (see below)    |
+| instrument         | Name of instrument group   |
+| which              | Which instrument group     |
+| individual         | Experimental individual    |
 | valid_through      | Expiry date of design link |
 | research_name      | Type of measurement        |
 | Note               | Note                       |
@@ -21,9 +24,12 @@ Design table fields:
 The table can have empty lines; this can be visually useful, for example to 
 separate information about different tables.
 
-Design links follow a pattern of {what}-{site}-{plot}-{which}, e.g.
-`GW_BattV-TMP-F-200B` (groundwater battery voltage, TEMPEST, Freshwater plot, the 200B AquaTroll).
-The out-of-service check in `L1_normalize.qmd` depends on this format being followed.
+The `instrument` column is the grouping name, typically the name of the measurement
+instrument (e.g. "TEROS12" or "Sapflow"); the `which` column designates a 
+specific instrument within a plot, if there's more than one.
+
+The `individual` column can designate a specific, named sensor (e.g., the TEROS
+probes in the TEMPEST plots) or an experimental individual (the sapflow trees).
 
 The `valid_through` column is used when a sensor is reassigned, for example if a tree
 dies and we reassign its sapflux sensor to a new tree, and encodes the last valid

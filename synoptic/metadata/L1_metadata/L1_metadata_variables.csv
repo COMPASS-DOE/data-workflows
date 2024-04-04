@@ -1,5 +1,6 @@
 table,variable,research_name,sensor_units,final_units,conversion,low_bound,high_bound,description
-Datalogger,Voltage,voltage,V,V,x * 1,11,13,Battery voltage of the data logger
+Datalogger,BattV,battery_voltage,V,V,x * 1,11,13,Battery voltage of the data logger
+Datalogger,SolarV,solar_voltage,V,V,x * 1,0,30,Solar/line voltage of the data logger
 Sapflow,DiffVolt_Avg,sapflow_2.5cm,mV,mV,x * 1,0,1,Raw sap flow at 2.5 cm depth
 Sapflow,DiffVolt_Avg,sapflow_5cm,mV,mV,x * 1,0,1,Raw sap flow at 5 cm depth
 TerosTable,VWC,soil_vwc_5cm,m3/m3,m3/m3,(3.879*10^-4) * x - 0.6956,0,0.7,Soil volumetric water content at 5 cm calibrated for mineral soil
@@ -17,8 +18,8 @@ TerosTable,EC,soil_EC_30cm,µS/cm,µS/cm,x * 1,0,20000,Soil electrical conductiv
 WaterLevel,Barometric_Pressure600,gw_bar_pressure,,,x * 1,,,
 WaterLevel,Temperature600,gw_temperature,degC,degC,x * 1,-5,50,Groundwater temperature
 WaterLevel,Temperature_Int600,gw_temperature_int,degC,degC,x * 1,-5,50,
-WaterLevel,Actual_Conductivity600,gw_act_cond,µS/cm,µS/cm,x * 1,,,
-WaterLevel,Specific_Conductivity600,gw_conductivity,µS/cm,µS/cm,x * 1,0,350000,Groundwater specific conductivity
+WaterLevel,Actual_Conductivity600,gw_act_cond,μS/cm,μS/cm,x * 1,,,
+WaterLevel,Specific_Conductivity600,gw_conductivity,uS/cm,uS/cm,x * 1,0,350000,Groundwater specific conductivity
 WaterLevel,Salinity600,gw_salinity,PSU,PSU,x * 1,0,350,Groundwater salinity
 WaterLevel,TDS600,gw_tds,,,x * 1,,,
 WaterLevel,Water_Density600,gw_density,g/cm3,g/cm3,x * 1,0.98,1.05,Groundwater density
@@ -26,13 +27,13 @@ WaterLevel,Resistivity600,gw_resistivity,,,x * 1,,,
 WaterLevel,pH600,gw_ph,unitless,unitless,x * 1,0,14,Groundwater pH
 WaterLevel,pH_mV600,gw_ph_mv,mV,mV,x * 1,,,
 WaterLevel,pH_ORP600,gw_ph_orp,mV,mV,x * 1,-1400,1400,Groundwater oxidation-reduction potential
-WaterLevel,RDO_concen600,gw_rdo_concentration,mg/L,mg/L,x * 1,0,20,Groundwater dissolved oxygen concentration
+WaterLevel,RDO_concen600,gw_rdo_conc,mg/L,mg/L,x * 1,0,20,Groundwater dissolved oxygen concentration
 WaterLevel,RDO_perc_sat600,gw_perc_sat,%,%,x * 1,0,100,
 WaterLevel,RDO_part_Pressure600,gw_part_pressure,,,x * 1,,,
 WaterLevel,Pressure600,gw_pressure,psi,mbar,x * 68.948,-10,910,Vented pressure corrected for barometric pressure
 WaterLevel,Depth600,gw_depth,,,x * 1,,,
 WaterLevel,Voltage_Ext600A,gw_voltage_ext,V,V,x * 1,,,External battery voltage coming into the Aquatroll
-WaterLevel,Battery_Int600A,gw_battery_int,%,%,x * 1,0,100,Internal battery percentage
+WaterLevel,Battery_Int600A,gw_battery,%,%,x * 1,0,100,Internal battery percentage
 ClimaVue50_15min,SlrFD_W_Avg,wx_slr_fd15,MJ/m2,MJ/m2,x * 1,,,Average solar flux over 15 minute period
 ClimaVue50_15min,SlrTF_MJ_Tot,wx_slr_tf15,W/m2,W/m2,x * 1,,,Total solar flux in over minute period
 ClimaVue50_15min,Rain_mm_Tot,wx_rain15,mm,mm,x * 1,,,Total rain over 15 minute period
@@ -97,11 +98,11 @@ ClimaVue50_24hr,PAR_Tot_C_Tot,wx_par_tot24,mmol/m2,mmol/m2,x * 1,,,Sum of total 
 ClimaVue50_24hr,CVMeta,,,,,,,"Current configuration of ClimaVue sensors (serial number, etc). Format is a13CAMPBELLCLIM50xxxxxx-yyyyyyyyy, where a is the SDI-12 address, xxxxxx is the model, and yyyyyyyyy is the serial number."
 ExoTable,Conductivity,sonde_conductivity,,,x * 1,,,
 ExoTable,FDOM_QSU,sonde_fdom,QSU,QSU,x * 1,0,300,"Fluorescent dissolved organic matter concentration, Quinine Sulfate Units"
-ExoTable,FDOM_RFU,sonde_rfu,RFU,RFU,x * 1,0,100,"Fluorescent dissolved organic matter concentration, Relative Fluorescent Units"
+ExoTable,FDOM_RFU,sonde_fdom_rfu,RFU,RFU,x * 1,0,100,"Fluorescent dissolved organic matter concentration, Relative Fluorescent Units"
 ExoTable,NLF_conductivity,sonde_nlf_cond,,,x * 1,,,
 ExoTable,ODO_sat,sonde_odo_sat,%,%,x * 1,0,200,"Dissolved oxygen concentration, percent air saturation"
 ExoTable,ODO_local,sonde_odo_local,,,x * 1,,,
-ExoTable,ODO_MgL,sonde_odo,mg/L,mg/L,x * 1,0,50,"Dissolved oxygen concentration, milligrams per liter"
+ExoTable,ODO_MgL,sonde_odo_mgl,mg/L,mg/L,x * 1,0,50,"Dissolved oxygen concentration, milligrams per liter"
 ExoTable,Pressure_psia,sonde_pressure,psia,psia,x * 1,,,Water pressure
 ExoTable,Salinity_PPT,sonde_salinity,ppt,ppt,x * 1,,,Water salinity
 ExoTable,Specific_Conductivity_uScm,sonde_spcond,µS/cm,µS/cm,x * 1,0,100000,Water specific conductivity
@@ -112,7 +113,7 @@ ExoTable,Temp_C,sonde_temp,C,C,x * 1,-5,50,Water temperature
 ExoTable,Depth_m,sonde_depth,m,m,x * 1,0,10,Sonde depth
 ExoTable,Battery_v,sonde_battery,V,V,x * 1,,,Sonde battery voltage
 ExoTable,Cable_v,sonde_cable,V,V,x * 1,,,Sonde cable power
-ExoTable,Wiper_Current_ma,sonde_wiper,mA,mA,x * 1,,,Wiper brush current
+ExoTable,Wiper_Current_ma,sonde_wipercur,mA,mA,x * 1,,,Wiper brush current
 ExoTable,TSS_MgL,sonde_tss,mg/L,mg/L,x * 1,,,Total suspended solids concentration
 ExoTable,ORP_mv,sonde_orp,mV,mV,x * 1,-999,999,Water oxidation reduction potential
 ExoTable,TDS_mg_L,sonde_tds,mg/L,mg/L,x * 1,,,Total dissolved solids concentration

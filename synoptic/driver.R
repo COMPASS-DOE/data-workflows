@@ -49,7 +49,7 @@ driver_try <- function(...) {
 }
 
 # Construct L0 data ---------------------------------------------
-# L0 data are raw but in CSV form, and with "Logger" and "Table" columns added
+# L0 data are raw but in long CSV form, with Logger/Table/ID columns added
 
 message("Running L0")
 new_section("Starting L0")
@@ -67,7 +67,7 @@ copy_output("L0.html", outfile)
 
 
 # 'Normalize' L0 data -------------------------------------------
-# Reshaped to long form and matched with design_link info
+# Matched with design_link info
 # This is an intermediate step, not exposed to data users
 
 message("Running L1_normalize.qmd")
@@ -87,11 +87,8 @@ copy_output("L1_normalize.html", outfile)
 
 
 # Construct L1 data --------------------------------------------
-# Unit conversion and bounds checks performed
-# L1 data are long form but without any plot (experimental) info
-
-# This step will use a 'units_bounds.csv' file or something like that
-# This step also sorts data into folders based on site, year, and month;
+# This step drops unneeded columns, sorts, and adds extensive metadata
+# File are written into folders based on site, year, and month;
 # see write_to_folders() in helpers.R
 
 message("Running L1.qmd")

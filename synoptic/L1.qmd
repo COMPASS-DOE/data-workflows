@@ -9,6 +9,8 @@ params:
   L1_NORMALIZE: "L1_normalize/"
   L1: "L1/"
   L1_METADATA: "L1_metadata/"
+  METADATA_VARS_TABLE: "L1_metadata_variables.csv"
+  METADATA_COLUMNS_TABLE: "L1_metadata_columns.csv"
   L1_VERSION: "???"
   debug: false
   remove_input_files: false
@@ -43,6 +45,13 @@ if(packageVersion("compasstools") < "0.2") {
 
 source("helpers.R")
 
+# Get the column metadata file
+column_md <- read.csv(file.path(params$METADATA_ROOT,
+                                params$L1_METADATA,
+                                params$METADATA_COLUMNS_TABLE),
+                      comment.char = "#",
+                      stringsAsFactors = FALSE)
+
 # Open the fLag database (in the data, not metadata, folder)
 source("flag-database.R")
 fdb_open(params$DATA_ROOT, init = TRUE)
@@ -54,6 +63,8 @@ L1 <- file.path(params$DATA_ROOT, params$L1)
 ```
 
 I see `r length(dirs_to_process)` directories to process in `r L1_NORMALIZE`.
+
+L1 column metadata has `r nrow(column_md)` entries.
 
 Output directory is `r L1`.
 
@@ -72,7 +83,7 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     # everything can be stacked into a single data frame
     dat_raw <- read_csv_group(d,
                               remove_input_files = params$remove_input_files, 
-                              col_types = "cccccTdcccdii")
+                              col_types = "cccccTdcccccccdii")
 
     message("\tTotal data: ", nrow(dat_raw), " rows, ", ncol(dat_raw), " columns")
     
@@ -85,18 +96,17 @@ f <- function(dir_name, dirs_to_process, out_dir) {
                        Files = length(d), 
                        Rows = nrow(dat),
                        NA_rows = sum(is.na(dat$value)))
-    
-    # Make sure Plot (if present) and TIMESTAMP columns are on the left
-    lefts <- intersect(c("Plot", "TIMESTAMP"), colnames(dat))
-    rights <- setdiff(colnames(dat), lefts)
-    dat <- dat[c(lefts, rights)]
-    # Remove unneeded columns if present
+
     site <- dat$Site[1]
-    dat <- dat[setdiff(colnames(dat), 
-                       c("Site", "Logger", "Table",
-                         "value_raw", "units", "loggernet_variable"))]
-    # And finally, sort
-    dat <- dat[order(dat$TIMESTAMP, dat$design_link),]
+    
+    # Order columns following the column metadata...
+    if(!all(column_md$Column %in% colnames(dat))) {
+        stop("Column metadata file ", params$METADATA_COLUMNS_TABLE,
+             " has entries not in data: ", setdiff(column_md$Column, colnames(dat)))
+    }
+    dat <- dat[column_md$Column]
+    # ...and sort rows
+    dat <- dat[order(dat$TIMESTAMP, dat$Plot),]
     
     write_to_folders(dat, 
                      root_dir = out_dir, 
@@ -113,7 +123,8 @@ f <- function(dir_name, dirs_to_process, out_dir) {
         message("Sending ", nrow(flg), " flags to database")
         fdb_add_flags(site, flg)
     }
-    
+
+    rm(dat)
     return(smry)
 }
 
@@ -160,16 +171,10 @@ if(!file.exists(template_file)) {
 }
 L1_metadata_template <- readLines(template_file)
 
-# Get the column metadata file
-col_md <- read.csv(file.path(params$METADATA_ROOT,
-                             params$L1_METADATA,
-                             "L1_metadata_columns.csv"))
-col_md_for_insert <- paste(sprintf("%-15s", col_md$Column), col_md$Description)
+col_md_for_insert <- paste(sprintf("%-15s", column_md$Column), column_md$Description)
 
 # Get the variable metadata
-var_md <- read.csv(file.path(params$METADATA_ROOT,
-                             params$L1_METADATA,
-                             "L1_metadata_vars.csv"))
+var_md <- read.csv(file.path(params$METADATA_ROOT, params$L1_METADATA, params$METADATA_VARS_TABLE))
 var_md_for_insert <- paste(sprintf("%-20s", c("research_name", var_md$research_name)),
                            sprintf("%-12s", c("Sensor", var_md$sensor)),
                            sprintf("%-10s", c("Units", var_md$final_units)),
@@ -204,16 +209,6 @@ for(dd in data_dirs) {
     file_info <- c()
     # Build up information about files...
     for(f in files) {
-        # Ensure that the file headers match our column metadata
-        file_headers <- colnames(read.csv(f, nrows = 0))
-        if(!identical(sort(col_md$Column), sort(file_headers))) {
-            stop("File ", basename(f), 
-                 " headers don't match column metadata.",
-                 "\nColumns in metadata but not in data: ",
-                 paste(setdiff(col_md$Column, file_headers), collapse = ", "),
-                 "\nColumns in data but not in metdata: ",
-                 paste(setdiff(file_headers, col_md$Column), collapse = ", "))
-        }
         fdata <- readLines(f) # just for a quick line count
         file_info <- c(file_info, 
                        basename(f),

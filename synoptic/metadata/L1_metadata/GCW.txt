@@ -1,6 +1,6 @@
 GCREeW (GCW) is one of COMPASS-FME synoptic sites, and has three plots:
-upland (located at 38.8741N, 76.5522W), transition (38.8745, 76.5515W),
-and wetland (38.8750N, 76.5500W). Note that this site overlaps spatially
+upland ("UP"; located at 38.8741N, 76.5522W), transition ("TR"; 38.8745, 76.5515W),
+and wetland ("W"; 38.8750N, 76.5500W). Note that this site overlaps spatially
 with the TEMPEST (TMP) plots, the upland portion of the transect
 overlaps with the TEMPEST experiment control plot. This transect spans a
 mid- to late-successional (~80 years old) temperate, deciduous coastal

@@ -127,7 +127,7 @@ write_to_folders <- function(x, root_dir, data_level, site,
                 filename <- paste0(paste(site, time_period, data_level, vversion, sep = "_"), ".csv")
                 na_string <- NA_STRING_L1
                 write_this_plot <- TRUE
-                p <- ggplot(x, aes(TIMESTAMP, value, group = design_link)) +
+                p <- ggplot(x, aes(TIMESTAMP, value, group = Individual)) +
                     geom_line() +
                     facet_wrap(~research_name, scales = "free") +
                     ggtitle(filename) +
@@ -148,7 +148,7 @@ write_to_folders <- function(x, root_dir, data_level, site,
                 }
             }
 
-            # Before writing, convert timestamp to character to ensure that observations
+            # Convert timestamp to character to ensure that observations
             # at midnight have seconds written correctly
             if(is.POSIXct(dat$TIMESTAMP)) {
                 dat$TIMESTAMP <- format(dat$TIMESTAMP, "%Y-%m-%d %H:%M:%S")
@@ -286,7 +286,7 @@ list_directories <- function(dir_list, outfile = "", prefix = "",
 # which rows to keep (correct design_link assignment) and which to drop.
 valid_entries <- function(objects, times, valid_through) {
     # Nothing to do if there are no valid_through entries
-    if(all(is.na(valid_through))) return(rep(TRUE, length(objects())))
+    if(all(is.na(valid_through))) return(rep(TRUE, length(objects)))
 
     # Any NA valid_through entries apply into the far future
     valid_through[is.na(valid_through)] <- MAX_DATE
