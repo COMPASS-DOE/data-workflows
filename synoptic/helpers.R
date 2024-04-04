@@ -148,7 +148,7 @@ write_to_folders <- function(x, root_dir, data_level, site,
                 }
             }
 
-            # Before writing, convert timestamp to character to ensure that observations
+            # Convert timestamp to character to ensure that observations
             # at midnight have seconds written correctly
             if(is.POSIXct(dat$TIMESTAMP)) {
                 dat$TIMESTAMP <- format(dat$TIMESTAMP, "%Y-%m-%d %H:%M:%S")

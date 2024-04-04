@@ -1,20 +1,20 @@
 table,variable,research_name,sensor_units,final_units,conversion,low_bound,high_bound,description
 Datalogger,BattV,battery_voltage,V,V,x * 1,11,13,Battery voltage of the data logger
-Datalogger,SolarV,solar_voltage,V,V,x * 1,11,13,Solar voltage of the data logger
+Datalogger,SolarV,solar_voltage,V,V,x * 1,0,30,Solar/line voltage of the data logger
 Sapflow,DiffVolt_Avg,sapflow_2.5cm,mV,mV,x * 1,0,1,Raw sap flow at 2.5 cm depth
 Sapflow,DiffVolt_Avg,sapflow_5cm,mV,mV,x * 1,0,1,Raw sap flow at 5 cm depth
 TerosTable,VWC,soil_vwc_5cm,m3/m3,m3/m3,(3.879*10^-4) * x - 0.6956,0,0.7,Soil volumetric water content at 5 cm calibrated for mineral soil
 TerosTable,TSOIL,soil_temp_5cm,degC,degC,x * 1,-40,60,Soil temperature at 5 cm
-TerosTable,EC,soil_EC_5cm,dS/m,uS/cm,x * 100000,0,20000,Soil electrical conductivity at 5 cm
+TerosTable,EC,soil_EC_5cm,µS/cm,µS/cm,x * 1,0,20000,Soil electrical conductivity at 5 cm
 TerosTable,VWC,soil_vwc_10cm,m3/m3,m3/m3,(3.879*10^-4) * x - 0.6956,0,0.7,Soil volumetric water content at 10 cm calibrated for mineral soil
 TerosTable,TSOIL,soil_temp_10cm,degC,degC,x * 1,-40,60,Soil temperature at 10 cm
-TerosTable,EC,soil_EC_10cm,dS/m,uS/cm,x * 100000,0,20000,Soil electrical conductivity at 10 cm
+TerosTable,EC,soil_EC_10cm,µS/cm,µS/cm,x * 1,0,20000,Soil electrical conductivity at 10 cm
 TerosTable,VWC,soil_vwc_15cm,m3/m3,m3/m3,(3.879*10^-4) * x - 0.6956,0,0.7,Soil volumetric water content at 15 cm calibrated for mineral soil
 TerosTable,TSOIL,soil_temp_15cm,degC,degC,x * 1,-40,60,Soil temperature at 15 cm
-TerosTable,EC,soil_EC_15cm,dS/m,uS/cm,x * 100000,0,20000,Soil electrical conductivity at 15 cm
+TerosTable,EC,soil_EC_15cm,µS/cm,µS/cm,x * 1,0,20000,Soil electrical conductivity at 15 cm
 TerosTable,VWC,soil_vwc_30cm,m3/m3,m3/m3,(3.879*10^-4) * x - 0.6956,0,0.7,Soil volumetric water content at 30 cm calibrated for mineral soil
 TerosTable,TSOIL,soil_temp_30cm,degC,degC,x * 1,-40,60,Soil temperature at 30 cm
-TerosTable,EC,soil_EC_30cm,dS/m,uS/cm,x * 100000,0,20000,Soil electrical conductivity at 30 cm
+TerosTable,EC,soil_EC_30cm,µS/cm,µS/cm,x * 1,0,20000,Soil electrical conductivity at 30 cm
 WaterLevel,Barometric_Pressure600,gw_bar_pressure,,,x * 1,,,
 WaterLevel,Temperature600,gw_temperature,degC,degC,x * 1,-5,50,Groundwater temperature
 WaterLevel,Temperature_Int600,gw_temperature_int,degC,degC,x * 1,-5,50,
@@ -105,7 +105,7 @@ ExoTable,ODO_local,sonde_odo_local,,,x * 1,,,
 ExoTable,ODO_MgL,sonde_odo_mgl,mg/L,mg/L,x * 1,0,50,"Dissolved oxygen concentration, milligrams per liter"
 ExoTable,Pressure_psia,sonde_pressure,psia,psia,x * 1,,,Water pressure
 ExoTable,Salinity_PPT,sonde_salinity,ppt,ppt,x * 1,,,Water salinity
-ExoTable,Specific_Conductivity_uScm,sonde_spcond,uS/cm,uS/cm,x * 1,0,100000,Water specific conductivity
+ExoTable,Specific_Conductivity_uScm,sonde_spcond,µS/cm,µS/cm,x * 1,0,100000,Water specific conductivity
 ExoTable,Wiper_Position_mv,sonde_wiperpos,mV,mV,x * 1,,,
 ExoTable,pH,sonde_ph,unitless,unitless,x * 1,0,14,Water pH
 ExoTable,pH_mv,sonde_ph_mv,mV,mV,x * 1,,,

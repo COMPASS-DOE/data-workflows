@@ -99,7 +99,7 @@ source("out-of-service.R")
 
 # Read the Aquatroll out-of-service table
 troll <- read_csv(file.path(params$METADATA_ROOT, params$OOS,
-                            "troll_maintenance.csv"), col_types = "cccccccc")
+                            "troll_maintenance.csv"), col_types = "ccccccccc")
 oos_troll <- prep_troll_oos_table(troll) # in helpers.R
 
 # Restore old warning setting
@@ -245,6 +245,7 @@ f <- function(fn, out_dir, design_table) {
                      site = dat$Site[1], 
                      logger = dat$Logger[1],
                      table = dat$Table[1])
+    rm(dat)
     
     # The Chesapeake Bay synoptic site design overlaps with TEMPEST,
     # and the latter's control ("C") plot functions as the former's

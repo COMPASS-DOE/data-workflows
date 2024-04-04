@@ -3,9 +3,9 @@ within the Old Woman Creek lacustuary, 2.8 miles (4.5km) east of Huron,
 Ohio. This site is owned by the Ohio Department of Natural Resources
 (ODNR), managed by ODNR’s Division of Natural Areas & Preserves as Old
 Woman Creek National Estuarine Research Reserve. This site consists of
-four plots: upland (located at 41.3763N, 82.5070W), transition
-(41.3758N, 82.5063W), wetland transition edge (41.3760N, 82.5071W), and
-wetland (41.3761N, 82.5078W). The site was established in December 2021.
+four plots: upland ("UP"; located at 41.3763N, 82.5070W), transition
+("TR"; 41.3758N, 82.5063W), wetland transition edge ("WTE"; 41.3760N, 82.5071W), and
+wetland ("W"; 41.3761N, 82.5078W). The site was established in December 2021.
 
 Contacts for the Old Woman Creek site: 
 Matt Kovach matthew.kovach3@utoledo.edu

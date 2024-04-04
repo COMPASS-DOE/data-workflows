@@ -1,8 +1,8 @@
 Moneystump Swamp (MSM) is one of COMPASS-FME synoptic sites located in
 the Blackwater National Wildlife Refuge along the mesohaline Beaverdam
-Creek. This synoptic site consists of three plots: upland (located at
-38.4315N, 76.2267W), transition (38.4310N, 76.2277W), and wetland
-(38.4308N, 76.2286W). The site was established in June 2023. The
+Creek. This synoptic site consists of three plots: upland ("UP"; located at
+38.4315N, 76.2267W), transition ("TR"; 38.4310N, 76.2277W), and wetland
+("W"; 38.4308N, 76.2286W). The site was established in June 2022. The
 transect spans a coastal loblolly pine forest and a mesohaline marsh
 dominated by Spartina and Distichlis.
 

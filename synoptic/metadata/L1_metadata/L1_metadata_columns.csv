@@ -1,11 +1,12 @@
+# L1 data will be ordered following rows below, and these descriptions inserted into metadata
 Column,Description
-Plot,"Plot name within site (W=wetland, TR=transition, UP=upland, C=control, S=saltwater, F=freshwater)"
+Plot,"Plot name within site"
 TIMESTAMP,Datalogger timestamp (EST) (POSIXct)
-research_name,Measurement name (character)
-value,Observed value (numeric). The no-data value is '[NA_STRING_L1]'
 Instrument,Name of measurement instrument
 Which,Which instrument within plot
 Individual,"Individual sensor, tree, etc. being measured"
+value,Observed value (numeric). The no-data value is '[NA_STRING_L1]'
+research_name,Measurement name (character)
 ID,Observation ID (character)
 F_OOB,Flag: Out of instrumental bounds (logical; 1=TRUE)
 F_OOS,Flag: Sensor listed as out of service (logical; 1=TRUE)
