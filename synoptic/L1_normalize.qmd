@@ -245,7 +245,6 @@ f <- function(fn, out_dir, design_table) {
                      site = dat$Site[1], 
                      logger = dat$Logger[1],
                      table = dat$Table[1])
-    rm(dat)
     
     # The Chesapeake Bay synoptic site design overlaps with TEMPEST,
     # and the latter's control ("C") plot functions as the former's
