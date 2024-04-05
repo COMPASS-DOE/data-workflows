@@ -72,7 +72,8 @@ dt_ex$design_link <- with(dt_ex, paste(Site, Plot, Instrument, Which,
                                        Individual, research_name, sep = "-"))
 chk <- dt_ex[!is.na(dt_ex$research_name), "design_link"]
 if(any(duplicated(chk))) {
-    stop("There are duplicate mappings in the design table!")
+    stop("There are duplicate mappings in the design table! ",
+         paste(head(chk[duplicated(chk), "design_link"]), collapse = ", "))
 }
 DESIGN_TABLE_ENTRIES <- with(dt_ex, paste(Logger, Table, loggernet_variable)) # save for later
 
