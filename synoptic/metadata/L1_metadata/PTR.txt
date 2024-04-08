@@ -21,4 +21,5 @@ EXO: F. Machado-Silva
 Dataloggers: Roy Rich <RichR@si.edu>
 
 Key publications:
-Machado-Silva et al. (submitted), ""
+Machado-Silva et al. (submitted), "Groundwater level and redox dynamics
+across terrestrial aquatic interface of Lake Erie coastal ecosystems"
