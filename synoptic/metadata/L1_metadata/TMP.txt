@@ -1,16 +1,18 @@
 TMP is TEMPEST, the COMPASS-FME ecosystem-scale flooding experiment and
 has three 2000 m2 plots: control ("C"; located at 38.8747N, 76.5519W),
-freshwater ("F"; 38.87403N, 76.5516W), and saltwater ("S"; 38.8744N, 76.5525W).
-The TEMPEST experiment is in a mid- to late-successional (~80 years old)
-temperate, deciduous coastal forest.
+freshwater ("F"; 38.87403N, 76.5516W), and saltwater ("S"; 38.8744N,
+76.5525W). The TEMPEST experiment is in a mid- to late-successional (~80
+years old) temperate, deciduous coastal forest.
 
 Contact for the TEMPEST site: 
 J. Patrick Megonigal megonialp@si.edu
 
 Contacts for TEMPEST data streams: 
-Sapflux: Stephanie Pennington stephanie.pennington@pnnl.gov 
-TEROS and Aquatroll: Peter Regier peter.regier@pnnl.gov
-Dataloggers: Roy Rich richr@si.edu
+Overall: P. Megonigal; Anya Hopple <anyahopple@gmail.com>
+Sapflow: Stephanie Pennington stephanie.pennington@pnnl.gov; Alice Stearns <stearnsA@si.edu> 
+TEROS: Evan Phillips <PhillipsE@si.edu>; S. Pennington; Peter Regier <peter.regier@pnnl.gov>
+AquaTROLL: E. Phillips; S. Pennington; P. Regier
+Dataloggers: E. Phillips; A. Stearns; Roy Rich <RichR@si.edu>
 
 Key publications:
 Hopple et al.: Attaining freshwater and estuarine-water soil saturation in an 
