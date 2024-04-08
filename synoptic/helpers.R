@@ -89,6 +89,8 @@ write_to_folders <- function(x, root_dir, data_level, site,
     vversion <- paste0("v", version)
 
     lines_written <- list()
+    nowyr <- year(Sys.Date())
+    nowmo <- month(Sys.Date())
     for(y in unique(years)) {
         if(is.na(y)) {
             stop(data_level, " invalid year ", y)
@@ -97,8 +99,13 @@ write_to_folders <- function(x, root_dir, data_level, site,
         for(m in unique(months)) {
             write_this_plot <- FALSE
 
+            # Sanity checks
             if(is.na(m)) {
                 stop(data_level, " invalid month ", m)
+            }
+            if(y > nowyr || (y == nowyr && m > nowmo)) {
+                stop("I am being asked to write future data: ",
+                     paste(site, logger, table, y, m))
             }
 
             # Isolate the data to write
