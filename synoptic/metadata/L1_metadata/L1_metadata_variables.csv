@@ -19,7 +19,7 @@ WaterLevel,Barometric_Pressure600,gw_bar_pressure,,,x * 1,,,
 WaterLevel,Temperature600,gw_temperature,degC,degC,x * 1,-5,50,Groundwater temperature
 WaterLevel,Temperature_Int600,gw_temperature_int,degC,degC,x * 1,-5,50,
 WaterLevel,Actual_Conductivity600,gw_act_cond,μS/cm,μS/cm,x * 1,,,
-WaterLevel,Specific_Conductivity600,gw_conductivity,uS/cm,uS/cm,x * 1,0,350000,Groundwater specific conductivity
+WaterLevel,Specific_Conductivity600,gw_spec_cond,uS/cm,uS/cm,x * 1,0,350000,Groundwater specific conductivity
 WaterLevel,Salinity600,gw_salinity,PSU,PSU,x * 1,0,350,Groundwater salinity
 WaterLevel,TDS600,gw_tds,,,x * 1,,,
 WaterLevel,Water_Density600,gw_density,g/cm3,g/cm3,x * 1,0.98,1.05,Groundwater density
