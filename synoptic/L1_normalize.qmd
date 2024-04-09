@@ -199,11 +199,8 @@ f <- function(fn, out_dir, design_table) {
     if(length(missings)) {
         missing_units <- paste(missings, collapse = ", ")
         missing_units <- strwrap(missing_units, width = 40)
-        message("\tERROR: missing units entries: ",
+        stop("\tERROR: missing units entries: ",
                 paste(missing_units, collapse = "\n\t\t"))
-        smry$Note <- "Missing unit entries" 
-        errors <<- errors + 1
-        return(smry)
     }
     
     message("\tDoing unit conversion")
