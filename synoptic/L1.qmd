@@ -271,7 +271,7 @@ Total NA rows written: `r n_na`
 ## Clean up
 
 ```{r cleanup}
-fdb_cleanup() # Close flags database
+#fdb_cleanup() # Close flags database
 ```
 
 ## Reproducibility
