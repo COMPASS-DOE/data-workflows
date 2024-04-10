@@ -31,12 +31,12 @@ prep_troll_oos_table <- function(troll) {
     troll$oos_end <- as.character(troll$oos_end)
 
     # Rename columns to match the design table entries
-    troll$Which <- troll$Troll
+    troll$Instrument_ID <- troll$Troll
     troll$Plot <- troll$Location
 
     # Return a data frame with the needed columns: the oos begin and end,
     # as well as the additional columns to match
-    troll[c("Site", "Plot", "Which", "oos_begin", "oos_end")]
+    troll[c("Site", "Plot", "Instrument_ID", "oos_begin", "oos_end")]
 }
 
 
