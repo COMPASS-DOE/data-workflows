@@ -10,7 +10,7 @@ GIT_COMMIT <- substr(system("git rev-parse HEAD", intern = TRUE), 1, 7)
 MAX_DATE <- ymd_hms("2999-12-31 11:59:00")
 
 # Data NA (not available) strings to use on writing
-NA_STRING_L1 <- "NA"
+NA_STRING_L1 <- ""
 NA_STRING_L2 <- "-9999"
 
 # Small helper functions to make the various steps obvious in the log
@@ -89,6 +89,8 @@ write_to_folders <- function(x, root_dir, data_level, site,
     vversion <- paste0("v", version)
 
     lines_written <- list()
+    nowyr <- year(Sys.Date())
+    nowmo <- month(Sys.Date())
     for(y in unique(years)) {
         if(is.na(y)) {
             stop(data_level, " invalid year ", y)
@@ -97,8 +99,13 @@ write_to_folders <- function(x, root_dir, data_level, site,
         for(m in unique(months)) {
             write_this_plot <- FALSE
 
+            # Sanity checks
             if(is.na(m)) {
                 stop(data_level, " invalid month ", m)
+            }
+            if(y > nowyr || (y == nowyr && m > nowmo)) {
+                stop("I am being asked to write future data: ",
+                     paste(site, logger, table, y, m))
             }
 
             # Isolate the data to write
@@ -127,7 +134,7 @@ write_to_folders <- function(x, root_dir, data_level, site,
                 filename <- paste0(paste(site, time_period, data_level, vversion, sep = "_"), ".csv")
                 na_string <- NA_STRING_L1
                 write_this_plot <- TRUE
-                p <- ggplot(x, aes(TIMESTAMP, value, group = Individual)) +
+                p <- ggplot(x, aes(TIMESTAMP, Value, group = Sensor_ID)) +
                     geom_line() +
                     facet_wrap(~research_name, scales = "free") +
                     ggtitle(filename) +

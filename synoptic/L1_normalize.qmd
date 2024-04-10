@@ -57,7 +57,7 @@ options(warn = 2)
 
 # Read the design table (everything must have an entry)
 DESIGN_TABLE <- file.path(params$METADATA_ROOT, params$DESIGN_TABLE)
-dt <- read_csv(DESIGN_TABLE, col_types = "ccccccccDcc")
+dt <- read_csv(DESIGN_TABLE, col_types = "cccccccccDcc")
 dt$note <- NULL
 dt <- dt[!is.na(dt$Logger),] # remove empty rows
 
@@ -68,8 +68,8 @@ dt_ex <- compasstools::expand_df(dt)
 
 # The Site-Plot-instrument-which-individual-research_name columns
 # should be unique (for rows with non-empty research_name entries)
-dt_ex$design_link <- with(dt_ex, paste(Site, Plot, Instrument, Which, 
-                                       Individual, research_name, sep = "-"))
+dt_ex$design_link <- with(dt_ex, paste(Site, Plot, Instrument, Instrument_ID, 
+                                       Sensor_ID, research_name, sep = "-"))
 chk <- dt_ex[!is.na(dt_ex$research_name), "design_link"]
 if(any(duplicated(chk))) {
     stop("There are duplicate mappings in the design table! ",
@@ -199,11 +199,8 @@ f <- function(fn, out_dir, design_table) {
     if(length(missings)) {
         missing_units <- paste(missings, collapse = ", ")
         missing_units <- strwrap(missing_units, width = 40)
-        message("\tERROR: missing units entries: ",
+        stop("\tERROR: missing units entries: ",
                 paste(missing_units, collapse = "\n\t\t"))
-        smry$Note <- "Missing unit entries" 
-        errors <<- errors + 1
-        return(smry)
     }
     
     message("\tDoing unit conversion")
@@ -212,13 +209,13 @@ f <- function(fn, out_dir, design_table) {
     dat <- compasstools::unit_conversion(dat, ut)
     nd <- names(dat)
     names(dat)[nd == "value"] <- "value_raw"
-    names(dat)[nd == "value_conv"] <- "value"
+    names(dat)[nd == "value_conv"] <- "Value"
 
     # ------------- Out-of-bounds flags
     
     message("\tAdding OOB flags")
     dat <- merge(dat, bt, by = c("research_name", "units"))
-    dat$F_OOB <- as.integer(with(dat, value < low_bound | value > high_bound))
+    dat$F_OOB <- as.integer(with(dat, Value < low_bound | Value > high_bound))
     smry$`OOB%` <- round(sum(dat$F_OOB) / nrow(dat) * 100, 1)
     # Remove unneeded columns unless needed for debugging
     if(!params$debug) {
