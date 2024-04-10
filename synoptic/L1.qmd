@@ -53,8 +53,8 @@ column_md <- read.csv(file.path(params$METADATA_ROOT,
                       stringsAsFactors = FALSE)
 
 # Open the fLag database (in the data, not metadata, folder)
-source("flag-database.R")
-fdb_open(params$DATA_ROOT, init = TRUE)
+#source("flag-database.R")
+#fdb_open(params$DATA_ROOT, init = TRUE)
 
 L1_NORMALIZE <- file.path(params$DATA_ROOT, params$L1_NORMALIZE)
 dirs_to_process <- scan_folders(L1_NORMALIZE)
@@ -79,23 +79,24 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     message("\tIt has ", length(d), " files")
     
     # Read all files in a folder
-    # Note that we're forcing `value` and `value_raw` to be character, so that
-    # everything can be stacked into a single data frame
     dat_raw <- read_csv_group(d,
                               remove_input_files = params$remove_input_files, 
-                              col_types = "cccccTdcccccccdii")
+                              col_types = "cccccTdccccccccdii")
 
     message("\tTotal data: ", nrow(dat_raw), " rows, ", ncol(dat_raw), " columns")
     
     # Remove duplicate rows (e.g. from multiple datalogger downloads)
-    dat <- dat_raw[!duplicated(dat_raw), ]
-    message("\tRemoved ", nrow(dat_raw) - nrow(dat), " duplicate rows")
+    dat_nodupe <- dat_raw[!duplicated(dat_raw), ]
+    message("\tRemoved ", nrow(dat_raw) - nrow(dat_nodupe), " duplicate rows")
+    # Remove empty data
+    dat <- dat_nodupe[!is.na(dat_nodupe$Value), ]
+    message("\tRemoved ", nrow(dat_nodupe) - nrow(dat), " NA data value rows")
 
     # File-based summary
     smry <- data.frame(Dir = dir_name, 
                        Files = length(d), 
                        Rows = nrow(dat),
-                       NA_rows = sum(is.na(dat$value)))
+                       NA_rows = sum(is.na(dat$Value)))
 
     site <- dat$Site[1]
     
@@ -116,13 +117,13 @@ f <- function(dir_name, dirs_to_process, out_dir) {
                      write_plots = params$write_plots)
     
     # Add any OOB flags to the flag database
-    flg <- dat[!is.na(dat$F_OOB) & dat$F_OOB == 1, "ID"]
-    if(nrow(flg)) {
-        flg$Flag_type <- "OOB"
-        flg$Remark <- basename(dir_name)
-        message("Sending ", nrow(flg), " flags to database")
-        fdb_add_flags(site, flg)
-    }
+    # flg <- dat[!is.na(dat$F_OOB) & dat$F_OOB == 1, "ID"]
+    # if(nrow(flg)) {
+    #     flg$Flag_type <- "OOB"
+    #     flg$Remark <- basename(dir_name)
+    #     message("Sending ", nrow(flg), " flags to database")
+    #     fdb_add_flags(site, flg)
+    # }
 
     rm(dat)
     return(smry)
