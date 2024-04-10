@@ -1,13 +1,13 @@
 # L1 data will be ordered following rows below, and these descriptions inserted into metadata
 Column,Description
-Plot,Plot name within site
+Plot,Plot name within site (character)
 TIMESTAMP,Datalogger timestamp (EST) (POSIXct)
-Instrument,Name of measurement instrument
-Instrument_ID,Which instrument within plot
-Sensor_ID,"Individual sensor, tree, etc. being measured"
-Location,Location
+Instrument,Name of measurement instrument (character)
+Instrument_ID,Identifier of instrument within plot (character)
+Sensor_ID,"Identifier of individual sensor, tree, etc. being measured (character)"
+Location,"Spatial location; for TEMPEST, grid square (character)"
 Value,Observed value (numeric). The no-data value is '[NA_STRING_L1]'
 research_name,Measurement name (character)
-ID,Observation ID (character)
-F_OOB,Flag: Out of instrumental bounds (logical; 1=TRUE)
-F_OOS,Flag: Sensor listed as out of service (logical; 1=TRUE)
+ID,Observation identifier (character)
+F_OOB,Flag: out of instrumental bounds (logical; 1=TRUE)
+F_OOS,Flag: sensor listed as out of service (logical; 1=TRUE)
