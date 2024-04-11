@@ -99,9 +99,13 @@ source("helpers.R")
 source("out-of-service.R")
 
 # Read the Aquatroll out-of-service table
-troll <- read_csv(file.path(params$METADATA_ROOT, params$OOS,
-                            "troll_maintenance.csv"), col_types = "ccccccccc")
-oos_troll <- prep_troll_oos_table(troll) # in helpers.R
+troll <- read_csv(file.path(params$METADATA_ROOT, params$OOS, "troll_maintenance.csv"),
+                  col_types = "ccccccccc")
+oos_troll <- prep_troll_oos_table(troll) # in out-of-service.R
+# Read the EXO out-of-service table
+exo <- read_csv(file.path(params$METADATA_ROOT, params$OOS, "exo_log.csv"),
+                col_types = "cdDDDDcc")
+oos_exo <- prep_exo_oos_table(exo) # in out-of-service.R
 
 # Restore old warning setting
 options(warn = oldwarn)
@@ -225,11 +229,15 @@ f <- function(fn, out_dir, design_table) {
     
     # ------------- Out-of-service flags
 
-    # It turns out that the out of service check is SUPER expensive (50% of driver runtime)
-    # Since right now it's only applicable to Aquatroll, so check for this and skip if possible
+    # It turns out that the out of service check is SUPER expensive (50% of 
+    # driver runtime). Since right now it's only applicable to Aquatroll 
+    # and EXO, check and skip if possible
     if(grepl("WaterLevel", dat$Table[1])) {
         dat$F_OOS <- as.integer(oos(oos_troll, dat))
-        message("\tAdding ", sum(dat$F_OOS), " OOS flags")
+        message("\tAdding ", sum(dat$F_OOS), " OOS flags for WaterLevel")
+    } else if(grepl("ExoTable", dat$Table[1])) {
+        dat$F_OOS <- as.integer(oos(oos_exo, dat))
+        message("\tAdding ", sum(dat$F_OOS), " OOS flags for ExoTable")
     } else {
         dat$F_OOS <- 0L
     }

@@ -39,6 +39,37 @@ prep_troll_oos_table <- function(troll) {
     troll[c("Site", "Plot", "Instrument_ID", "oos_begin", "oos_end")]
 }
 
+# Restructure the EXO calibration/deployment log
+# (https://docs.google.com/spreadsheets/d/1y08XAOzzpLZbIOMJquVUv-jSHXhHJpF9neG5kcJpnjQ/edit#gid=913708372)
+prep_exo_oos_table <- function(exo) {
+    # Out of service until deployment
+    exo$oos_begin <-ymd(paste0(exo$year, "-01-01"), tz = "EST")
+    exo$oos_end <- force_tz(exo$deployed + hm("21:00"), tzone = "EST")
+
+    # Out of service after retrieval
+    exo2 <- tibble(
+        Site = exo$Site,
+        oos_begin = force_tz(exo$retrieved + hm("03:00"), tzone = "EST"),
+        oos_end = ymd(paste0(exo$year, "-12-31"), tz = "EST")
+    )
+
+    # And, out of service when out of water
+    exo3 <- tibble(
+        Site = exo$Site,
+        oos_begin = force_tz(exo$out_of_water + hm("03:00"), tzone = "EST"),
+        oos_end = force_tz(exo$out_of_water + hm("21:00"), tzone = "EST")
+    )
+
+    exo <- exo[c("Site", "oos_begin", "oos_end")]
+    exo <- rbind(exo, exo2, exo3)
+
+    # The L1 data have character, not PosixCT, timestamps, so for correct
+    # comparisons in oos() below need to have that be true here too
+    exo$oos_begin <- as.character(exo$oos_begin)
+    exo$oos_end <- as.character(exo$oos_end)
+
+    exo[!is.na(exo$oos_begin),]
+}
 
 # We pass an oos_df data frame to oos()
 # This is a table of out-of-service windows
