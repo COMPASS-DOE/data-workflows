@@ -32,6 +32,7 @@ Version 1-0 released 2024-04-15
 * Restructured for ease of use, with metadata (location, sensor ID, etc) in separate columns
 * SWH plot naming reworked for new upland plot; mirroring TMP C to GCW UP
 * Many fixes to variable units and bounds
+* Out-of-service is valid for AquaTROLL and EXO
 
 Version 0-9 released 2024-01-22
 * Preliminary release covering all synoptic site and TEMPEST data collected to date
