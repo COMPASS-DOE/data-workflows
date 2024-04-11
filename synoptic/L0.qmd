@@ -10,6 +10,7 @@ params:
   L0: "L0/"
   remove_input_files: false
   logfile: ""
+  run_parallel: false
 date: now
 date-format: "YYYY-MM-DD HH:mm:ssZ"
 format: 
@@ -153,9 +154,18 @@ f <- function(fn, new_dir) {
                Note = note)
 }
 
+# We can optionally process in parallel using all available cores
+if(params$run_parallel) {
+    message("Using parallel::mclapply")
+    library(parallel)
+    apply_func = mclapply
+} else {
+    apply_func = lapply
+}
+
 log_info("About to L0", logfile = params$logfile)
 tryCatch({
-    out <- lapply(files_to_process, f, new_dir = L0)
+    out <- apply_func(files_to_process, f, new_dir = L0)
 },
 error = function(e) {
     log_warning("L0: an error occurred!", logfile = params$logfile)
@@ -193,4 +203,3 @@ Git commit `r GIT_COMMIT`.
 ```{r reproducibility}
 sessionInfo()
 ```
-

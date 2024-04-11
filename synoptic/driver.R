@@ -61,7 +61,8 @@ driver_try(
     quarto_render("L0.qmd",
                   execute_params = list(DATA_ROOT = ROOT,
                                         html_outfile = outfile,
-                                        logfile = LOGFILE))
+                                        logfile = LOGFILE,
+                                        run_parallel = TRUE))
 )
 copy_output("L0.html", outfile)
 
@@ -81,7 +82,8 @@ driver_try(
     quarto_render("L1_normalize.qmd",
               execute_params = list(DATA_ROOT = ROOT,
                                     html_outfile = outfile,
-                                    logfile = LOGFILE))
+                                    logfile = LOGFILE,
+                                    run_parallel = TRUE))
 )
 copy_output("L1_normalize.html", outfile)
 
@@ -102,7 +104,8 @@ driver_try(
               execute_params = list(DATA_ROOT = ROOT,
                                     L1_VERSION = VERSION,
                                     html_outfile = outfile,
-                                    logfile = LOGFILE))
+                                    logfile = LOGFILE,
+                                    run_parallel = TRUE))
 )
 copy_output("L1.html", outfile)
 
@@ -134,7 +137,8 @@ outfile <- file.path(LOGS, outfile)
 #     quarto_render("L2.qmd",
 #               execute_params = list(DATA_ROOT = ROOT,
 #                                     html_outfile = outfile,
-#                                     logfile = LOGFILE))
+#                                     logfile = LOGFILE,
+#                                     run_parallel = TRUE))
 # )
 # copy_output("L2.html", outfile)
 
