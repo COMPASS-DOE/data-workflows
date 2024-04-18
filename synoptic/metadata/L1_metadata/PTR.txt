@@ -14,11 +14,11 @@ Nick Ward <nicholas.ward@pnnl.gov>
 Contacts for Portage River data streams:
 Overall: Fausto Machado-Silva <Fausto.Silva@UToledo.Edu>
 Sapflow: Leticia Sandoval <Leticia.Sandoval@rockets.utoledo.edu>
-TEROS: Roberta Bittencourt Peixoto <Roberta.BittencourtPeixoto@UToledo.Edu>; Peter Regier <peter.regier@pnnl.gov>
-AquaTROLL: P. Regier; F. Machado-Silva
-ClimaVUE: R. Bittencourt Peixoto; F. Machado-Silva
-EXO: F. Machado-Silva
-Dataloggers: Roy Rich <RichR@si.edu>
+TEROS: Roberta Bittencourt Peixoto <Roberta.BittencourtPeixoto@UToledo.Edu>; Peter Regier <peter.regier@pnnl.gov>; Evan Grammenidis <evangelos.grammenidis@utoledo.edu>
+AquaTROLL: P. Regier; F. Machado-Silva; E. Grammenidis
+ClimaVUE: R. Bittencourt Peixoto; F. Machado-Silva; E. Grammenidis
+EXO: F. Machado-Silva; E. Grammenidis
+Dataloggers: Roy Rich <RichR@si.edu>; R. Bittencourt Peixoto; E. Grammenidis
 
 Key publications:
 Machado-Silva et al. (submitted), "Groundwater level and redox dynamics
