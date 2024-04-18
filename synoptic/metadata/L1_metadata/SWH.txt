@@ -1,19 +1,25 @@
 Sweet Hall Marsh (SWH) is one of the COMPASS-FME synoptic sites located
 in the tidal fresh Pamunkey River, one of the two tributaries of the
 York River in Virginia, USA. The COMPASS-FME consists of three plots:
-upland ("UP"; located at 37.57069N, 76.8957W), transition ("TR"; 37.56883N,
-76.8964W), and wetland ("W"; 37.56659N, 76.8970W). The synoptic site was
-established in June 2023. This site is also identified as a Chesapeake
-Bay National Research Reserve site.
+upland ("UP"; located at 37.5708N, 76.8954W), swamp ("SWAMP"; located at
+37.57069N, 76.8957W), transition ("TR"; 37.56883N, 76.8964W), and
+wetland ("W"; 37.56659N, 76.8970W). The synoptic site was established in
+June 2023. This site is also identified as a Chesapeake Bay National
+Research Reserve site.
 
 Contacts for the Sweet Hall site: 
-Stephanie J. Wilson wilsonsj@si.edu 
-J. Patrick Megonigal megonialp@si.edu
+Stephanie J. Wilson <wilsonsj@si.edu>
+Pat Megonigal <megonigalp@si.edu>
+Nick Ward <nicholas.ward@pnnl.gov>
 
 Contacts for Sweet Hall data streams: 
-Sapflux: Stephanie Pennington stephanie.pennington@pnnl.gov 
-TEROS and Aquatroll: Peter Regier peter.regier@pnnl.gov / Stephanie Wilson wilsonsj@si.edu
-Dataloggers: Roy Rich richr@si.edu / Stephanie Wilson wilsonsj@si.edu
+Overall: S. Wilson
+Sapflow: S. Wilson; Stephanie Pennington <stephanie.pennington@pnnl.gov>; Alice Stearns <stearnsA@si.edu> 
+TEROS: S. Wilson; Evan Phillips <PhillipsE@si.edu>; Roberta Bittencourt Peixoto <Roberta.BittencourtPeixoto@UToledo.Edu>; Peter Regier <peter.regier@pnnl.gov>
+AquaTROLL: S. Wilson; E. Phillips; P. Regier; Fausto Machado-Silva <Fausto.Silva@UToledo.Edu>
+ClimaVUE: S. Wilson; E. Phillips; A. Stearns; Roy Rich <RichR@si.edu>
+EXO: S. Wilson; Drew Peresta <PerestaA@si.edu>; R. Rich; Lydia LaGorga <LaGorgaL@si.edu>
+Dataloggers: S. Wilson; E. Phillips; A. Stearns; R. Rich
 
 Key publications:
 N/A as of yet 

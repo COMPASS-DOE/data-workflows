@@ -2,17 +2,23 @@ Crane Creek (CRC) is one of COMPASS-FME synoptic sites within the Crane
 Creek lacustuary region of southwestern Lake Erie, 9.25 miles (14.9 km)
 northwest of Oak Harbor, Ohio. This site is owned by the USFWS and
 managed as a part of the Ottawa National WIldlife Refuge complex. This
-site consists of three plots: upland ("UP"; located at 41.6153N, 83.2297W),
-transition ("TR"; 41.6219N, 83.2381W), and wetland ("W"; 41.6219N, 83.2389W). This
-site was established in December 2021.
+site consists of three plots: upland ("UP"; located at 41.6153N,
+83.2297W), transition ("TR"; 41.6219N, 83.2381W), and wetland ("W";
+41.6219N, 83.2389W). This site was established in December 2021.
 
-Contacts for the Crane Creek site: 
-Matt Kovach matthew.kovach3@utoledo.edu
+Contacts for the Crane Creek site:
+Michael Weintraub <Michael.Weintraub@utoledo.edu>
+Nick Ward <nicholas.ward@pnnl.gov>
 
-Contacts for Crane Creek data streams: 
-Sapflux: Stephanie Pennington stephanie.pennington@pnnl.gov
-TEROS: Peter Regier peter.regier@pnnl.gov
-Dataloggers: Roy Rich richr@si.edu
+Contacts for Crane Creek data streams:
+Overall: Fausto Machado-Silva <Fausto.Silva@UToledo.Edu>
+Sapflow: Leticia Sandoval <Leticia.Sandoval@rockets.utoledo.edu>
+TEROS: Roberta Bittencourt Peixoto <Roberta.BittencourtPeixoto@UToledo.Edu>; Peter Regier <peter.regier@pnnl.gov>
+AquaTROLL: P. Regier; F. Machado-Silva
+ClimaVUE: R. Bittencourt Peixoto; F. Machado-Silva
+EXO: F. Machado-Silva
+Dataloggers: Roy Rich <RichR@si.edu>
 
 Key publications:
-N/A as of yet
+Machado-Silva et al. (submitted), "Groundwater level and redox dynamics
+across terrestrial aquatic interface of Lake Erie coastal ecosystems"
