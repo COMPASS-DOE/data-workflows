@@ -21,9 +21,17 @@ HOW TO CITE THESE DATA
 —----------------------------------
 Pennington, Bittencourt Peixoto, Cheng, LaGorga, Machado-Silva, Peresta,
 Phillips, Regier, Rich, Sandoval, Stearns, Ward, Wilson, Weintraub,
-Megonigal, and Bailey (2024). COMPASS-FME Level 1 Sensor Data (version
-[VERSION] released [DATESTAMP]), downloaded YYYY-MM-DD,
+Bond-Lamberty, Megonigal, and Bailey (2024). COMPASS-FME Level 1 Sensor
+Data (version [VERSION] released [DATESTAMP]), downloaded YYYY-MM-DD,
 https://compass.pnnl.gov.
+
+DATA STRUCTURE
+—----------------------------------
+Data are organized into {SITE_YEAR} folders, with up to 12 monthly CSV
+files in each folder. Site include CRC (Crane Creek), GCW (GCReW), GWI
+(Goodiwn Island), MSM (Moneystump Marsh), OWC (Old Woman Creek), PTR
+(Portage River), SWH (Sweet Hall Marsh), and TMP (TEMPEST experiment).
+See site-specific metadata files in each folder.
 
 CHANGELOG
 —----------------------------------
