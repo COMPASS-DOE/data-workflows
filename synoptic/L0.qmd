@@ -156,9 +156,10 @@ f <- function(fn, new_dir) {
 
 # We can optionally process in parallel using all available cores
 if(params$run_parallel) {
-    message("Using parallel::mclapply")
     library(parallel)
     apply_func = mclapply
+    options(mc.cores = detectCores())
+    message("Using parallel::mclapply with ", getOption("mc.cores"), " cores")
 } else {
     apply_func = lapply
 }
