@@ -28,10 +28,10 @@ YYYY-MM-DD, https://compass.pnnl.gov.
 DATA STRUCTURE
 —----------------------------------
 Data are organized into {SITE_YEAR} folders, with up to 12 monthly CSV
-files in each folder. Sites include CRC (Crane Creek), GCW (GCReW), GWI
-(Goodiwn Island), MSM (Moneystump Marsh), OWC (Old Woman Creek), PTR
-(Portage River), SWH (Sweet Hall Marsh), and TMP (TEMPEST experiment).
-See site-specific metadata files in each folder.
+files in each folder for each plot at the site. Sites include CRC (Crane
+Creek), GCW (GCReW), GWI (Goodiwn Island), MSM (Moneystump Marsh), OWC
+(Old Woman Creek), PTR (Portage River), SWH (Sweet Hall Marsh), and TMP
+(TEMPEST experiment). See site-specific metadata files in each folder.
 
 CHANGELOG
 —----------------------------------
