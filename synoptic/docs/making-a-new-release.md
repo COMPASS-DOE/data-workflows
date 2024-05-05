@@ -1,0 +1,41 @@
+# Steps to make a new data release
+
+1. If you don't have them already
+
+2. Add new raw files from the Dropbox folder(s) into `./synoptic/data/Raw/`. Right
+now, this should include files from both the TEMPEST and synoptic Dropbox shares.
+Basically, bring your raw data files up to date.
+
+3. IMPORTANT NOTE: some of the raw data files have bad timestamps (usually, when a
+datalogger is first installed) and I have edited those out by hand. So you do NOT
+want to start with the entire Dropbox archive folder, but rather from the raw
+files of the previous release.
+
+4. Set the release version in `driver.R` (or in the individual Quarto files; see below).
+
+5. Make sure there's a README for your release number in `./synoptic/metadata/L1_metadata/`.
+The L1 step will error if a file named `README_vXXX.txt` doesn't exist there, where
+"XXX" is the version number you set in step 3.
+
+6. From the `./synoptic` folder, run `reset("data/")` (this function should be sourced
+from `helpers.R`). This will clean out any previous files.
+
+7. Run the processing pipeline. If you use `driver.R()` it will be relatively fast,
+because highly parallelized, but you don't get informative html logs, because the parallel
+processes can't write to output. If you want the full, detailed logs, run without
+parallelism (either by rendering the Quarto files one by one, or changing the
+driver script). 
+
+8. You may want to clean up the resulting L1 folder -- for example, remove (using `rm -r`)
+the `.DS_Store` files created by MacOS.
+
+9. Push the data to the COMPASS HPC. For example: 
+
+```
+data % rsync -av --exclude=".*" --delete-excluded L1/ d3x290@compass.pnl.gov:/compass/datasets/fme_data_release/sensor_data/Level1/v1-0/
+```
+
+10. Upload to the Google Drive, renaming the folder to the correct version number. 
+Remember that you want to archive L1, L0, and Raw! (See step 3 note above.)
+
+11. Let everyone know!
