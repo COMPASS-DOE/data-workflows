@@ -188,7 +188,11 @@ f <- function(fn, out_dir, design_table) {
     smry$no_research_name <- sum(is.na(dat$research_name))
     message("\tFiltering out ", smry$no_research_name, " empty research_name rows")
     dat <- subset(dat, !is.na(dat$research_name))
-    
+ 
+    # Remove empty data
+    dat <- dat[!is.na(dat$value), ]
+    message("\tRemoved ", nrow(dat_nodupe) - nrow(dat), " NA data value rows")
+   
     # If no rows left, note this fact and move on
     if(!nrow(dat)) {
         message("\tNo research_names left; nothing to process")

@@ -74,7 +74,6 @@ copy_output("L0.html", outfile)
 message("Running L1_normalize.qmd")
 new_section("Starting L1_normalize")
 
-dt <- file.path(ROOT, "design_table.csv")
 outfile <- paste0("L1_normalize_", now_string(), ".html")
 outfile <- file.path(LOGS, outfile)
 
@@ -129,7 +128,6 @@ copy_output("L1.html", outfile)
 message("Running L2.qmd")
 new_section("Starting L2")
 
-pt <- file.path(ROOT, "plot_table.csv")
 outfile <- paste0("L2_", now_string(), ".html")
 outfile <- file.path(LOGS, outfile)
 
