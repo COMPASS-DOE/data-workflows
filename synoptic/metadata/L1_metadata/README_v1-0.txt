@@ -19,11 +19,11 @@ Data lead: Stephanie Pennington, stephanie.pennington@pnnl.gov
 
 HOW TO CITE THESE DATA
 —----------------------------------
-Pennington, Bittencourt Peixoto, Cheng, LaGorga, Machado-Silva, Peresta,
-Phillips, Regier, Rich, Sandoval, Stearns, Ward, Wilson, Weintraub,
-Bond-Lamberty, Megonigal, and Bailey (2024). COMPASS-FME Level 1 Sensor
-Data (version [VERSION] released [DATESTAMP]), downloaded YYYY-MM-DD,
-https://compass.pnnl.gov.
+Pennington, Bittencourt Peixoto, Bond-Lamberty, Cheng, LaGorga,
+Machado-Silva, Peresta, Phillips, Regier, Rich, Sandoval, Stearns, Ward,
+Wilson, Weintraub, Megonigal, and Bailey (2024). COMPASS-FME Level 1
+Sensor Data (version [VERSION] released [DATESTAMP]), downloaded
+YYYY-MM-DD, https://compass.pnnl.gov.
 
 DATA STRUCTURE
 —----------------------------------
