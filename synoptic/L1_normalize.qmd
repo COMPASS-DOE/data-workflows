@@ -250,6 +250,7 @@ f <- function(fn, out_dir, design_table) {
                      root_dir = out_dir, 
                      data_level = "L1_normalize",
                      site = dat$Site[1], 
+                     plot = dat$Plot[1],
                      logger = dat$Logger[1],
                      table = dat$Table[1])
     
@@ -264,7 +265,8 @@ f <- function(fn, out_dir, design_table) {
         write_to_folders(dat, 
                          root_dir = out_dir, 
                          data_level = "L1_normalize",
-                         site = dat$Site[1], 
+                         site = dat$Site[1],
+                         plot = dat$Plot[1],
                          logger = dat$Logger[1],
                          table = dat$Table[1])
     }

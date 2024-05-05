@@ -114,6 +114,7 @@ f <- function(dir_name, dirs_to_process, out_dir) {
                      root_dir = out_dir, 
                      data_level = "L1",
                      site = site,
+                     plot = dat$Plot[1],
                      version = params$L1_VERSION,
                      write_plots = params$write_plots)
     
