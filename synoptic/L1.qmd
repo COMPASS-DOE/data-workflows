@@ -98,6 +98,7 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     
     if(nrow(dat)) {
         site <- dat$Site[1]
+        plot <- dat$Plot[1]
         
         # Order columns following the column metadata...
         if(!all(column_md$Column %in% colnames(dat))) {
@@ -106,12 +107,13 @@ f <- function(dir_name, dirs_to_process, out_dir) {
         }
         dat <- dat[column_md$Column]
         # ...and sort rows
-        dat <- dat[order(dat$TIMESTAMP, dat$Plot),]
+        dat <- dat[order(dat$TIMESTAMP),]
         
-        write_to_folders(dat,
-                         root_dir = out_dir,
+        write_to_folders(dat, 
+                         root_dir = out_dir, 
                          data_level = "L1",
                          site = site,
+                         plot = plot,
                          version = params$L1_VERSION,
                          write_plots = params$write_plots)
         
@@ -123,9 +125,7 @@ f <- function(dir_name, dirs_to_process, out_dir) {
         #     message("Sending ", nrow(flg), " flags to database")
         #     fdb_add_flags(site, flg)
         # }
-        
     }
-    
     rm(dat)
     return(smry)
 }
@@ -135,8 +135,8 @@ if(params$run_parallel) {
     library(parallel)
     apply_func = mclapply
     # L1 is memory-intensive, especially for the TEMPEST files, and 
-    # it's easy to run out of system memory, so limit cores used
-    options(mc.cores = min(3, detectCores()))
+    # it's possible to run out of system memory, so limit cores used
+    options(mc.cores = min(6, detectCores()))
     message("Using parallel::mclapply with ", getOption("mc.cores"), " cores")
 } else {
     apply_func = lapply
