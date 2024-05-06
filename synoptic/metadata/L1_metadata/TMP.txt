@@ -4,6 +4,9 @@ freshwater ("F"; 38.87403N, 76.5516W), and saltwater ("S"; 38.8744N,
 76.5525W). The TEMPEST experiment is in a mid- to late-successional (~80
 years old) temperate, deciduous coastal forest.
 
+NOTE: Meteorological data for TEMPEST are available in the GCW-W files
+and pulled from the GCReW met station. See notes in the GCW metadata.
+
 Contact for the TEMPEST site: 
 J. Patrick Megonigal megonialp@si.edu
 
