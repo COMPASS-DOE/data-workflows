@@ -40,7 +40,7 @@ ClimaVue50_15min,Rain_mm_Tot,wx_rain15,mm,mm,x * 1,,,Total rain over 15 minute p
 ClimaVue50_15min,WS_ms_S_WVT,wx_windspeed15,m/s,m/s,x * 1,,,Wind speed
 ClimaVue50_15min,WindDir_D1_WVT,wx_winddir15,degrees,degrees,x * 1,0,359,Wind direction
 ClimaVue50_15min,WindDir_SD1_WVT,wx_winddir_sd115,degrees,degrees,x * 1,0,359,Standard deviation of wind direction part of CS windvector function
-ClimaVue50_15min,MaxWS_ms_Max,wx_maxws15,m/s,m/s,x * 1,0,30,Maximum wind speed in15 minute period
+ClimaVue50_15min,MaxWS_ms_Max,wx_maxws15,m/s,m/s,x * 1,0,30,Maximum wind speed in 15 minute period
 ClimaVue50_15min,MaxWS_ms_TMx,wx_maxws_tmx15,m/s,m/s,x * 1,,,Time of maximum windspeed in 15 minute period
 ClimaVue50_15min,Invalid_Wind_Tot,wx_invalid_wind15,count,count,x * 1,,,Total invalid wind measurements over 15 minute period
 ClimaVue50_15min,AirT_C_Avg,wx_tempavg15,degC,degC,x * 1,-50,60,Average air temperature over 15 minute period
@@ -96,6 +96,10 @@ ClimaVue50_24hr,TiltWE_deg_Min,,degrees,degrees,x * 1,-90,90,Minimum degree of s
 ClimaVue50_24hr,PAR_Den_C_Avg,wx_par_den24,µmol/m2/s,µmol/m2/s,x * 1,0,2000,Average photosynthetically active radiation (PAR) flux density over 24 hr period; site specific correction factor applied
 ClimaVue50_24hr,PAR_Tot_C_Tot,wx_par_tot24,mmol/m2,mmol/m2,x * 1,,,Sum of total photosynthetically active radiation (PAR) flux density over 24 hr period
 ClimaVue50_24hr,CVMeta,,,,,,,"Current configuration of ClimaVue sensors (serial number, etc). Format is a13CAMPBELLCLIM50xxxxxx-yyyyyyyyy, where a is the SDI-12 address, xxxxxx is the model, and yyyyyyyyy is the serial number."
+GCREW_MET_15min,VPD,wx_vpd15,Pa,Pa,x * 1,,,Vapor pressure deficiti; from the GCREW met station and only appears at GCW-W
+GCREW_MET_15min,SVP,wx_svp15,Pa,Pa,x * 1,,,Saturated vapor pressure deficiti; from the GCREW met station and only appears at GCW-W
+GCREW_MET_15min,WS_ms_RM_Min,wx_minws15,m/s,m/s,x * 1,0,30,Maximum wind speed in 15 minute period; from the GCREW met station and only appears at GCW-W
+GCREW_MET_15min,Rain_cm_Tot,wx_gcrew_rain15,cm,cm,x * 1,0,960,Total rain over 15 minute period IN CENTIMETERS; from the GCREW met station and only appears at GCW-W
 ExoTable,Conductivity,sonde_conductivity,,,x * 1,,,
 ExoTable,FDOM_QSU,sonde_fdom,QSU,QSU,x * 1,0,300,"Fluorescent dissolved organic matter concentration, Quinine Sulfate Units"
 ExoTable,FDOM_RFU,sonde_fdom_rfu,RFU,RFU,x * 1,0,100,"Fluorescent dissolved organic matter concentration, Relative Fluorescent Units"
