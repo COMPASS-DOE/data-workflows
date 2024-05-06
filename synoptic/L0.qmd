@@ -113,10 +113,6 @@ f <- function(fn, new_dir) {
                               FUN = function(x) {
                                   substr(digest::digest(x, algo = "md5"), 1, 16)
                               })
-        # Since we removed duplicate rows above, hashes should be unique
-        if(any(duplicated(dat_long$ID))) {
-            stop("Duplicate ID hashes!")
-        }
         
         # Construct the new filename: old filename + nrow + ncol + short hash
         # This is so we can distinguish datasets with identical raw filename but
@@ -156,9 +152,10 @@ f <- function(fn, new_dir) {
 
 # We can optionally process in parallel using all available cores
 if(params$run_parallel) {
-    message("Using parallel::mclapply")
     library(parallel)
     apply_func = mclapply
+    options(mc.cores = detectCores())
+    message("Using parallel::mclapply with ", getOption("mc.cores"), " cores")
 } else {
     apply_func = lapply
 }

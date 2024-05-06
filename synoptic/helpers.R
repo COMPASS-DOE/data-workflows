@@ -81,7 +81,7 @@ read_csv_group <- function(files, col_types = NULL,
 # The data (x) should be a data frame with a POSIXct 'TIMESTAMP' column
 # This is used to split the data for sorting into <yyyy>_<mm> folders
 # Returns a list of filenames written (names) and number of data lines (values)
-write_to_folders <- function(x, root_dir, data_level, site,
+write_to_folders <- function(x, root_dir, data_level, site, plot,
                              logger, table, version = "???",
                              quiet = FALSE, write_plots = TRUE) {
     years <- year(x$TIMESTAMP)
@@ -122,7 +122,7 @@ write_to_folders <- function(x, root_dir, data_level, site,
                         format(end, format = "%Y%m%d"),
                         sep = "-")
             if(data_level == "L1_normalize") {
-                folder <- file.path(root_dir, paste(site, y, m, sep = "_"))
+                folder <- file.path(root_dir, paste(site, plot, y, m, sep = "_"))
                 # A given month's data is usually split across two datalogger
                 # files; add a short hash to end of filename to ensure we don't
                 # overwrite anything that's already there
@@ -131,10 +131,10 @@ write_to_folders <- function(x, root_dir, data_level, site,
                 na_string <- NA_STRING_L1
             } else if(data_level == "L1") {
                 folder <- file.path(root_dir, paste(site, y, sep = "_"))
-                filename <- paste0(paste(site, time_period, data_level, vversion, sep = "_"), ".csv")
+                filename <- paste0(paste(site, plot, time_period, data_level, vversion, sep = "_"), ".csv")
                 na_string <- NA_STRING_L1
                 write_this_plot <- TRUE
-                p <- ggplot(x, aes(TIMESTAMP, Value, group = paste(Plot, Instrument_ID, Sensor_ID))) +
+                p <- ggplot(x, aes(TIMESTAMP, Value, group = paste(Instrument_ID, Sensor_ID))) +
                     geom_line() +
                     facet_wrap(~research_name, scales = "free") +
                     ggtitle(filename) +

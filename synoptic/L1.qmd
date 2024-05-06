@@ -29,7 +29,7 @@ This script
 
 -   Reads in all the L1_normalize files
 
--   Compiles and writes them out into separate <year><month><site> files
+-   Compiles and writes them out into separate \<site\>\<year\>\<month\> files
 
 ## Initializing
 
@@ -83,66 +83,69 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     dat_raw <- read_csv_group(d,
                               remove_input_files = params$remove_input_files, 
                               col_types = "cccccTdccccccccdii")
-
+    
     message("\tTotal data: ", nrow(dat_raw), " rows, ", ncol(dat_raw), " columns")
     
     # Remove duplicate rows (e.g. from multiple datalogger downloads)
-    dat_nodupe <- dat_raw[!duplicated(dat_raw), ]
-    message("\tRemoved ", nrow(dat_raw) - nrow(dat_nodupe), " duplicate rows")
-    # Remove empty data
-    dat <- dat_nodupe[!is.na(dat_nodupe$Value), ]
-    message("\tRemoved ", nrow(dat_nodupe) - nrow(dat), " NA data value rows")
-
+    dat <- dat_raw[!duplicated(dat_raw), ]
+    message("\tRemoved ", nrow(dat_raw) - nrow(dat), " duplicate rows")
+    
     # File-based summary
     smry <- data.frame(Dir = dir_name, 
                        Files = length(d), 
                        Rows = nrow(dat),
                        NA_rows = sum(is.na(dat$Value)))
-
-    site <- dat$Site[1]
     
-    # Order columns following the column metadata...
-    if(!all(column_md$Column %in% colnames(dat))) {
-        stop("Column metadata file ", params$METADATA_COLUMNS_TABLE,
-             " has entries not in data: ", setdiff(column_md$Column, colnames(dat)))
+    if(nrow(dat)) {
+        site <- dat$Site[1]
+        plot <- dat$Plot[1]
+        
+        # Order columns following the column metadata...
+        if(!all(column_md$Column %in% colnames(dat))) {
+            stop("Column metadata file ", params$METADATA_COLUMNS_TABLE,
+                 " has entries not in data: ", setdiff(column_md$Column, colnames(dat)))
+        }
+        dat <- dat[column_md$Column]
+        # ...and sort rows
+        dat <- dat[order(dat$TIMESTAMP),]
+        
+        write_to_folders(dat, 
+                         root_dir = out_dir, 
+                         data_level = "L1",
+                         site = site,
+                         plot = plot,
+                         version = params$L1_VERSION,
+                         write_plots = params$write_plots)
+        
+        # Add any OOB flags to the flag database
+        # flg <- dat[!is.na(dat$F_OOB) & dat$F_OOB == 1, "ID"]
+        # if(nrow(flg)) {
+        #     flg$Flag_type <- "OOB"
+        #     flg$Remark <- basename(dir_name)
+        #     message("Sending ", nrow(flg), " flags to database")
+        #     fdb_add_flags(site, flg)
+        # }
     }
-    dat <- dat[column_md$Column]
-    # ...and sort rows
-    dat <- dat[order(dat$TIMESTAMP, dat$Plot),]
-    
-    write_to_folders(dat, 
-                     root_dir = out_dir, 
-                     data_level = "L1",
-                     site = site,
-                     version = params$L1_VERSION,
-                     write_plots = params$write_plots)
-    
-    # Add any OOB flags to the flag database
-    # flg <- dat[!is.na(dat$F_OOB) & dat$F_OOB == 1, "ID"]
-    # if(nrow(flg)) {
-    #     flg$Flag_type <- "OOB"
-    #     flg$Remark <- basename(dir_name)
-    #     message("Sending ", nrow(flg), " flags to database")
-    #     fdb_add_flags(site, flg)
-    # }
-
     rm(dat)
     return(smry)
 }
 
 # We can optionally process in parallel using all available cores
 if(params$run_parallel) {
-    message("Using parallel::mclapply")
     library(parallel)
     apply_func = mclapply
+    # L1 is memory-intensive, especially for the TEMPEST files, and 
+    # it's possible to run out of system memory, so limit cores used
+    options(mc.cores = min(6, detectCores()))
+    message("Using parallel::mclapply with ", getOption("mc.cores"), " cores")
 } else {
     apply_func = lapply
 }
 
 log_info("About to L1", logfile = params$logfile)
 tryCatch({
-out <- apply_func(names(dirs_to_process), f, 
-                  dirs_to_process = dirs_to_process, out_dir = L1)
+    out <- apply_func(names(dirs_to_process), f, 
+                      dirs_to_process = dirs_to_process, out_dir = L1)
 },
 error = function(e) {
     log_warning("L1: an error occurred!", logfile = params$logfile)

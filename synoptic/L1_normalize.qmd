@@ -188,7 +188,10 @@ f <- function(fn, out_dir, design_table) {
     smry$no_research_name <- sum(is.na(dat$research_name))
     message("\tFiltering out ", smry$no_research_name, " empty research_name rows")
     dat <- subset(dat, !is.na(dat$research_name))
-    
+ 
+    # Remove empty data
+    dat <- dat[!is.na(dat$value), ]
+
     # If no rows left, note this fact and move on
     if(!nrow(dat)) {
         message("\tNo research_names left; nothing to process")
@@ -250,6 +253,7 @@ f <- function(fn, out_dir, design_table) {
                      root_dir = out_dir, 
                      data_level = "L1_normalize",
                      site = dat$Site[1], 
+                     plot = dat$Plot[1],
                      logger = dat$Logger[1],
                      table = dat$Table[1])
     
@@ -264,7 +268,8 @@ f <- function(fn, out_dir, design_table) {
         write_to_folders(dat, 
                          root_dir = out_dir, 
                          data_level = "L1_normalize",
-                         site = dat$Site[1], 
+                         site = dat$Site[1],
+                         plot = dat$Plot[1],
                          logger = dat$Logger[1],
                          table = dat$Table[1])
     }
@@ -281,9 +286,10 @@ f <- function(fn, out_dir, design_table) {
 
 # We can optionally process in parallel using all available cores
 if(params$run_parallel) {
-    message("Using parallel::mclapply")
     library(parallel)
     apply_func = mclapply
+    options(mc.cores = detectCores())
+    message("Using parallel::mclapply with ", getOption("mc.cores"), " cores")
 } else {
     apply_func = lapply
 }
