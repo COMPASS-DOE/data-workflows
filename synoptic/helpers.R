@@ -201,6 +201,11 @@ reset <- function(root = here::here("synoptic/data_TEST")) {
                         full.names = TRUE)
     message("Removing ", length(items), " files in L1_normalize")
     lapply(items, file.remove)
+    items <- list.files(file.path(root, "L1_normalize/"), recursive = TRUE,
+                        include.dirs = TRUE, full.names = TRUE)
+    items <- items[basename(items) != "README.md"]
+    message("Removing ", length(items), " directories in L1_normalize")
+    lapply(items, file.remove)
 
     items <- list.files(file.path(root, "L1/"), recursive = TRUE,
                         include.dirs = FALSE, full.names = TRUE)
@@ -221,7 +226,7 @@ reset <- function(root = here::here("synoptic/data_TEST")) {
     items <- list.files(file.path(root, "L2/"), recursive = TRUE,
                         include.dirs = TRUE, full.names = TRUE)
     items <- items[basename(items) != "README.md"]
-    message("Removing ", length(items), " directories in L1a")
+    message("Removing ", length(items), " directories in L2")
     lapply(items, file.remove)
 
     items <- list.files(file.path(root, "Logs/"), pattern = "(txt|html)$",

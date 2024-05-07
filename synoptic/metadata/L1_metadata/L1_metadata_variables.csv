@@ -34,8 +34,8 @@ WaterLevel,Pressure600,gw_pressure,psi,mbar,x * 68.948,-10,910,Vented pressure c
 WaterLevel,Depth600,gw_depth,,,x * 1,,,
 WaterLevel,Voltage_Ext600A,gw_voltage_ext,V,V,x * 1,,,External battery voltage coming into the Aquatroll
 WaterLevel,Battery_Int600A,gw_battery,%,%,x * 1,0,100,Internal battery percentage
-ClimaVue50_15min,SlrFD_W_Avg,wx_slr_fd15,MJ/m2,MJ/m2,x * 1,,,Average solar flux over 15 minute period
-ClimaVue50_15min,SlrTF_MJ_Tot,wx_slr_tf15,W/m2,W/m2,x * 1,,,Total solar flux in over minute period
+ClimaVue50_15min,SlrFD_W_Avg,wx_slr_fd15,W/m2,MJ/m2,x * 1,,,Average solar flux over 15 minute period
+ClimaVue50_15min,SlrTF_MJ_Tot,wx_slr_tf15,MJ/m2,W/m2,x * 1,,,Total solar flux in over minute period
 ClimaVue50_15min,Rain_mm_Tot,wx_rain15,mm,mm,x * 1,,,Total rain over 15 minute period
 ClimaVue50_15min,WS_ms_S_WVT,wx_windspeed15,m/s,m/s,x * 1,,,Wind speed
 ClimaVue50_15min,WindDir_D1_WVT,wx_winddir15,degrees,degrees,x * 1,0,359,Wind direction
