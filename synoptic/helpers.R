@@ -191,49 +191,26 @@ write_to_folders <- function(x, root_dir, data_level, site, plot,
 # L1, L2, and Logs folders
 reset <- function(root = here::here("synoptic/data_TEST")) {
     message("root is ", root)
-    items <- list.files(file.path(root, "L0/"), pattern = "*.csv",
-                        full.names = TRUE)
-    message("Removing ", length(items), " files in L0")
-    lapply(items, file.remove)
 
-    items <- list.files(file.path(root, "L1_normalize/"), recursive = TRUE,
-                        pattern = "*.csv",
-                        full.names = TRUE)
-    message("Removing ", length(items), " files in L1_normalize")
-    lapply(items, file.remove)
-    items <- list.files(file.path(root, "L1_normalize/"), recursive = TRUE,
-                        include.dirs = TRUE, full.names = TRUE)
-    items <- items[basename(items) != "README.md"]
-    message("Removing ", length(items), " directories in L1_normalize")
-    lapply(items, file.remove)
+    remove_files_folders <- function(dir, pat = "*.csv", rec = TRUE) {
+        items <- list.files(file.path(root, dir), recursive = rec,
+                            pattern = pat,
+                            full.names = TRUE)
+        message("Removing ", length(items), " files in ", dir)
+        lapply(items, file.remove)
+        items <- list.files(file.path(root, dir), recursive = rec,
+                            include.dirs = TRUE, full.names = TRUE)
+        items <- items[basename(items) != "README.md"]
+        message("Removing ", length(items), " directories in ", dir)
+        lapply(items, file.remove)
 
-    items <- list.files(file.path(root, "L1/"), recursive = TRUE,
-                        include.dirs = FALSE, full.names = TRUE)
-    items <- items[basename(items) != "README.md"]
-    message("Removing ", length(items), " files in L1")
-    lapply(items, file.remove)
-    items <- list.files(file.path(root, "L1/"), recursive = TRUE,
-                        include.dirs = TRUE, full.names = TRUE)
-    items <- items[basename(items) != "README.md"]
-    message("Removing ", length(items), " directories in L1")
-    lapply(items, file.remove)
+    }
 
-    items <- list.files(file.path(root, "L2/"), recursive = TRUE,
-                        include.dirs = FALSE, full.names = TRUE)
-    items <- items[basename(items) != "README.md"]
-    message("Removing ", length(items), " files in L2")
-    lapply(items, file.remove)
-    items <- list.files(file.path(root, "L2/"), recursive = TRUE,
-                        include.dirs = TRUE, full.names = TRUE)
-    items <- items[basename(items) != "README.md"]
-    message("Removing ", length(items), " directories in L2")
-    lapply(items, file.remove)
-
-    items <- list.files(file.path(root, "Logs/"), pattern = "(txt|html)$",
-                        recursive = TRUE,
-                        include.dirs = FALSE, full.names = TRUE)
-    message("Removing ", length(items), " log files in Logs")
-    lapply(items, file.remove)
+    remove_files_folders("L0/")
+    remove_files_folders("L1_normalize/")
+    remove_files_folders("L1/")
+    remove_files_folders("L2/")
+    remove_files_folders("Logs/", pat = "(txt|html)$")
 
     message("All done.")
 }

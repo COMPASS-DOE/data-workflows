@@ -40,12 +40,12 @@ script). Of course, this is much slower.
 9. Double-check the final release README file.
 
 10. You may want to clean up the resulting L1 folder; for example,
-remove (using `rm -r`) the `.DS_Store` files created by MacOS.
+remove (`find ./ -name ".DS_Store" | xargs rm`) hidden files created by MacOS.
 
 11. Push the data to the COMPASS HPC. For example:
 
 ```
-data % rsync -av --exclude=".*" L1/ <user>@compass.pnl.gov:/compass/datasets/fme_data_release/sensor_data/Level1/v1-0/
+rsync -av --exclude=".*" L1/ <user>@compass.pnl.gov:/compass/datasets/fme_data_release/sensor_data/Level1/v1-0/
 ```
 
 (Follow the same procedure for `Raw`, `L0`, and `Logs` outputs.)
