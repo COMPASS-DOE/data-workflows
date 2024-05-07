@@ -12,7 +12,6 @@ params:
   METADATA_VARS_TABLE: "L1_metadata/L1_metadata_variables.csv"
   OOS: "out-of-service/"
   debug: false
-  remove_input_files: false
   logfile: ""
   run_parallel: false
 date: now
@@ -275,12 +274,6 @@ f <- function(fn, out_dir, design_table) {
     }
 
     rm(dat)
-    
-    if(params$remove_input_files) {
-        message("\tRemoving input files")
-        file.remove(fn)
-    }
-    
     return(smry)
 }
 

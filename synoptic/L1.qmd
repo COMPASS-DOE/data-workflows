@@ -13,7 +13,6 @@ params:
   METADATA_COLUMNS_TABLE: "L1_metadata_columns.csv"
   L1_VERSION: "???"
   debug: false
-  remove_input_files: false
   write_plots: true
   logfile: ""
   run_parallel: false
@@ -80,9 +79,7 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     message("\tIt has ", length(d), " files")
     
     # Read all files in a folder
-    dat_raw <- read_csv_group(d,
-                              remove_input_files = params$remove_input_files, 
-                              col_types = "cccccTdccccccccdii")
+    dat_raw <- read_csv_group(d, col_types = "cccccTdccccccccdii")
     
     message("\tTotal data: ", nrow(dat_raw), " rows, ", ncol(dat_raw), " columns")
     

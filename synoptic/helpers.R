@@ -47,8 +47,7 @@ copy_output <- function(from, to, overwrite = TRUE) {
 # Read a vector of CSV files with the same column structure, optionally
 # removing them as we read, and bind data together. The read error count
 # is returned as an attribute of the output
-read_csv_group <- function(files, col_types = NULL,
-                           remove_input_files = FALSE, quiet = FALSE, ...) {
+read_csv_group <- function(files, col_types = NULL, quiet = FALSE, ...) {
     # Warnings are not allowed here, as this usually means a column format
     # problem that we want to fix immediately
     oldwarn <- options()$warn
@@ -58,7 +57,6 @@ read_csv_group <- function(files, col_types = NULL,
     readf <- function(fn, quiet, ...) {
         if(!quiet) message("\tReading ", basename(fn))
         x <- read_csv(fn, col_types = col_types, ...)
-        if(remove_input_files) file.remove(fn)
         x
     }
     # Read all files, bind data frames, and return
