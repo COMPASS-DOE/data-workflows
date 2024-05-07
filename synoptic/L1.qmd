@@ -100,11 +100,12 @@ f <- function(dir_name, dirs_to_process, out_dir) {
         site <- dat$Site[1]
         plot <- dat$Plot[1]
         
-        # Order columns following the column metadata...
+        # Check for metadata columns that are missing...
         if(!all(column_md$Column %in% colnames(dat))) {
             stop("Column metadata file ", params$METADATA_COLUMNS_TABLE,
                  " has entries not in data: ", setdiff(column_md$Column, colnames(dat)))
         }
+        # ...order and remove columns not in the metadata...
         dat <- dat[column_md$Column]
         # ...and sort rows
         dat <- dat[order(dat$TIMESTAMP),]

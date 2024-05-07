@@ -1,6 +1,8 @@
 # L1 data will be ordered following rows below, and these descriptions inserted into metadata
 Column,Description
-TIMESTAMP,Datalogger timestamp (EST) (POSIXct)
+Site,Site code; see site info above (character)
+Plot,Plot code; see site info above (character)
+TIMESTAMP,Datalogger timestamp in EST (POSIXct)
 Instrument,Name of measurement instrument (character)
 Instrument_ID,Identifier of instrument within plot (character)
 Sensor_ID,"Identifier of individual sensor, tree, etc. being measured (character)"
