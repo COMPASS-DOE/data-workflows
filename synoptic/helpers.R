@@ -192,7 +192,7 @@ write_to_folders <- function(x, root_dir, data_level, site, plot,
 reset <- function(root = here::here("synoptic/data_TEST")) {
     message("root is ", root)
 
-    remove_files_folders <- function(dir, pat = "*.csv", rec = TRUE) {
+    remove_files_folders <- function(dir, pat = "(pdf|csv)$", rec = TRUE) {
         items <- list.files(file.path(root, dir), recursive = rec,
                             pattern = pat,
                             full.names = TRUE)
@@ -203,7 +203,6 @@ reset <- function(root = here::here("synoptic/data_TEST")) {
         items <- items[basename(items) != "README.md"]
         message("Removing ", length(items), " directories in ", dir)
         lapply(items, file.remove)
-
     }
 
     remove_files_folders("L0/")
