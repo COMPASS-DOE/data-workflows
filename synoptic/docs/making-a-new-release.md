@@ -25,7 +25,10 @@ sections of this document are up to date.
 information should be updated, and if so, update the various site files
 in `./synoptic/metadata/L1_metadata`.
 
-7. Commit all your changes.
+7. Commit all your changes. Now set the `ROOT` variable in `driver.R`
+(if that's what you're using) to "./data" instead of "./data_TEST". This
+change does NOT get committed, however, because you want GitHub
+Actions to continue to use the _test_ data.
 
 8. From the `./synoptic` folder, run `reset("data/")` (this function
 should be sourced from `helpers.R`). This will clean out any previous
