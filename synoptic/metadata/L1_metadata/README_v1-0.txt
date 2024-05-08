@@ -1,4 +1,4 @@
-COMPASS-FME Level 1 data
+COMPASS-FME Level 1 sensor data
 Version: [VERSION]
 Date: [DATESTAMP]
 Observations: [OBSERVATIONS]
@@ -6,11 +6,14 @@ Git commit: [GIT_COMMIT]
 
 DESCRIPTION
 —----------------------------------
-Level 1 (L1) data are close to raw, but are units-transformed and have
-out-of-instrument-bounds and out-of-service flags added. Duplicates and
-missing data are removed but otherwise these data are not filtered, and
-have not been subject to any additional algorithmic or human QA/QC. Any
-scientific analyses of L1 data should be performed with care.
+This is the Level 1 (L1) data release [VERSION] for COMPASS-FME
+environmental sensors located at field sites in the Lake Erie and
+Chesapeake Bay regions. L1 data are close to raw, but are
+units-transformed and have out-of-instrument-bounds and out-of-service
+flags added. Duplicates and missing data are removed but otherwise these
+data are not filtered, and have not been subject to any additional
+algorithmic or human QA/QC. Any scientific analyses of L1 data should be
+performed with care.
 
 CONTACT
 —----------------------------------
@@ -27,11 +30,12 @@ YYYY-MM-DD, https://compass.pnnl.gov.
 
 DATA STRUCTURE
 —----------------------------------
-Data are organized into {SITE_YEAR} folders, with up to 12 monthly CSV
-files in each folder for each plot at the site. Sites include CRC (Crane
-Creek), GCW (GCReW), GWI (Goodiwn Island), MSM (Moneystump Marsh), OWC
-(Old Woman Creek), PTR (Portage River), SWH (Sweet Hall Marsh), and TMP
-(TEMPEST experiment). See site-specific metadata files in each folder.
+Data are organized into {SITE_YEAR} folders, with up to 12 monthly
+comma-separated value (CSV) files in each folder for each plot at that
+site. Sites include CRC (Crane Creek), GCW (GCReW), GWI (Goodiwn
+Island), MSM (Moneystump Marsh), OWC (Old Woman Creek), PTR (Portage
+River), SWH (Sweet Hall Marsh), and TMP (TEMPEST experiment). See
+site-specific metadata files in each folder.
 
 CHANGELOG
 —----------------------------------
