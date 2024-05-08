@@ -179,7 +179,7 @@ template_file <- file.path(params$METADATA_ROOT,
                            params$L1_METADATA, 
                            "L1_metadata_template.txt")
 if(!file.exists(template_file)) {
-    stop("Couldn't find file ", basenme(template_file), " in ", params$L1_METADATA)
+    stop("Couldn't find file ", basename(template_file), " in ", params$L1_METADATA)
 }
 L1_metadata_template <- readLines(template_file)
 
