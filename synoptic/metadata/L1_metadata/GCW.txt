@@ -7,6 +7,12 @@ transect spans a mid- to late-successional (~80 years old) temperate,
 deciduous coastal forest and a mesohaline marsh along the Rhode River in
 Edgewater, MD.
 
+IMPORTANT DATA NOTE: GCW-W's meteorological data are pulled from the
+GCReW met station, which is a different instrument than at the other
+synoptic sites. It has four variables that appear nowhere else:
+wx_vpd15, wx_svp15, wx_minws15, and wx_gcrew_rain15 in CENTIMETERS (not
+mm). See variables table below.
+
 Contacts for the GCReW Synoptic site: 
 Stephanie J. Wilson <wilsonsj@si.edu>
 Pat Megonigal <megonigalp@si.edu>

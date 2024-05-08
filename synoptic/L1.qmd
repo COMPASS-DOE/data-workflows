@@ -13,7 +13,6 @@ params:
   METADATA_COLUMNS_TABLE: "L1_metadata_columns.csv"
   L1_VERSION: "???"
   debug: false
-  remove_input_files: false
   write_plots: true
   logfile: ""
   run_parallel: false
@@ -80,9 +79,7 @@ f <- function(dir_name, dirs_to_process, out_dir) {
     message("\tIt has ", length(d), " files")
     
     # Read all files in a folder
-    dat_raw <- read_csv_group(d,
-                              remove_input_files = params$remove_input_files, 
-                              col_types = "cccccTdccccccccdii")
+    dat_raw <- read_csv_group(d, col_types = "cccccTdccccccccdii")
     
     message("\tTotal data: ", nrow(dat_raw), " rows, ", ncol(dat_raw), " columns")
     
@@ -100,11 +97,12 @@ f <- function(dir_name, dirs_to_process, out_dir) {
         site <- dat$Site[1]
         plot <- dat$Plot[1]
         
-        # Order columns following the column metadata...
+        # Check for metadata columns that are missing...
         if(!all(column_md$Column %in% colnames(dat))) {
             stop("Column metadata file ", params$METADATA_COLUMNS_TABLE,
                  " has entries not in data: ", setdiff(column_md$Column, colnames(dat)))
         }
+        # ...order and remove columns not in the metadata...
         dat <- dat[column_md$Column]
         # ...and sort rows
         dat <- dat[order(dat$TIMESTAMP),]

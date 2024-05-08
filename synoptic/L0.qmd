@@ -6,9 +6,7 @@ params:
   html_outfile: "L0.html"
   DATA_ROOT: "data_TEST/"
   RAW: "Raw/"
-  RAW_DONE: "Raw_done/"
   L0: "L0/"
-  remove_input_files: false
   logfile: ""
   run_parallel: false
 date: now
@@ -31,15 +29,12 @@ This script
 
 -   Writes as CSV files with row/col/hash info in filename
 
--   Moves the raw files to a Raw_done folder
-
 ## Initializing
 
 ```{r init}
 #| include: false
 
 RAW <- file.path(params$DATA_ROOT, params$RAW)
-RAW_DONE <- file.path(params$DATA_ROOT, params$RAW_DONE)
 L0 <- file.path(params$DATA_ROOT, params$L0)
 
 library(tidyr)
@@ -59,8 +54,6 @@ source("helpers.R")
 I see `r length(files_to_process)` files to process in `r RAW`.
 
 Output directory is `r L0`.
-
-Moving done files to `r RAW_DONE`.
 
 HTML outfile is `r params$html_outfile`.
 
@@ -127,17 +120,11 @@ f <- function(fn, new_dir) {
             overwrites <<- overwrites + 1
         }
         
-        # Write the new file...
+        # Write the new file
         new_fqfn <- file.path(new_dir, new_fn)
         message("\tWriting ", new_fqfn)
         write.csv(dat_long, new_fqfn, row.names = FALSE)
         rm(dat_long)
-        # ...and move to 'Raw_done' folder
-        if(params$remove_input_files) {
-            message("\tArchiving raw input files")
-            file.copy(fn, file.path(params$raw_done, basefn), overwrite = FALSE)
-            file.remove(fn)
-        }
     }
     
     # Return an informational data frame about file processed, dimensions, etc.
