@@ -198,7 +198,9 @@ reset <- function(root = here::here("synoptic/data_TEST")) {
         lapply(items, file.remove)
         items <- list.files(file.path(root, dir), recursive = rec,
                             include.dirs = TRUE, full.names = TRUE)
+        # Don't remove READMEs or R files
         items <- items[basename(items) != "README.md"]
+        items <- items[grep("\\.R$", items, invert = TRUE)]
         message("Removing ", length(items), " directories in ", dir)
         lapply(items, file.remove)
     }
