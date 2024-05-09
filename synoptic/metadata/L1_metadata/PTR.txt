@@ -7,6 +7,8 @@ site consists of three plots: upland ("UP"; located at 41.5015N,
 83.0461W), transition ("TR"; 41.5020N, 83.0456W), and wetland ("W";
 41.5016N, 83.0444W). The site was established in December 2021.
 
+NOTE: Meteorological data for PTR are available in the PTR-W files.
+
 Contacts for the Portage River site:
 Michael Weintraub <Michael.Weintraub@utoledo.edu>
 Nick Ward <nicholas.ward@pnnl.gov>

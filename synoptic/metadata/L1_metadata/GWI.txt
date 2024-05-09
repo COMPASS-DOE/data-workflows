@@ -3,6 +3,8 @@ plots: upland ("UP"; located at 37.2192N, 76.4087W), transition ("TR";
 37.2194N, 76.4092W), and wetland ("W"; 37.2189N, 76.4101W). The site was
 established in June 2022.
 
+NOTE: Meteorological data for GWI are available in the GWI-W files.
+
 Contacts for the Goodwin Island site:
 Stephanie J. Wilson <wilsonsj@si.edu>
 Pat Megonigal <megonigalp@si.edu>
