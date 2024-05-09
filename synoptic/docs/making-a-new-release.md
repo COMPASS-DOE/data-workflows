@@ -3,9 +3,9 @@
 1. Make sure you're up-to-date with the latest version of `main`.
 
 2. Add new raw files from the Dropbox folder(s) into
-`./synoptic/data/Raw/`. Right now, this should include files from both
-the TEMPEST and synoptic Dropbox shares. Basically, bring your raw data
-files up to date.
+`./synoptic/data/Raw/`. Right now, this should include files from the
+TEMPEST, synoptic, and GCReW met Dropbox shares. Basically, bring your
+raw data files up to date.
 
 3. IMPORTANT NOTE: some of the raw data files have bad timestamps
 (usually, from when a datalogger is first installed) and I have edited
@@ -21,42 +21,45 @@ named `README_vXXX.txt` doesn't exist there, where "XXX" is the version
 number you set in step 4. Make sure that the citation and changelog
 sections of this document are up to date.
 
-6. Occasionally, check with site PIs to see if the site-specific contact
+6. Update the out-of-service files in
+`./synoptic/metadata/out-of-service` (see the README in that folder).
+
+7. Occasionally, check with site PIs to see if the site-specific contact
 information should be updated, and if so, update the various site files
 in `./synoptic/metadata/L1_metadata`.
 
-7. Commit all your changes. Now set the `ROOT` variable in `driver.R`
+8. Commit all your changes. Now set the `ROOT` variable in `driver.R`
 (if that's what you're using) to "./data" instead of "./data_TEST". This
-change does NOT get committed, however, because you want GitHub
-Actions to continue to use the _test_ data.
+change does NOT get committed, however, because you want GitHub Actions
+to continue to use the _test_ data.
 
-8. From the `./synoptic` folder, run `reset("data/")` (this function
+9. From the `./synoptic` folder, run `reset("data/")` (this function
 should be sourced from `helpers.R`). This will clean out any previous
 files.
 
-9. Run the processing pipeline. If you use `driver.R` it will be
+10. Run the processing pipeline. If you use `driver.R` it will be
 relatively fast, because highly parallelized, but you don't get
 informative html logs, because the parallel processes can't write to
 output. If you want the full, detailed logs, run without parallelism
 (either by rendering the Quarto files one by one, or changing the driver
 script). Of course, this is much slower.
 
-10. Double-check the final release README file.
+11. Double-check the final release README file.
 
-11. You may want to clean up the resulting L1 folder; for example,
-remove (`find ./ -name ".DS_Store" | xargs rm`) hidden files created by MacOS.
+12. You may want to clean up the resulting L1 folder; for example,
+remove (`find ./ -name ".DS_Store" | xargs rm`) hidden files created by
+MacOS.
 
-12. Push the data to the COMPASS HPC. For example:
+13. Push the data (including `L1`, `Raw`, `L0`, and `Logs`) to the
+COMPASS HPC. For example:
 
 ```
 rsync -av --exclude=".*" L1/ <user>@compass.pnl.gov:/compass/datasets/fme_data_release/sensor_data/Level1/v1-0/
 ```
 
-(Follow the same procedure for `Raw`, `L0`, and `Logs` outputs.)
-
-13. Upload to the Google Drive, renaming the folder to the correct
+14. Upload to the Google Drive, renaming the folder to the correct
 version number, again for `L1`, `Raw`, `L0`, and `Logs`.
 
-14. Make a Git release corresponding to the version number.
+15. Make a Git release corresponding to the version number.
 
-15. Let everyone know!
+16. Let everyone know!
