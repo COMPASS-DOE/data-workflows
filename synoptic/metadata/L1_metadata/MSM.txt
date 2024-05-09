@@ -6,6 +6,8 @@ wetland ("W"; 38.4308N, 76.2286W). The site was established in June
 2022. The transect spans a coastal loblolly pine forest and a mesohaline
 marsh dominated by Spartina and Distichlis.
 
+NOTE: Meteorological data for MSM are available in the MSM-W files.
+
 Contacts for the Moneystump Swamp site:
 Stephanie J. Wilson <wilsonsj@si.edu>
 Pat Megonigal <megonigalp@si.edu>

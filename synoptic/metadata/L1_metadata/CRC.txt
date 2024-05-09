@@ -6,6 +6,8 @@ site consists of three plots: upland ("UP"; located at 41.6153N,
 83.2297W), transition ("TR"; 41.6219N, 83.2381W), and wetland ("W";
 41.6219N, 83.2389W). This site was established in December 2021.
 
+NOTE: Meteorological data for CRC are available in the CRC-W files.
+
 Contacts for the Crane Creek site:
 Michael Weintraub <Michael.Weintraub@utoledo.edu>
 Nick Ward <nicholas.ward@pnnl.gov>

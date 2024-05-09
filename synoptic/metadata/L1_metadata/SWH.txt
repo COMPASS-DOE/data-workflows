@@ -7,6 +7,8 @@ wetland ("W"; 37.56659N, 76.8970W). The synoptic site was established in
 June 2023. This site is also identified as a Chesapeake Bay National
 Research Reserve site.
 
+NOTE: Meteorological data for SWH are available in the SWH-W files.
+
 Contacts for the Sweet Hall site: 
 Stephanie J. Wilson <wilsonsj@si.edu>
 Pat Megonigal <megonigalp@si.edu>
