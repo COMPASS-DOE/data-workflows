@@ -153,6 +153,10 @@ error = function(e) {
 })
 
 out_df <- do.call("rbind", out)
+
+if(!is.numeric(out_df$Rows)) {
+    stop("Rows is not numeric: ", class(out_df), class(out_df$Rows), out_df$Rows[1])
+}
 n_obs <- format(sum(out_df$Rows), big.mark = ",")
 n_na <- format(sum(out_df$NA_rows), big.mark = ",")
 ```
