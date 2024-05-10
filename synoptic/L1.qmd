@@ -5,14 +5,13 @@ title-block-banner: true
 params:
   html_outfile: "L1.html"
   DATA_ROOT: "data_TEST/"
-  METADATA_ROOT: "metadata/"
   L1_NORMALIZE: "L1_normalize/"
   L1: "L1/"
+  METADATA_ROOT: "metadata/"
   L1_METADATA: "L1_metadata/"
   METADATA_VARS_TABLE: "L1_metadata_variables.csv"
   METADATA_COLUMNS_TABLE: "L1_metadata_columns.csv"
   L1_VERSION: "???"
-  debug: false
   write_plots: true
   logfile: ""
   run_parallel: false
@@ -29,6 +28,8 @@ This script
 -   Reads in all the L1_normalize files
 
 -   Compiles and writes them out into separate \<site\>\<year\>\<month\> files
+
+-   Writes a metadata file for each folder
 
 ## Initializing
 
@@ -152,6 +153,10 @@ error = function(e) {
 })
 
 out_df <- do.call("rbind", out)
+
+if(!is.numeric(out_df$Rows)) {
+    stop("Rows is not numeric: ", class(out_df), class(out_df$Rows), out_df$Rows[1])
+}
 n_obs <- format(sum(out_df$Rows), big.mark = ",")
 n_na <- format(sum(out_df$NA_rows), big.mark = ",")
 ```
@@ -254,7 +259,6 @@ for(dd in data_dirs) {
     if(!file.exists(site_md_file)) {
         stop("Couldn't find file ", site_md_file, " in ", params$L1_METADATA)
     }
-    message("\tFound ", basename(site_md_file))
     site_md_for_insert <- readLines(site_md_file)
 
     # Insert site information    

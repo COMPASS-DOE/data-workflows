@@ -11,7 +11,6 @@ params:
   DESIGN_TABLE: "design_table.csv"
   METADATA_VARS_TABLE: "L1_metadata/L1_metadata_variables.csv"
   OOS: "out-of-service/"
-  debug: false
   logfile: ""
   run_parallel: false
 date: now
@@ -224,12 +223,8 @@ f <- function(fn, out_dir, design_table) {
     dat <- merge(dat, bt, by = c("research_name", "units"))
     dat$F_OOB <- as.integer(with(dat, Value < low_bound | Value > high_bound))
     smry$`OOB%` <- round(sum(dat$F_OOB) / nrow(dat) * 100, 1)
-    # Remove unneeded columns unless needed for debugging
-    if(!params$debug) {
-        message("\tDropping bounds columns")
-        dat$low_bound <- dat$high_bound <- NULL
-    }
-    
+    dat$low_bound <- dat$high_bound <- NULL
+
     # ------------- Out-of-service flags
 
     # It turns out that the out of service check is SUPER expensive (50% of 

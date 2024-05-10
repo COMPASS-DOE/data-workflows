@@ -28,7 +28,8 @@ dat <- do.call("rbind", dat)
 library(ggplot2)
 p <- ggplot(dat, aes(TIMESTAMP, Value, color = Sensor_ID)) +
     geom_line() +
-    facet_grid(Plot~.)
+    facet_grid(Plot~.) +
+    ggtitle(paste(site, variable, paste0("(n=", nrow(dat), ")")))
 print(p)
 
 # All done!
