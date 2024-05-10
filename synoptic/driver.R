@@ -17,14 +17,13 @@ source("helpers.R")
 
 # Settings ----------------------------------------------------
 
-now_string <- function() format(Sys.time(), "%Y%m%d.%H%M")
-
 ROOT <- "./data_TEST"
 VERSION <- "1-0"
 
 # Log file ----------------------------------------------------
 
 LOGS <- file.path(ROOT, "Logs/")
+now_string <- function() format(Sys.time(), "%Y%m%d.%H%M")
 
 # Main logfile
 LOGFILE <- file.path(LOGS, paste0("driver_log_", now_string(), ".txt"))
