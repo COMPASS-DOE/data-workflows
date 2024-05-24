@@ -149,8 +149,8 @@ write_to_folders <- function(x, root_dir, data_level, site, plot,
             # Create folder, if needed
             if(!dir.exists(folder)) {
                 if(!quiet) message("Creating ", basename(folder))
-                if(!dir.create(folder)) {
-                    stop("dir.create returned an error")
+                if(!dir.create(folder, showWarnings = TRUE)) {
+                    stop("dir.create returned error for ", folder)
                 }
             }
 
