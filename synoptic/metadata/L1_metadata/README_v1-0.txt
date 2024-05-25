@@ -39,11 +39,12 @@ site-specific metadata files in each folder.
 
 CHANGELOG
 —----------------------------------
-Version 1-0 released 2024-05-15
+Version 1-0 released 2024-05-29
 * Covers late 2019 through April 2024 for TEMPEST and all synoptic sites
 * Restructured for ease of use, with metadata (location, sensor ID, etc) in separate columns
-* SWH plot naming reworked for new upland plot; mirroring TMP C to GCW UP
-* GCReW weather station variables are now mirrored to GCW-W 
+* SWH plot naming reworked for new upland plot
+* Mirroring TMP C to GCW UP for synoptic site consistency
+* GCReW weather station variables are now included in GCW-W 
 * Many fixes to variable units and bounds
 * Out-of-service is valid for AquaTROLL and EXO
 

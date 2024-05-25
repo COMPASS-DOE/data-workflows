@@ -136,7 +136,8 @@ write_to_folders <- function(x, root_dir, data_level, site, plot,
                     geom_line() +
                     facet_wrap(~research_name, scales = "free") +
                     ggtitle(filename) +
-                    theme(axis.text = element_text(size = 6))
+                    theme(axis.text = element_text(size = 6),
+                          strip.text = element_text(size = 8))
             } else if(data_level == "L2") {
                 folder <- file.path(root_dir, paste(site, y, sep = "_"))
                 filename <- paste0(paste(site, time_period, table, data_level, vversion, sep = "_"), ".csv")
@@ -148,8 +149,8 @@ write_to_folders <- function(x, root_dir, data_level, site, plot,
             # Create folder, if needed
             if(!dir.exists(folder)) {
                 if(!quiet) message("Creating ", basename(folder))
-                if(!dir.create(folder)) {
-                    stop("dir.create returned an error")
+                if(!dir.create(folder, showWarnings = TRUE)) {
+                    stop("dir.create returned error for ", folder)
                 }
             }
 
@@ -175,7 +176,7 @@ write_to_folders <- function(x, root_dir, data_level, site, plot,
             # Write basic QA/QC plot
             if(write_plots && write_this_plot) {
                 fn_p <- gsub("csv$", "pdf", fn)
-                ggsave(fn_p, plot = p, width = 10, height = 8)
+                ggsave(fn_p, plot = p, width = 12, height = 8)
             }
 
             lines_written[[fn]] <- nrow(dat)

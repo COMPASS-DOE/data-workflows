@@ -155,8 +155,12 @@ error = function(e) {
 out_df <- do.call("rbind", out)
 
 if(!is.numeric(out_df$Rows)) {
-    stop("Rows is not numeric: ", class(out_df), class(out_df$Rows), out_df$Rows[1])
+    x <- which(is.na(as.numeric(out_df$Rows)))[1]
+    stop("Rows is not numeric: ", out_df$Dir[x], ",",
+         out_df$Files[x], ",",
+         out_df$Rows[x])
 }
+
 n_obs <- format(sum(out_df$Rows), big.mark = ",")
 n_na <- format(sum(out_df$NA_rows), big.mark = ",")
 ```
