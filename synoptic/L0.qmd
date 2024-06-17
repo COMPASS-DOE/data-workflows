@@ -77,12 +77,12 @@ f <- function(fn, new_dir) {
     note <- ""
     long_rows <- long_cols <- short_hash <- NA
 
-    # read_datalogger_file() adds a "Table" column giving the name of the datalogger table
-    # If this ends with "_1min" or "_5min" then strip that out; this refers to the temporary
-    # tables enabled during the TEMPEST flood events. We want these processed as normal
-    # data, just on a finer time resolution
+    # read_datalogger_file() adds a "Table" column giving the name of the 
+    # datalogger table. If this ends with "_1min" or "_5min" then strip that
+    # out; this refers to the temporary tables enabled during the TEMPEST floods.
+    # We want these processed as normal data, just on a finer time resolution.
     PATTERN <- "_[0-9]+min"
-    if(any(grepl(PATTERN, dat$Table))) {
+    if(grepl(PATTERN, dat$Table[1])) {
         message("\tRemoving _{num}min from table name: ", dat$Table[1])
         dat$Table <- gsub(PATTERN, "", dat$Table)
     }
