@@ -47,8 +47,8 @@ script). Of course, this is much slower.
 11. Double-check the final release README file.
 
 12. You may want to clean up the resulting L1 folder; for example,
-remove (`find ./ -name ".DS_Store" | xargs rm`) hidden files created by
-MacOS.
+remove unwanted hidden files (`find ./ -name ".DS_Store" | xargs rm`)
+or 'stub' data (`find ./ -name "*20240501-20240501*" | xargs rm`).
 
 13. Push the data (including `L1`, `Raw`, `L0`, and `Logs`) to the
 COMPASS HPC. For example:
