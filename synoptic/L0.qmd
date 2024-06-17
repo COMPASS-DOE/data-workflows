@@ -77,6 +77,16 @@ f <- function(fn, new_dir) {
     note <- ""
     long_rows <- long_cols <- short_hash <- NA
 
+    # read_datalogger_file() adds a "Table" column giving the name of the datalogger table
+    # If this ends with "_1min" or "_5min" then strip that out; this refers to the temporary
+    # tables enabled during the TEMPEST flood events. We want these processed as normal
+    # data, just on a finer time resolution
+    PATTERN <- "_[0-9]+min"
+    if(any(grepl(PATTERN, dat$Table))) {
+        message("\tRemoving _{num}min from table name: ", dat$Table[1])
+        dat$Table <- gsub(PATTERN, "", dat$Table)
+    }
+    
     # Roy: "I generally have a filter that checks and throws out data with very few lines 
     # as they are usually garbage, I have my input check for <4 lines after header" 
     if(nrow(dat) < 4) {
