@@ -150,7 +150,7 @@ f <- function(fn, out_dir, design_table) {
     ltlv <- unique(paste(dat$Logger, dat$Table, dat$loggernet_variable))
     present <- ltlv %in% DESIGN_TABLE_ENTRIES
     if(!all(present)) {
-        stop("Some data file entries are missing in the design table!",
+        stop("Some data file entries are missing in the design table!\n",
              paste(ltlv[!present], collapse = ", "))
     }
 
