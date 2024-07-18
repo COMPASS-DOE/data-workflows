@@ -7,6 +7,14 @@ years old) temperate, deciduous coastal forest.
 NOTE: Meteorological data for TEMPEST are available in the GCW-W files
 and are from the GCReW met station. See notes in the GCW metadata.
 
+The TEMPEST flood events occurred on the following dates. They
+lasted for ~10 hours each day and delivered ~80,000 gallons to each plot;
+many data streams are available at 1 or 5 minute frequency during these periods.
+* Tests: Aug 25 (fresh plot) and Sep 9 (salt plot), 2021
+* TEMPEST 1: June 22, 2022
+* TEMPEST 2: June 6-7, 2023
+* TEMPEST 3: June 11-13, 2024
+
 Contact for the TEMPEST site: 
 J. Patrick Megonigal megonialp@si.edu
 
