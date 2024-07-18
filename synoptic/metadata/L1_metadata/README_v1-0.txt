@@ -37,6 +37,12 @@ Island), MSM (Moneystump Marsh), OWC (Old Woman Creek), PTR (Portage
 River), SWH (Sweet Hall Marsh), and TMP (TEMPEST experiment). See
 site-specific metadata files in each folder.
 
+Data are normally logged at a 15 minute interval, but this is **not** 
+guaranteed. In particular, there may be:
+* Missing data points (due to offline sensors, for example);
+* Multiple observations for a given timestamp (rare, but this can occur at TEMPEST);
+* Less-than-15-minute time intervals, in particular during TEMPEST flood events.
+
 CHANGELOG
 —----------------------------------
 Version 1-0 released 2024-05-29
