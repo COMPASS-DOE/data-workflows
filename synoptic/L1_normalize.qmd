@@ -283,16 +283,10 @@ if(params$run_parallel) {
 }
 
 log_info("About to L1_normalize", logfile = params$logfile)
-tryCatch({
-    out <- apply_func(files_to_process, f,
-                      out_dir = L1_NORMALIZE,
-                      design_table = dt_ex)
-},
-error = function(e) {
-    log_warning("L1_normalize: an error occurred!", logfile = params$logfile)
-    log_info(as.character(e), logfile = params$logfile)
-    stop(e)
-})
+out <- apply_func(files_to_process, 
+                  f,
+                  out_dir = L1_NORMALIZE,
+                  design_table = dt_ex)
 ```
 
 ## Summary
