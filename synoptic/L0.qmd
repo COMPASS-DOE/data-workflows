@@ -86,7 +86,7 @@ f <- function(fn, new_dir) {
     # datalogger table. If this ends with "_1min" or "_5min" then strip that
     # out; this refers to the temporary tables enabled during the TEMPEST floods.
     # We want these processed as normal data, just on a finer time resolution.
-    PATTERN <- "_[0-9]+min"
+    PATTERN <- "_[0-9]{1}min"
     if(grepl(PATTERN, dat$Table[1])) {
         message("\tRemoving _{num}min from table name: ", dat$Table[1])
         dat$Table <- gsub(PATTERN, "", dat$Table)
