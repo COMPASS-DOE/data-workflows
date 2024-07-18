@@ -45,6 +45,11 @@ if(packageVersion("compasstools") < "0.2") {
          "devtools::install_github('COMPASS-DOE/compasstools')")
 }
 
+# Warnings are not allowed here, as this usually means a file
+# problem that we want to fix immediately
+oldwarn <- options()$warn
+options(warn = 2)
+
 files_to_process <- list.files(RAW, pattern = "*.dat$", 
                                full.names = TRUE, recursive = TRUE)
 
@@ -158,14 +163,7 @@ if(params$run_parallel) {
 }
 
 log_info("About to L0", logfile = params$logfile)
-tryCatch({
-    out <- apply_func(files_to_process, f, new_dir = L0)
-},
-error = function(e) {
-    log_warning("L0: an error occurred!", logfile = params$logfile)
-    log_info(as.character(e), logfile = params$logfile)
-    stop(e)
-})
+out <- apply_func(files_to_process, f, new_dir = L0)
 ```
 
 ## Summary
@@ -196,4 +194,7 @@ Git commit `r GIT_COMMIT`.
 
 ```{r reproducibility}
 sessionInfo()
+
+# Restore old warning setting
+options(warn = oldwarn)
 ```

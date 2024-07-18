@@ -105,9 +105,6 @@ oos_troll <- prep_troll_oos_table(troll) # in out-of-service.R
 exo <- read_csv(file.path(params$METADATA_ROOT, params$OOS, "exo_log.csv"),
                 col_types = "cdDDDDcc")
 oos_exo <- prep_exo_oos_table(exo) # in out-of-service.R
-
-# Restore old warning setting
-options(warn = oldwarn)
 ```
 
 I see `r length(files_to_process)` files to process in `r L0`.
@@ -283,16 +280,10 @@ if(params$run_parallel) {
 }
 
 log_info("About to L1_normalize", logfile = params$logfile)
-tryCatch({
-    out <- apply_func(files_to_process, f,
-                      out_dir = L1_NORMALIZE,
-                      design_table = dt_ex)
-},
-error = function(e) {
-    log_warning("L1_normalize: an error occurred!", logfile = params$logfile)
-    log_info(as.character(e), logfile = params$logfile)
-    stop(e)
-})
+out <- apply_func(files_to_process, 
+                  f,
+                  out_dir = L1_NORMALIZE,
+                  design_table = dt_ex)
 ```
 
 ## Summary
@@ -323,4 +314,7 @@ Git commit `r GIT_COMMIT`.
 
 ```{r reproducibility}
 sessionInfo()
+
+# Restore old warning setting
+options(warn = oldwarn)
 ```

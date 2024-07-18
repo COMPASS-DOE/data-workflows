@@ -44,6 +44,10 @@ if(packageVersion("compasstools") < "0.2") {
          "devtools::install_github('COMPASS-DOE/compasstools')")
 }
 
+# Warnings are not allowed here
+oldwarn <- options()$warn
+options(warn = 2)
+
 source("helpers.R")
 
 # Get the column metadata file
@@ -142,15 +146,10 @@ if(params$run_parallel) {
 }
 
 log_info("About to L1", logfile = params$logfile)
-tryCatch({
-    out <- apply_func(names(dirs_to_process), f, 
-                      dirs_to_process = dirs_to_process, out_dir = L1)
-},
-error = function(e) {
-    log_warning("L1: an error occurred!", logfile = params$logfile)
-    log_info(as.character(e), logfile = params$logfile)
-    stop(e)
-})
+out <- apply_func(names(dirs_to_process),
+                  f, 
+                  dirs_to_process = dirs_to_process, 
+                  out_dir = L1)
 
 out_df <- do.call("rbind", out)
 
@@ -299,4 +298,7 @@ Git commit `r GIT_COMMIT`.
 
 ```{r reproducibility}
 sessionInfo()
+
+# Restore old warning setting
+options(warn = oldwarn)
 ```
