@@ -256,11 +256,11 @@ for(dd in data_dirs) {
     
     # Site information
     # Folders are <site>_<year>
-    # There MUST be a informational file named <site>.txt
+    # There MUST be an informational file named <site>.txt
     site <- strsplit(dd, "_")[[1]][1]
     site_md_file <- file.path(params$METADATA_ROOT, params$L1_METADATA, paste0(site, ".txt"))
     if(!file.exists(site_md_file)) {
-        stop("Couldn't find file ", site_md_file, " in ", params$L1_METADATA)
+        stop("Couldn't find file ", site_md_file, " in ", params$L1_METADATA, " for dd=", dd)
     }
     site_md_for_insert <- readLines(site_md_file)
 
