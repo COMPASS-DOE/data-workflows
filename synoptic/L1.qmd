@@ -213,7 +213,7 @@ L1_metadata_template <- gsub("[VERSION]", params$L1_VERSION,
                              L1_metadata_template, fixed = TRUE)
 
 # Identify the main data directories in L1/{version}/, which are <site>_<year>
-data_dirs <- list.files(L1, pattern = "^[a-zA-Z]+_[0-4]{4}$")
+data_dirs <- list.files(L1, pattern = "^[a-zA-Z]+_[0-9]{4}$")
 
 for(dd in data_dirs) {
     dd_full <- file.path(L1, dd)
