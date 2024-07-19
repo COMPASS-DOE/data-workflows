@@ -98,6 +98,7 @@ ClimaVue50_24hr,PAR_Tot_C_Tot,wx_par_tot24,mmol/m2,mmol/m2,x * 1,,,Sum of total 
 ClimaVue50_24hr,CVMeta,,,,,,,"Current configuration of ClimaVue sensors (serial number, etc). Format is a13CAMPBELLCLIM50xxxxxx-yyyyyyyyy, where a is the SDI-12 address, xxxxxx is the model, and yyyyyyyyy is the serial number."
 GCREW_MET_15min,VPD,wx_vpd15,Pa,Pa,x * 1,,,Vapor pressure deficiti; from the GCREW met station and only appears at GCW-W
 GCREW_MET_15min,SVP,wx_svp15,Pa,Pa,x * 1,,,Saturated vapor pressure deficiti; from the GCREW met station and only appears at GCW-W
+GCREW_MET_15min,CleanRH,wx_cleanrh15,perc,perc,x * 1,,,'Clean' relative humidity
 GCREW_MET_15min,WS_ms_RM_Min,wx_minws15,m/s,m/s,x * 1,0,30,Maximum wind speed in 15 minute period; from the GCREW met station and only appears at GCW-W
 GCREW_MET_15min,Rain_cm_Tot,wx_gcrew_rain15,cm,cm,x * 1,0,960,Total rain over 15 minute period IN CENTIMETERS; from the GCREW met station and only appears at GCW-W
 ExoTable,Conductivity,sonde_conductivity,,,x * 1,,,
