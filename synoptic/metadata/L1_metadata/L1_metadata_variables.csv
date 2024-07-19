@@ -4,7 +4,7 @@ Datalogger,SolarV,solar_voltage,V,V,x * 1,0,30,Solar/line voltage of the data lo
 Sapflow,DiffVolt_Avg,sapflow_2.5cm,mV,mV,x * 1,0,1,Raw sap flow at 2.5 cm depth
 Sapflow,DiffVolt_Avg,sapflow_5cm,mV,mV,x * 1,0,1,Raw sap flow at 5 cm depth
 RedoxTable,Redox,redox_10cm,mV,mV,x * 1,-1000,1000,"Redox at 10 cm depth; each sensor measures two values based on electrode ""A"" or ""B"" reference probes"
-RedoxTable,Redox,redox_25cm,mV,mV,x * 1,-1000,1000,"Redox at 25 cm depth; each sensor measures two values based on electrode ""A"" or ""B"" reference probes"
+RedoxTable,Redox,redox_20cm,mV,mV,x * 1,-1000,1000,"Redox at 20 cm depth; each sensor measures two values based on electrode ""A"" or ""B"" reference probes"
 RedoxTable,Redox,redox_35cm,mV,mV,x * 1,-1000,1000,"Redox at 35 cm depth; each sensor measures two values based on electrode ""A"" or ""B"" reference probes"
 RedoxTable,Redox,redox_55cm,mV,mV,x * 1,-1000,1000,"Redox at 55 cm depth; each sensor measures two values based on electrode ""A"" or ""B"" reference probes"
 TerosTable,VWC,soil_vwc_5cm,m3/m3,m3/m3,(3.879*10^-4) * x - 0.6956,0,0.7,Soil volumetric water content at 5 cm calibrated for mineral soil
