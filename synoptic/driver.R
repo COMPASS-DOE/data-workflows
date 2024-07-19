@@ -103,7 +103,7 @@ driver_try(
                                     L1_VERSION = VERSION,
                                     html_outfile = outfile,
                                     logfile = LOGFILE,
-                                    run_parallel = TRUE))
+                                    run_parallel = FALSE))
 )
 copy_output("L1.html", outfile)
 
