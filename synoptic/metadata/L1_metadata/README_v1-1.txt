@@ -43,6 +43,17 @@ guaranteed. In particular, there may be:
 * Multiple, numerically different observations for a given timestamp (rare);
 * Less-than-15-minute time intervals, in particular during TEMPEST flood events.
 
+DATA VERSIONS
+—----------------------------------
+COMPASS-FME L1 data releases use semantic versioning (https://semver.org). 
+This means that given a version number MAJOR-MINOR-PATCH, we increment the: 
+* MAJOR number when we make incompatible changes to the data structure; 
+* MINOR version when we add data in a backwards-compatible manner; and 
+* PATCH version when we fix documentation and the like.
+
+Importantly, “backward compatible” does NOT mean that the data don’t
+change, only that your scripts using L1 data will probably still work. 
+
 CHANGELOG
 —----------------------------------
 Version 1-1 released 2024-XX-XX

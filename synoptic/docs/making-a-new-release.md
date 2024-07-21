@@ -5,7 +5,17 @@
 2. Add new raw files from the Dropbox folder(s) into
 `./synoptic/data/Raw/`. Right now, this should include files from the
 TEMPEST, synoptic, and GCReW met Dropbox shares. Basically, bring your
-raw data files up to date.
+raw data files up to date. Using the terminal can make this easy:
+
+```
+# v1-1 update copy steps for June 2024 files
+# Working directory is Dropbox, and $PATH points to data-workflows/synoptic
+# Note that the folder organization in Raw/ is for user convenience only
+
+cp TEMPEST_PNNL_Data/Loggernet_Rawdata_Archive/*202406* $PATH/data/Raw/Synoptics
+cp GCREW_LOGGERNET_DATA/GCREW_MET_GCREW_MET_15min_202406* $PATH/data/Raw/GCREW\ met
+cp COMPASS_PNNL_Data/COMPASS_PNNL_Rawdata_Archive/*202406* $PATH/data/Raw/Synoptics
+```
 
 3. IMPORTANT NOTE: some of the raw data files have bad timestamps
 (usually, from when a datalogger is first installed) and I have edited
