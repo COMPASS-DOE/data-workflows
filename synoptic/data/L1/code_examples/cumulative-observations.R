@@ -20,6 +20,7 @@ results <- separate(results, Timerange, sep = "-", into = c("Begin", "End"))
 results$Date <- as.Date(results$Begin, format = "%Y%m%d")
 results$Year <- year(results$Date)
 results$Month <- month(results$Date)
+results$Quarter <- quarter(results$Date)
 
 # Make some graphs
 library(ggplot2)
@@ -28,12 +29,12 @@ library(scales)
 library(viridis)
 
 results %>%
-    group_by(Site, Year, Month) %>%
+    group_by(Site, Year, Quarter) %>%
     summarise(rows = sum(rows)) %>%
-    mutate(YearMonth = ymd(paste(Year, Month, "01"))) %>%
-    ggplot(aes(YearMonth, Site, fill = rows)) + geom_tile() +
+    mutate(YearMonth = ymd(paste(Year, Quarter * 3, "01"))) %>%
+    ggplot(aes(YearMonth, Site, fill = rows / 3)) + geom_tile() +
     xlab("Time") +
-    scale_fill_gradient("Observations", trans = scales::log_trans(base = 10),
+    scale_fill_gradient("Monthly\nobservations", trans = scales::log_trans(base = 10),
                         labels = unit_format(unit = "M", scale = 1e-6)) ->
     p
 print(p)
