@@ -57,7 +57,7 @@ change, only that your scripts using L1 data will probably still work.
 CHANGELOG
 —----------------------------------
 Version 1-1 released 2024-08-05
-* Covers late 2019 through June 2024 for TEMPEST and all synoptic sites
+* Covers late 2019 through July 2024 for TEMPEST and all synoptic sites
 * TEMPEST redox data now available starting April 2024
 * Now includes high-frequency (1 and 5 min interval) data from TEMPEST floods
 
