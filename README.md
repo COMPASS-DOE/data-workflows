@@ -6,7 +6,7 @@
 
 COMPASS-FME processing pipeline for environmental sensor data.
 
-Latest data release is `v1-0`, 29 May 2024, with 172.6M observations.
+Latest data release is `v1-1`, 05 August 2024, with 241.4M observations.
 
 This work is supported by [COMPASS-FME](https://compass.pnnl.gov), a
 multi-institutional project funded by the U.S. Department of Energy,
