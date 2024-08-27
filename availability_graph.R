@@ -5,7 +5,7 @@ fls <- list.files("~/Documents/v1-1/", pattern = "*.csv$", full.names = TRUE, re
 
 results <- list()
 
-for(f in fls[1:3]) {
+for(f in fls) {
     message(basename(f))
 
     results[[f]] <- readr::read_csv(f, col_types = "ccTccccdccii") %>%
@@ -23,7 +23,7 @@ bind_rows(results) %>%
               n = sum(n),
               .groups = "drop") %>%
     # not sure why this next line
-#    filter(Site == "GCW", !is.na(Instrument)) %>%
+    filter(Site == "GCW", !is.na(Instrument)) %>%
     mutate(data_present = if_else(n > 0, "Yes", "No")) %>%
     # create the factor month-year
     arrange(TIMESTAMP) %>%
