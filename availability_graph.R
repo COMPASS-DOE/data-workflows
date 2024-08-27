@@ -5,27 +5,30 @@ fls <- list.files("~/Documents/v1-1/", pattern = "*.csv$", full.names = TRUE, re
 
 results <- list()
 
-for(i in seq_along(fls)) {
-    message(basename(fls[i]))
+for(f in fls[1:3]) {
+    message(basename(f))
 
-    results[[basename(fls[i])]] <- readr::read_csv(fls[i]) %>% group_by(Site, Instrument, year(TIMESTAMP), month(TIMESTAMP)) %>% summarise(n = n())
+    results[[f]] <- readr::read_csv(f, col_types = "ccTccccdccii") %>%
+        mutate(ts_str = format(TIMESTAMP, "%b-%Y")) %>%
+        group_by(Site, Instrument, ts_str) %>%
+            summarise(TIMESTAMP = mean(TIMESTAMP),
+                      n = n(),
+                      .groups = "drop")
 }
 
 bind_rows(results) %>%
-    rename(Year = `year(TIMESTAMP)`, Month = `month(TIMESTAMP)`) %>%
-    arrange(Site, Year, Month) -> r
-
-r %>% group_by(Site, Instrument, Year, Month) %>%
-    summarise(n = sum(n)) %>%
-    filter(Site =="GCW", !is.na(Instrument)) %>%
-    mutate(data_present = ifelse(n > 0, "Yes", "No"),
-           Month = month.abb[Month],
-           date = ym(paste(Year, Month))) %>%
-    arrange(date) %>%
-    mutate(
-           ts_str = format(date, "%b-%Y"),
-           ts_fct = factor(ts_str, levels = unique(ts_str))) %>%
-    select(-n) %>%
+    # each file is a site and plot; sum by site
+    group_by(Site, Instrument, ts_str) %>%
+    summarise(TIMESTAMP = mean(TIMESTAMP),
+              n = sum(n),
+              .groups = "drop") %>%
+    # not sure why this next line
+#    filter(Site == "GCW", !is.na(Instrument)) %>%
+    mutate(data_present = if_else(n > 0, "Yes", "No")) %>%
+    # create the factor month-year
+    arrange(TIMESTAMP) %>%
+    mutate(ts_fct = factor(ts_str, levels = unique(ts_str))) %>%
+    # plot
     ggplot(aes(x = ts_fct, y = Instrument, fill = Instrument)) +
     geom_raster(colour = "white", hjust = 0, vjust = 0) +
     facet_wrap(~Site, ncol = 1, strip.position = "left") +
