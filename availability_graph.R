@@ -11,24 +11,25 @@ for(f in fls) {
     results[[f]] <- readr::read_csv(f, col_types = "ccTccccdccii") %>%
         mutate(ts_str = format(TIMESTAMP, "%b-%Y")) %>%
         group_by(Site, Instrument, ts_str) %>%
-            summarise(TIMESTAMP = mean(TIMESTAMP),
-                      n = n(),
+            summarise(n = n(),
+                      # retain the timestamp for correct sorting later
+                      TIMESTAMP = mean(TIMESTAMP),
                       .groups = "drop")
 }
 
 bind_rows(results) %>%
     # each file is a site and plot; sum by site
     group_by(Site, Instrument, ts_str) %>%
-    summarise(TIMESTAMP = mean(TIMESTAMP),
-              n = sum(n),
+    summarise(n = sum(n),
+              TIMESTAMP = mean(TIMESTAMP),
               .groups = "drop") %>%
-    # not sure why this next line
+    # not sure why this next line is here
     filter(Site == "GCW", !is.na(Instrument)) %>%
     mutate(data_present = if_else(n > 0, "Yes", "No")) %>%
     # create the factor month-year
     arrange(TIMESTAMP) %>%
     mutate(ts_fct = factor(ts_str, levels = unique(ts_str))) %>%
-    # plot
+    # ...and plot
     ggplot(aes(x = ts_fct, y = Instrument, fill = Instrument)) +
     geom_raster(colour = "white", hjust = 0, vjust = 0) +
     facet_wrap(~Site, ncol = 1, strip.position = "left") +
