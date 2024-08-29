@@ -69,7 +69,7 @@ special_files_info <-
             "cumulative-observations.R", "Sample R code to plot cumulative observations")
 special_files <- which(results$File_Name %in% special_files_info$File_Name)
 sf <- results[special_files,]
-sf <- left_join(sf, special_files_info, by = c("File_Name", "File_Description"))
+sf <- left_join(sf, special_files_info, by = "File_Name")
 
 # Other files
 message("Checking other files...")
