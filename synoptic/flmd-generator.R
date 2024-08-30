@@ -1,6 +1,7 @@
 # flmd-generator.R
 # Generate file-level metadata for an L1 release
 # https://github.com/ess-dive-community/essdive-file-level-metadata/
+# BBL August 2024
 
 library(tidyr)
 library(dplyr)
@@ -51,7 +52,7 @@ pf <- find_start_end_dates(pf)
 pf$File_Description <- paste("Plots of",
                              format(pf$Start_Date, "%b %Y"),
                              "sensor data for",
-                             paste0(pf$Plot, "-", pf$Site))
+                             paste0(pf$Site, "-", pf$Plot))
 
 # Isolate the site-year metadata files
 message("Processing metadata files...")
@@ -76,16 +77,17 @@ message("Checking other files...")
 other_files <- results[-c(data_files, plot_files, metadata_files, special_files),]
 if(nrow(other_files) > 0) {
     print(other_files)
-    stop("There are 'other' files, i.e. with no description. ",
-         "You may need to update the 'special_files_info' in the script if this is a new data release")
+    stop("There are 'other' files, i.e. with no description. You may need to ",
+    "update the 'special_files_info' in the script if this is a new data release")
 }
 
 bind_rows(df, pf, mdf, sf) %>%
     arrange(sort) %>%
     mutate(Standard = "") %>%
-    select(File_Name, File_Description, Standard, Start_Date, End_Date, Missing_Value_Codes, File_Path) ->
+    select(File_Name, File_Description, Standard, Start_Date,
+           End_Date, Missing_Value_Codes, File_Path) ->
     flmd
 
 readr::write_csv(flmd, "flmd.csv", na = "")
 
-
+message("All done!")
