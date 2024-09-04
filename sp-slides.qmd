@@ -1,0 +1,51 @@
+---
+title: "sp-slides"
+format: html
+editor: visual
+---
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+#| include: false
+
+variable <- "soil_vwc"
+
+# Construct a "regular expression" to find the files we want: in this case,
+# CSV files starting with the site code above
+
+# Get the names of the files we need. Note this assumes that your
+# working directory is the main directory of the L1 data
+files <- list.files("./", pattern = ".*L1_v1-{0-9}.csv$", recursive = TRUE, full.names = TRUE)
+
+# Helper function to read the files and filter to just the variable we want
+# Use readr::read_csv for easy timestamp handling
+# Note that we set "col_types" to force the "Plot" column to be read as a
+# character; see https://github.com/COMPASS-DOE/data-workflows/issues/186
+library(readr)
+f <- function(f) {
+    message("Reading ", basename(f))
+    x <- read_csv(f, col_types = "ccTccccdccii")
+    x[x$research_name == variable,]
+}
+
+# Read the files
+dat <- lapply(files, f)
+dat <- do.call("rbind", dat)
+
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
