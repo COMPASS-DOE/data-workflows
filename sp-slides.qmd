@@ -20,11 +20,13 @@ library(readr)
 library(dplyr)
 library(tidyr)
 library(lubridate)
+library(gt)
 
 library(ggplot2)
 theme_set(theme_bw())
 library(scales)
 library(viridis)
+library(gt)
 ```
 
 ![Synoptic sites](synoptic/docs/synoptic_sites.png)
@@ -69,11 +71,22 @@ dat <- bind_rows(dat)
 
 ```
 
+## Observations
+
+```{r table}
+dat %>% 
+    mutate(Year = year(Date)) %>% 
+    group_by(Year, Site) %>% 
+    summarise(n = sum(n, na.rm = TRUE), .groups = "drop") %>% 
+    pivot_wider(names_from = "Year", values_from = "n", values_fill = 0) %>% 
+    arrange(Site) %>% 
+    gt::gt() %>% 
+    fmt_number(suffixing = "K", decimals = 1)
+```
+
 ## Observations over time
 
 ```{r obs-over-time}
-#| echo: false
-
 dat %>%
     complete(Site, Date, research_name, fill = list(rows = 0)) %>%
     group_by(Site, Date) %>%
@@ -166,5 +179,13 @@ ggplot(full_record_vwc, aes(Date, Value, color = Depth, group = Sensor_ID)) +
     geom_line(na.rm = TRUE, alpha = 0.5) +
     ylab("TEMPEST Control - soil VWC") +
     ylim(c(0.1, 0.5))
+
+full_record %>% 
+    mutate(Month = month(Date)) %>% 
+    select(-Depth) %>% 
+    pivot_wider(names_from = "research_name", values_from = "Value") %>% 
+    ggplot(aes(soil_temp_15cm, soil_vwc_15cm, color = Month)) + 
+    geom_point(size = 0.4, na.rm = TRUE) +
+    ylim(c(0.1, 0.5)) + xlim(c(0,25))
 ```
 
