@@ -1,51 +1,114 @@
 ---
 title: "sp-slides"
 format: html
+params:
+  L1_DATA: "./synoptic/data/L1/"
 editor: visual
 ---
 
-## Quarto
+## Maps and figures
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+```{r prelims}
+#| include: false
 
-## Running Code
+library(readr)
+library(dplyr)
+library(tidyr)
+library(lubridate)
+
+library(ggplot2)
+theme_set(theme_bw())
+library(scales)
+library(viridis)
+
+```
+
+![Synoptic sites](synoptic/docs/synoptic_sites.png)
+
+![Exchange sites](synoptic/docs/exchange-synoptic.png)
+
+![Installation](synoptic/docs/alice_install.jpg)
+
+## Data prep
 
 When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
 
-```{r}
+```{r data-prep}
 #| include: false
+#| cache: true
 
 variable <- "soil_vwc"
 
-# Construct a "regular expression" to find the files we want: in this case,
-# CSV files starting with the site code above
-
 # Get the names of the files we need. Note this assumes that your
 # working directory is the main directory of the L1 data
-files <- list.files("./", pattern = ".*L1_v1-{0-9}.csv$", recursive = TRUE, full.names = TRUE)
+files <- list.files(params$L1_DATA,
+                    pattern = ".*L1_v1-[0-9]\\.csv$", 
+                    recursive = TRUE, full.names = TRUE)
 
 # Helper function to read the files and filter to just the variable we want
-# Use readr::read_csv for easy timestamp handling
 # Note that we set "col_types" to force the "Plot" column to be read as a
 # character; see https://github.com/COMPASS-DOE/data-workflows/issues/186
-library(readr)
 f <- function(f) {
     message("Reading ", basename(f))
     x <- read_csv(f, col_types = "ccTccccdccii")
-    x[x$research_name == variable,]
+    x <- x[grep(variable, x$research_name),]
+    x %>% 
+        group_by(Site, research_name) %>% 
+        summarise(TIMESTAMP = mean(TIMESTAMP), n = n(), .groups = "drop") %>% 
+        mutate(Date = as.Date(TIMESTAMP)) %>% 
+        select(-TIMESTAMP)
 }
 
-# Read the files
+# Read the files and concatenate
 dat <- lapply(files, f)
-dat <- do.call("rbind", dat)
+dat <- bind_rows(dat)
 
 ```
 
-You can add options to executable code like this
+## Observations over time
 
-```{r}
+```{r obs-over-time}
 #| echo: false
-2 * 2
+
+dat %>%
+    complete(Site, Date, research_name, fill = list(rows = 0)) %>%
+    group_by(Site, Date) %>%
+    summarise(n = sum(n, na.rm = TRUE), .groups = "drop") %>%
+    arrange(Date) %>%
+    group_by(Site) %>%
+    mutate(cum_n = cumsum(n)) ->
+    smry1
+
+p1 <- ggplot(smry1, aes(Date, cum_n, fill = Site)) +
+    geom_area(alpha = 0.8 , linewidth = 0.5, colour = "white") +
+    xlab("Year") + ylab("COMPASS-FME soil moisture observations") +
+    scale_fill_viridis(discrete = TRUE) +
+    theme(axis.title = element_text(size = 14)) +
+    scale_y_continuous(labels = unit_format(unit = "M", scale = 1e-6))
+print(p1)
+
+dat %>%
+    complete(Site, Date, research_name, fill = list(rows = 0)) %>%
+    group_by(Date, research_name) %>%
+    summarise(n = sum(n, na.rm = TRUE), .groups = "drop") %>%
+    arrange(Date) %>%
+    group_by(research_name) %>%
+    mutate(cum_n = cumsum(n),
+           Depth = gsub("cm", " cm", substr(research_name, 10, 13)),
+           Depth = factor(Depth, levels = c("5 cm", "10 cm", "15 cm", "30 cm"))) ->
+    smry2
+
+p2 <- ggplot(smry2, aes(Date, cum_n, fill = Depth)) +
+    geom_area(alpha = 0.8 , linewidth = 0.5, colour = "white") +
+    xlab("Year") + ylab("COMPASS-FME soil moisture observations") +
+    scale_fill_viridis(discrete = TRUE) +
+    theme(axis.title = element_text(size = 14)) +
+    scale_y_continuous(labels = unit_format(unit = "M", scale = 1e-6))
+print(p2)
+
+
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+## TEROS
+
+dd
