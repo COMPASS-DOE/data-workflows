@@ -4,3 +4,6 @@
 .Ruserdata
 .DS_Store
 *.dcf
+
+sp-slides_files/
+sp-slides_cache/

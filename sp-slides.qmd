@@ -1,8 +1,13 @@
 ---
 title: "sp-slides"
-format: html
+title-block-banner: true
 params:
   L1_DATA: "./synoptic/data/L1/"
+date: now
+date-format: "YYYY-MM-DD HH:mm:ssZ"
+format: 
+  html:
+    code-fold: true
 editor: visual
 ---
 
@@ -20,7 +25,6 @@ library(ggplot2)
 theme_set(theme_bw())
 library(scales)
 library(viridis)
-
 ```
 
 ![Synoptic sites](synoptic/docs/synoptic_sites.png)
@@ -28,10 +32,10 @@ library(viridis)
 ![Exchange sites](synoptic/docs/exchange-synoptic.png)
 
 ![Installation](synoptic/docs/alice_install.jpg)
+![Sensor](synoptic/docs/teros-12-soil-water-potential-sensor-curved.png)
+
 
 ## Data prep
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
 
 ```{r data-prep}
 #| include: false
@@ -48,7 +52,7 @@ files <- list.files(params$L1_DATA,
 # Helper function to read the files and filter to just the variable we want
 # Note that we set "col_types" to force the "Plot" column to be read as a
 # character; see https://github.com/COMPASS-DOE/data-workflows/issues/186
-f <- function(f) {
+f <- function(f, variable) {
     message("Reading ", basename(f))
     x <- read_csv(f, col_types = "ccTccccdccii")
     x <- x[grep(variable, x$research_name),]
@@ -60,7 +64,7 @@ f <- function(f) {
 }
 
 # Read the files and concatenate
-dat <- lapply(files, f)
+dat <- lapply(files, f, variable)
 dat <- bind_rows(dat)
 
 ```
@@ -105,10 +109,62 @@ p2 <- ggplot(smry2, aes(Date, cum_n, fill = Depth)) +
     theme(axis.title = element_text(size = 14)) +
     scale_y_continuous(labels = unit_format(unit = "M", scale = 1e-6))
 print(p2)
-
-
 ```
 
-## TEROS
+## TEMPEST TEROS data
 
-dd
+```{r teros-prep}
+#| include: false
+#| cache: true
+
+# Focus on TEMPEST control to show some nice time series
+files <- list.files(params$L1_DATA,
+                    pattern = "^TMP_C.*L1_v1-[0-9]\\.csv$", 
+                    recursive = TRUE, full.names = TRUE)
+
+f <- function(f, variable) {
+    message("Reading ", basename(f))
+    x <- read_csv(f, col_types = "ccTccccdccii")
+    x[grep(variable, x$Instrument), c("TIMESTAMP", "Sensor_ID", "Value", "research_name")]
+}
+
+# Read the files and concatenate
+teros_dat <- lapply(files, f, "TEROS")
+teros_dat <- bind_rows(teros_dat)
+```
+
+```{r two-days}
+teros_dat %>% 
+    # this shows a cool rain event around midnight on June 15 2021
+    filter(as.Date(TIMESTAMP) %in% c(ymd("2021-06-14"), ymd("2021-06-15"))) ->
+    twodays
+
+twodays <- twodays[grep("soil_vwc", twodays$research_name),]
+
+twodays %>%
+    mutate(Depth = gsub("cm", " cm", substr(research_name, 10, 13)),
+           Depth = factor(Depth, levels = c("5 cm", "10 cm", "15 cm", "30 cm"))) %>% 
+    ggplot(aes(TIMESTAMP, Value, color = Depth, group = Sensor_ID)) + 
+    geom_line(na.rm = TRUE) +
+    scale_x_datetime(date_breaks = "1 day") +
+    ylab("TEMPEST Control - soil VWC") +
+    facet_wrap(~Depth)
+```
+
+```{r teros-plot}
+teros_dat %>% 
+    mutate(Date = as.Date(TIMESTAMP)) %>% 
+    group_by(Sensor_ID, research_name, Date) %>% 
+    summarise(Value = mean(Value, na.rm = TRUE), .groups = "drop") %>% 
+    mutate(Depth = gsub("cm", " cm", substr(research_name, 10, 13)),
+           Depth = factor(Depth, levels = c("5 cm", "10 cm", "15 cm", "30 cm"))) ->
+    full_record
+
+full_record_vwc <- full_record[grep("soil_vwc", full_record$research_name),]
+
+ggplot(full_record_vwc, aes(Date, Value, color = Depth, group = Sensor_ID)) + 
+    geom_line(na.rm = TRUE, alpha = 0.5) +
+    ylab("TEMPEST Control - soil VWC") +
+    ylim(c(0.1, 0.5))
+```
+
