@@ -27,6 +27,11 @@ theme_set(theme_bw())
 library(scales)
 library(viridis)
 library(gt)
+
+make_depth <- function(research_name) {
+    depth <- gsub("cm", " cm", substr(research_name, 10, 13))
+    factor(depth, levels = c("5 cm", "10 cm", "15 cm", "30 cm"))
+}
 ```
 
 ![Synoptic sites](synoptic/docs/synoptic_sites.png)
@@ -111,8 +116,7 @@ dat %>%
     arrange(Date) %>%
     group_by(research_name) %>%
     mutate(cum_n = cumsum(n),
-           Depth = gsub("cm", " cm", substr(research_name, 10, 13)),
-           Depth = factor(Depth, levels = c("5 cm", "10 cm", "15 cm", "30 cm"))) ->
+           Depth = make_depth(research_name)) ->
     smry2
 
 p2 <- ggplot(smry2, aes(Date, cum_n, fill = Depth)) +
@@ -155,8 +159,7 @@ twodays <- twodays[grep("soil_vwc", twodays$research_name),]
 
 # Two days plot that shows a cool midnight rain event
 twodays %>%
-    mutate(Depth = gsub("cm", " cm", substr(research_name, 10, 13)),
-           Depth = factor(Depth, levels = c("5 cm", "10 cm", "15 cm", "30 cm"))) %>% 
+    mutate(Depth = make_depth(research_name)) %>% 
     ggplot(aes(TIMESTAMP, Value, color = Depth, group = Sensor_ID)) + 
     geom_line(na.rm = TRUE) +
     scale_x_datetime(date_breaks = "1 day") +
@@ -171,8 +174,7 @@ teros_dat %>%
     mutate(Date = as.Date(TIMESTAMP)) %>% 
     group_by(Sensor_ID, research_name, Date) %>% 
     summarise(Value = mean(Value, na.rm = TRUE), .groups = "drop") %>% 
-    mutate(Depth = gsub("cm", " cm", substr(research_name, 10, 13)),
-           Depth = factor(Depth, levels = c("5 cm", "10 cm", "15 cm", "30 cm"))) ->
+    mutate(Depth = make_depth(research_name)) ->
     full_record
 
 full_record_vwc <- full_record[grep("soil_vwc", full_record$research_name),]
