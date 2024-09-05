@@ -98,7 +98,7 @@ dat %>%
 
 p1 <- ggplot(smry1, aes(Date, cum_n, fill = Site)) +
     geom_area(alpha = 0.8 , linewidth = 0.5, colour = "white") +
-    xlab("Year") + ylab("COMPASS-FME soil moisture observations") +
+    xlab("Year") + ylab("COMPASS-FME VWC observations") +
     scale_fill_viridis(discrete = TRUE) +
     theme(axis.title = element_text(size = 14)) +
     scale_y_continuous(labels = unit_format(unit = "M", scale = 1e-6))
@@ -117,7 +117,7 @@ dat %>%
 
 p2 <- ggplot(smry2, aes(Date, cum_n, fill = Depth)) +
     geom_area(alpha = 0.8 , linewidth = 0.5, colour = "white") +
-    xlab("Year") + ylab("COMPASS-FME soil moisture observations") +
+    xlab("Year") + ylab("COMPASS-FME VWC observations") +
     scale_fill_viridis(discrete = TRUE) +
     theme(axis.title = element_text(size = 14)) +
     scale_y_continuous(labels = unit_format(unit = "M", scale = 1e-6))
@@ -148,19 +148,21 @@ teros_dat <- bind_rows(teros_dat)
 
 ```{r two-days}
 teros_dat %>% 
-    # this shows a cool rain event around midnight on June 15 2021
     filter(as.Date(TIMESTAMP) %in% c(ymd("2021-06-14"), ymd("2021-06-15"))) ->
     twodays
 
 twodays <- twodays[grep("soil_vwc", twodays$research_name),]
 
+# Two days plot that shows a cool midnight rain event
 twodays %>%
     mutate(Depth = gsub("cm", " cm", substr(research_name, 10, 13)),
            Depth = factor(Depth, levels = c("5 cm", "10 cm", "15 cm", "30 cm"))) %>% 
     ggplot(aes(TIMESTAMP, Value, color = Depth, group = Sensor_ID)) + 
     geom_line(na.rm = TRUE) +
     scale_x_datetime(date_breaks = "1 day") +
-    ylab("TEMPEST Control - soil VWC") +
+    ylab("Soil VWC") +
+    theme(axis.text.x = element_text(angle = 90)) +
+    ggtitle("TEMPEST control plot") +
     facet_wrap(~Depth)
 ```
 
@@ -175,17 +177,22 @@ teros_dat %>%
 
 full_record_vwc <- full_record[grep("soil_vwc", full_record$research_name),]
 
+# Plot complete VWC record at TEMPEST control
 ggplot(full_record_vwc, aes(Date, Value, color = Depth, group = Sensor_ID)) + 
     geom_line(na.rm = TRUE, alpha = 0.5) +
-    ylab("TEMPEST Control - soil VWC") +
-    ylim(c(0.1, 0.5))
+    ylab("Soil VWC") +
+    ylim(c(0.1, 0.5)) +
+    ggtitle("TEMPEST control plot, all data")
 
+# Plot VWC versus temperature
 full_record %>% 
     mutate(Month = month(Date)) %>% 
     select(-Depth) %>% 
     pivot_wider(names_from = "research_name", values_from = "Value") %>% 
     ggplot(aes(soil_temp_15cm, soil_vwc_15cm, color = Month)) + 
     geom_point(size = 0.4, na.rm = TRUE) +
-    ylim(c(0.1, 0.5)) + xlim(c(0,25))
+    ylim(c(0.1, 0.5)) + xlim(c(0,25)) +
+    xlab("Soil 15 cm temperature") + ylab("Soil 15 cm VWC") +
+    ggtitle("TEMPEST control plot, all data")
 ```
 
