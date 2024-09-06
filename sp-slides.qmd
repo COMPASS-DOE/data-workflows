@@ -76,7 +76,7 @@ dat <- bind_rows(dat)
 
 ```
 
-## Observations
+## Observations (M)
 
 ```{r table}
 dat %>% 
@@ -84,9 +84,15 @@ dat %>%
     group_by(Year, Site) %>% 
     summarise(n = sum(n, na.rm = TRUE), .groups = "drop") %>% 
     pivot_wider(names_from = "Year", values_from = "n", values_fill = 0) %>% 
-    arrange(Site) %>% 
+    arrange(Site) ->
+    dat_table
+
+dat_table %>% 
     gt::gt() %>% 
-    fmt_number(suffixing = "K", decimals = 1)
+    grand_summary_rows(columns = which(sapply(dat_table, is.numeric)),
+                       fmt = ~fmt_number(., scale_by = 1e-6, decimals = 2),
+                       fns = list(label = "Totals", id = "totals", fn = "sum")) %>% 
+    fmt_number(scale_by = 1e-6, decimals = 2)
 ```
 
 ## Observations over time
@@ -165,7 +171,7 @@ twodays %>%
     scale_x_datetime(date_breaks = "1 day") +
     ylab("Soil VWC") +
     theme(axis.text.x = element_text(angle = 90)) +
-    ggtitle("TEMPEST control plot") +
+    ggtitle("Rain event - TEMPEST control plot") +
     facet_wrap(~Depth)
 ```
 
