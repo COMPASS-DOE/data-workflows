@@ -6,7 +6,7 @@ It excludes data files, temporary Quarto output files, and folder README files.
 The sections below are organized by **folder name**. Within
 each is a list of the files in that folder and accompanying descriptions.
 
-## ./synoptic/
+## ./synoptic
 
 The root of the system, holding main Quarto files, helper files, and the driver script.
 
@@ -26,7 +26,7 @@ File | Description
 `metadata/` | Metadata folder; see below
 `out-of-service.R` | description
 
-## ./synoptic/data/
+## ./synoptic/data
 
 This directory tree holds the data used in a release run. It typically holds
 the entire sensor data, making it big and slow to process.
@@ -42,7 +42,7 @@ File | Description
 `Raw/` | Folder of Raw data, copied (occasionally with edits) from the SERC Dropbox
 `Raw_done/` | Folder of completely processed raw data; not used currently
 
-## ./synoptic/data_TEST/
+## ./synoptic/data_TEST
 
 This directory tree holds the test data used to test and verify system performance.
 These data are the default for the Quarto files and driver script, and run
@@ -50,7 +50,7 @@ by GitHub Actions when pull requests are opened. It is structured
 identically to the `./data` directory (see above) but its `Raw/` folder
 holds only short sample files from across all sites.
 
-## ./synoptic/docs/
+## ./synoptic/docs
 
 Documentation folder.
 
@@ -59,7 +59,7 @@ File | Description
 `making-a-new-release.md` | Step-by-step instructions for creating a new data release
 `design_table.csv` | This file
 
-## ./synoptic/metadata/
+## ./synoptic/metadata
 
 Metadata used by the processing system.
 
@@ -71,7 +71,7 @@ File | Description
 `newvars_table.csv` | Table describing how to compute new variables in the L2 step; not used currently
 `out-of-service` | Folder of data files used in the out-of-service step, part of L1_normalize; see below
 
-## ./synoptic/metadata/L1_metadata/
+## ./synoptic/metadata/L1_metadata
 
 Files used by the `L1_normalize.qmd` and `L1.qmd` steps.
 
@@ -93,7 +93,7 @@ File | Description
 `SWH.txt` | Site description file for the SWH site
 `TMP.txt` | Site description file for the TMP site
 
-## ./synoptic/metadata/out-of-service/
+## ./synoptic/metadata/out-of-service
 
 Files used by `out-of-service.R`.
 
