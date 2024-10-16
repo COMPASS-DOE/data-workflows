@@ -12,7 +12,7 @@ The root of the system, holding main Quarto files, helper files, and the driver 
 
 File | Description
 ---- | -------------
-`data/` | Test data folder that holds inputs (raw data), outputs, and logs; see below
+`data/` | Data folder that holds inputs (raw data), outputs, and logs; see below
 `data_TEST/` | Test data folder that holds inputs (raw data), outputs, and logs; see below
 `docs/` | Documentation folder; see below
 `driver.R` | A 'driver' script that runs all the Quarto files sequentially and by default in parallel mode, which is fast but generates no logs
@@ -44,7 +44,7 @@ File | Description
 ## ./synoptic/data_TEST
 
 This directory tree holds the test data used to test and verify system performance.
-These data are the default for the Quarto files and driver script, and run
+These data are the default for the Quarto files and driver script, and are used
 by GitHub Actions when pull requests are opened. It is structured
 identically to the `./data` directory (see above) but its `Raw/` folder
 holds only short sample files from across all sites.
@@ -64,7 +64,7 @@ Metadata used by the processing system.
 
 File | Description
 ---- | -------------
-`design_table.csv` | The design table that links datalogger data with experimental subjects, measurement names, and instruments. The crucial central 'brain' of the entire L0-to-L1 process
+`design_table.csv` | The design table that links datalogger data with experimental subjects, measurement names, and instruments. In many ways, this is the crucial center of the entire L0-to-L1 process
 `L1_metadata/` | Folder of L1-specific metadata; see below
 `L2_output_templates/` | Folder of L2 template files; not used currently
 `newvars_table.csv` | Table describing how to compute new variables in the L2 step; not used currently
