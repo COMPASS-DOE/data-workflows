@@ -14,7 +14,7 @@ File | Description
 ---- | -------------
 `data/` | Test data folder that holds inputs (raw data), outputs, and logs; see below
 `data_TEST/` | Test data folder that holds inputs (raw data), outputs, and logs; see below
-`docs` | Documentation folder; see below
+`docs/` | Documentation folder; see below
 `driver.R` | A 'driver' script that runs all the Quarto files sequentially and by default in parallel mode, which is fast but generates no logs
 `flag-database.R` | Flag database helper script; not used currently
 `flmd-generator.R` | File level metadata generation script, to help with ESS-DIVE submission
@@ -33,7 +33,6 @@ the entire sensor data, making it big and slow to process.
 
 File | Description
 ---- | -------------
-`flag-db.sqlite` | Flag database for L2 step; not used currently
 `L0/` | Folder of L0 data written by the `L0.qmd` processing step
 `L1/` | Folder of L0 data written by the `L1.qmd` processing step
 `L1_normalize/` | Folder of intermediate data written by the `L1_normalize.qmd` processing step
