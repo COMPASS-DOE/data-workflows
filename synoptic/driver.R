@@ -65,6 +65,25 @@ driver_try(
 )
 copy_output("L0.html", outfile)
 
+# Add instrument (non datalogger) to L0 data ----------------------
+# Sometimes sondes, TEROS, etc. don't send their data correctly
+# This allows us to bring in such 'raw' data as L0
+
+message("Running L0-instrument")
+new_section("Starting L0-instrument")
+
+outfile <- paste0("L0-instrument_", now_string(), ".html")
+outfile <- file.path(LOGS, outfile)
+
+driver_try(
+    quarto_render("L0-instrument.qmd",
+                  execute_params = list(DATA_ROOT = ROOT,
+                                        html_outfile = outfile,
+                                        logfile = LOGFILE,
+                                        run_parallel = TRUE))
+)
+copy_output("L0.html", outfile)
+
 
 # 'Normalize' L0 data -------------------------------------------
 # Matched with design_link info

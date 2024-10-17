@@ -102,10 +102,12 @@ for(f in files) {
         stop("Unknown column names in file: ", paste(colnames(x)[!good]))
     }
     colnames(x) <- map[colnames(x)]
+    # Add the "A" or "B", etc., as specified by the logger map
+    colnames(x)[-1] <- paste0(colnames(x)[-1], "B")
     
     # Change timestamp to datalogger format; restructure to
     # "Logger","Table","TIMESTAMP","loggernet_variable","value","ID"
-    x$TIMESTAMP <- as.character(dmy_hm(x$TIMESTAMP))
+    x$TIMESTAMP <- as.character(mdy_hm(x$TIMESTAMP))
     x_out <- pivot_longer(x, -TIMESTAMP, names_to = "loggernet_variable")
     x_out$Table <- "WaterLevel600B"
     x_out$Logger <- logger_map[device_id]
