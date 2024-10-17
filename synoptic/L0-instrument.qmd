@@ -3,7 +3,7 @@ title: "Workflow: L0 (raw instruments)"
 author: "COMPASS workflows team"
 title-block-banner: true
 params:
-  html_outfile: "L0-instruments.html"
+  html_outfile: "L0-instrument.html"
   DATA_ROOT: "data_TEST/"
   RAW: "Raw-instrument/"
   L0: "L0/"
