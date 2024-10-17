@@ -1,0 +1,82 @@
+---
+title: "Workflow: L0 (raw instruments)"
+author: "COMPASS workflows team"
+title-block-banner: true
+params:
+  html_outfile: "L0-instruments.html"
+  DATA_ROOT: "data_TEST/"
+  RAW: "Raw-instrument/"
+  L0: "L0/"
+  logfile: ""
+  run_parallel: false
+date: now
+date-format: "YYYY-MM-DD HH:mm:ssZ"
+format: 
+  html:
+    code-fold: true
+editor: visual
+---
+
+This script
+
+-   Reads in any raw *instrument* (non datalogger) data files
+
+-   Maps their IDs to site, plot, and data logger number info
+
+-   Maps their column names to datalogger column names
+
+-   Writes as CSV files with row/col/hash info in filename
+
+## Initializing
+
+```{r init}
+#| include: false
+
+RAW <- file.path(params$DATA_ROOT, params$RAW)
+L0 <- file.path(params$DATA_ROOT, params$L0)
+
+library(tidyr)
+library(readr)
+library(compasstools)
+if(packageVersion("compasstools") < "0.2") {
+    stop("Please update to latest version of compasstools!\n",
+         "devtools::install_github('COMPASS-DOE/compasstools')")
+}
+
+source("helpers.R")
+```
+
+Output directory is `r L0`.
+
+HTML outfile is `r params$html_outfile`.
+
+Logfile is `r params$logfile`.
+
+Working directory is `r getwd()`.
+
+## Processing
+
+```{r processing}
+
+```
+
+## Summary
+
+```{r summary}
+#| echo: false
+#| output: asis
+
+```
+
+```{r summary_table}
+# out_df <- do.call("rbind", out)
+# knitr::kable(out_df)
+```
+
+## Reproducibility
+
+Git commit `r GIT_COMMIT`.
+
+```{r reproducibility}
+sessionInfo()
+```
