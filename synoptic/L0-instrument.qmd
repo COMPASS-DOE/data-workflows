@@ -65,7 +65,7 @@ map_raw <- read_csv(file.path(INS_MAPS, "aquaTROLL600.csv"), col_types = "cc")
 map <- map_raw$datalogger_name
 names(map) <- map_raw$aquaTROLL600_name
 
-logger_map <- c("26" = "Compass_CRC_W_301") # TODO - put into a metadata table
+logger_map <- c("26" = "Compass_CRC_TR_302") # TODO - put into a metadata table
 
 files <- list.files(file.path(RAW, "aquaTROLL600"), 
                     pattern = "*.csv$", 
@@ -107,7 +107,7 @@ for(f in files) {
     # "Logger","Table","TIMESTAMP","loggernet_variable","value","ID"
     x$TIMESTAMP <- as.character(dmy_hm(x$TIMESTAMP))
     x_out <- pivot_longer(x, -TIMESTAMP, names_to = "loggernet_variable")
-    x_out$Table <- "WaterLevel600C"
+    x_out$Table <- "WaterLevel600B"
     x_out$Logger <- logger_map[device_id]
     
     x_out$ID <- sapply(apply(x_out, 1, paste, collapse = ""),
