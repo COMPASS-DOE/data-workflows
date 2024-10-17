@@ -7,6 +7,7 @@ params:
   DATA_ROOT: "data_TEST/"
   RAW: "Raw-instrument/"
   L0: "L0/"
+  METADATA_ROOT: "metadata/"
   logfile: ""
   run_parallel: false
 date: now
@@ -34,9 +35,11 @@ This script
 
 RAW <- file.path(params$DATA_ROOT, params$RAW)
 L0 <- file.path(params$DATA_ROOT, params$L0)
+INS_MAPS <- file.path(params$METADATA_ROOT, "raw-instrument-mappings")
 
 library(tidyr)
 library(readr)
+library(lubridate)
 library(compasstools)
 if(packageVersion("compasstools") < "0.2") {
     stop("Please update to latest version of compasstools!\n",
@@ -54,10 +57,68 @@ Logfile is `r params$logfile`.
 
 Working directory is `r getwd()`.
 
-## Processing
+## AquaTROLL600
 
-```{r processing}
+```{r AquaTROLL600}
+message("Reading aquaTROLL600 column mappings...")
+map_raw <- read_csv(file.path(INS_MAPS, "aquaTROLL600.csv"), col_types = "cc")
+map <- map_raw$datalogger_name
+names(map) <- map_raw$aquaTROLL600_name
 
+logger_map <- c("26" = "Compass_CRC_W_301") # TODO - put into a metadata table
+
+files <- list.files(file.path(RAW, "aquaTROLL600"), 
+                    pattern = "*.csv$", 
+                    full.names = TRUE)
+
+for(f in files) {
+    message("Reading ", basename(f))
+    
+    x_raw <- readLines(f)
+    
+    # These files have a nine-line header followed by CSV data
+    # Extract info from the header and check expected format
+    if(!grepl("Format Version = 1", x_raw[2])) {
+        stop("This file is not in the expected format")
+    }
+    device_id <- gsub("Device Id = ", "", x_raw[3])
+    device_id <- gsub(",", "", device_id)
+    message("\tDevice ID = ", device_id)
+    if(!device_id %in% names(logger_map)) {
+        stop("Unknown device! No entry in the logger_map")
+    }
+        
+    x <- read_csv(I(x_raw[-1:-9]), show_col_types = FALSE)
+    message("\tData rows = ", nrow(x))
+    
+    # Drop the various "Sensor S/N" and "Data Quality" columns
+    sns <- grep("(Sensor S/N|Data Quality)", colnames(x))
+    x <- x[-sns]
+    message("\tDropped ", length(sns), " unneeded S/N and quality columns")
+    
+    # Change column names to datalogger ones
+    good <- colnames(x) %in% names(map)
+    if(!all(good)) {
+        stop("Unknown column names in file: ", paste(colnames(x)[!good]))
+    }
+    colnames(x) <- map[colnames(x)]
+    
+    # Change timestamp to datalogger format; restructure to
+    # "Logger","Table","TIMESTAMP","loggernet_variable","value","ID"
+    x$TIMESTAMP <- as.character(dmy_hm(x$TIMESTAMP))
+    x_out <- pivot_longer(x, -TIMESTAMP, names_to = "loggernet_variable")
+    x_out$Table <- "WaterLevel600C"
+    x_out$Logger <- logger_map[device_id]
+    
+    x_out$ID <- sapply(apply(x_out, 1, paste, collapse = ""),
+                       FUN = function(x) {
+                           substr(digest::digest(x, algo = "md5"), 1, 16)
+                           })
+    
+    out_fn <- paste(logger_map[device_id], x_out$Table[1], basename(f), sep = "_")
+    message("\tWriting ", out_fn)
+    write.csv(x_out, file.path(L0, out_fn), row.names = FALSE)
+}
 ```
 
 ## Summary
