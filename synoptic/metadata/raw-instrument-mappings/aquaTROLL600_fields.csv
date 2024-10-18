@@ -1,4 +1,4 @@
-datalogger_name,aquaTROLL600_name
+datalogger_field,aquaTROLL600_field
 TIMESTAMP,Date Time
 Aquatroll_ID(1),Device Id (in file header)
 Barometric_Pressure600,16: Barometer (16) mmHg (22)
