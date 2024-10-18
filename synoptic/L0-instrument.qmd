@@ -1,0 +1,149 @@
+---
+title: "Workflow: L0 (raw instruments)"
+author: "COMPASS workflows team"
+title-block-banner: true
+params:
+  html_outfile: "L0-instrument.html"
+  DATA_ROOT: "data_TEST/"
+  RAW: "Raw-instrument/"
+  L0: "L0/"
+  METADATA_ROOT: "metadata/"
+  logfile: ""
+  run_parallel: false
+date: now
+date-format: "YYYY-MM-DD HH:mm:ssZ"
+format: 
+  html:
+    code-fold: true
+editor: visual
+---
+
+This script
+
+-   Reads in any raw *instrument* (non datalogger) data files
+
+-   Maps their IDs to site, plot, and data logger number info
+
+-   Maps their column names to datalogger column names
+
+-   Writes as CSV files with row/col/hash info in filename
+
+## Initializing
+
+```{r init}
+#| include: false
+
+RAW <- file.path(params$DATA_ROOT, params$RAW)
+L0 <- file.path(params$DATA_ROOT, params$L0)
+INS_MAPS <- file.path(params$METADATA_ROOT, "raw-instrument-mappings")
+
+library(tidyr)
+library(readr)
+library(lubridate)
+library(compasstools)
+if(packageVersion("compasstools") < "0.2") {
+    stop("Please update to latest version of compasstools!\n",
+         "devtools::install_github('COMPASS-DOE/compasstools')")
+}
+
+source("helpers.R")
+```
+
+Output directory is `r L0`.
+
+HTML outfile is `r params$html_outfile`.
+
+Logfile is `r params$logfile`.
+
+Working directory is `r getwd()`.
+
+## AquaTROLL600
+
+```{r AquaTROLL600}
+message("Reading aquaTROLL600 column mappings...")
+map_raw <- read_csv(file.path(INS_MAPS, "aquaTROLL600_fields.csv"), col_types = "cc")
+map <- map_raw$datalogger_field
+names(map) <- map_raw$aquaTROLL600_field
+
+troll_map <- read_csv(file.path(INS_MAPS, "aquaTROLL600_devices.csv"), col_types = "ccc")
+logger_names <- troll_map$Logger
+names(logger_names) <- troll_map$Serial_number
+troll_letters <- troll_map$Letter
+names(troll_letters) <- troll_map$Serial_number
+
+files <- list.files(file.path(RAW, "aquaTROLL600"), 
+                    pattern = "*.csv$", 
+                    full.names = TRUE)
+
+for(f in files) {
+    message("Reading ", basename(f))
+    
+    x_raw <- readLines(f)
+    
+    # These files have a nine-line header followed by CSV data
+    # Extract info from the header and check expected format
+    if(!grepl("Format Version = 1", x_raw[2])) {
+        stop("This file is not in the expected format")
+    }
+    device_sn <- gsub("Device S/N = ", "", x_raw[6])
+    device_sn <- gsub(",", "", device_sn)
+    message("\tDevice S/N = ", device_sn)
+    if(!device_sn %in% troll_map$Serial_number) {
+        stop("Unknown device! No entry in the troll_map")
+    }
+    
+    x <- read_csv(I(x_raw[-1:-9]), show_col_types = FALSE)
+    message("\tData rows = ", nrow(x))
+    
+    # Drop the various "Sensor S/N" and "Data Quality" columns
+    sns <- grep("(Sensor S/N|Data Quality)", colnames(x))
+    x <- x[-sns]
+    message("\tDropped ", length(sns), " unneeded S/N and quality columns")
+    
+    # Change column names to datalogger ones
+    good <- colnames(x) %in% names(map)
+    if(!all(good)) {
+        stop("Unknown column names in file: ", paste(colnames(x)[!good]))
+    }
+    colnames(x) <- map[colnames(x)]
+    # Add the "A" or "B", etc., as specified by the logger map
+    colnames(x)[-1] <- paste0(colnames(x)[-1], troll_letters[device_sn])
+    
+    # Change timestamp to datalogger format; restructure to
+    # "Logger","Table","TIMESTAMP","loggernet_variable","value","ID"
+    x$TIMESTAMP <- as.character(mdy_hm(x$TIMESTAMP))
+    x_out <- pivot_longer(x, -TIMESTAMP, names_to = "loggernet_variable")
+    x_out$Table <- paste0("WaterLevel600", troll_letters[device_sn])
+    x_out$Logger <- logger_names[device_sn]
+    
+    x_out$ID <- sapply(apply(x_out, 1, paste, collapse = ""),
+                       FUN = function(x) {
+                           substr(digest::digest(x, algo = "md5"), 1, 16)
+                           })
+    
+    out_fn <- paste(logger_names[device_sn], x_out$Table[1], basename(f), sep = "_")
+    message("\tWriting ", out_fn)
+    write.csv(x_out, file.path(L0, out_fn), row.names = FALSE)
+}
+```
+
+## Summary
+
+```{r summary}
+#| echo: false
+#| output: asis
+
+```
+
+```{r summary_table}
+# out_df <- do.call("rbind", out)
+# knitr::kable(out_df)
+```
+
+## Reproducibility
+
+Git commit `r GIT_COMMIT`.
+
+```{r reproducibility}
+sessionInfo()
+```

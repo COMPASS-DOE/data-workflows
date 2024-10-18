@@ -5,7 +5,7 @@ title-block-banner: true
 params:
   html_outfile: "L0.html"
   DATA_ROOT: "data_TEST/"
-  RAW: "Raw/"
+  RAW: "Raw-datalogger/"
   L0: "L0/"
   logfile: ""
   run_parallel: false
